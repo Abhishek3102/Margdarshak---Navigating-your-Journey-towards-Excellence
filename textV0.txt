@@ -1,0 +1,216 @@
+
+Console Error
+
+A component is changing a controlled input to be uncontrolled. This is likely caused by the value changing from a defined to undefined, which should not happen. Decide between using a controlled or uncontrolled input element for the lifetime of the component. More info: https://react.dev/link/controlled-components
+
+components\ui\input.tsx (8:7) @ _c
+
+
+   6 |   ({ className, type, ...props }, ref) => {
+   7 |     return (
+>  8 |       <input
+     |       ^
+   9 |         type={type}
+  10 |         className={cn(
+  11 |           "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+Call Stack
+54
+
+Show 51 ignore-listed frame(s)
+input
+<anonymous> (0:0)
+_c
+components\ui\input.tsx (8:7)
+ProfilePage
+app\profile\page.tsx (204:31)
+Was this helpful?
+
+
+
+1
+2
+
+1/1
+
+Next.js 15.2.4 (stale)
+
+
+
+Console Error
+
+
+API error (404): <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot GET /api/recommendations</pre>
+</body>
+</html>
+
+Show More
+lib\api.ts (54:17) @ fetchAPI
+
+
+  52 |       const text = await response.text()
+  53 |       if (!response.ok) {
+> 54 |         console.error(`API error (${response.status}): ${text}`)
+     |                 ^
+  55 |         throw new Error(`API error: ${response.status} - ${text}`)
+  56 |       }
+  57 |       return text
+Call Stack
+5
+
+Show 3 ignore-listed frame(s)
+fetchAPI
+lib\api.ts (54:17)
+async RecommendationsPage.useEffect.fetchRecommendations
+app\recommendations\page.tsx (69:22)
+Was this helpful?
+
+
+
+1
+2
+
+1/4
+
+Next.js 15.2.4 (stale)
+
+
+
+Console Error
+
+
+Error: API error: 404 - <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot GET /api/recommendations</pre>
+</body>
+</html>
+
+Show More
+lib\api.ts (55:15) @ fetchAPI
+
+
+  53 |       if (!response.ok) {
+  54 |         console.error(`API error (${response.status}): ${text}`)
+> 55 |         throw new Error(`API error: ${response.status} - ${text}`)
+     |               ^
+  56 |       }
+  57 |       return text
+  58 |     }
+Call Stack
+2
+
+fetchAPI
+lib\api.ts (55:15)
+async RecommendationsPage.useEffect.fetchRecommendations
+app\recommendations\page.tsx (69:22)
+Was this helpful?
+
+
+
+1
+2
+
+2/4
+
+Next.js 15.2.4 (stale)
+
+
+
+Console Error
+
+
+API error (404): <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot POST /api/courses/1/enroll</pre>
+</body>
+</html>
+
+Show More
+lib\api.ts (54:17) @ fetchAPI
+
+
+  52 |       const text = await response.text()
+  53 |       if (!response.ok) {
+> 54 |         console.error(`API error (${response.status}): ${text}`)
+     |                 ^
+  55 |         throw new Error(`API error: ${response.status} - ${text}`)
+  56 |       }
+  57 |       return text
+Call Stack
+5
+
+Show 3 ignore-listed frame(s)
+fetchAPI
+lib\api.ts (54:17)
+async handleEnroll
+app\recommendations\page.tsx (159:7)
+Was this helpful?
+
+
+
+1
+2
+
+3/4
+
+Next.js 15.2.4 (stale)
+
+
+Console Error
+
+
+Error: API error: 404 - <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot POST /api/courses/1/enroll</pre>
+</body>
+</html>
+
+Show More
+lib\api.ts (55:15) @ fetchAPI
+
+
+  53 |       if (!response.ok) {
+  54 |         console.error(`API error (${response.status}): ${text}`)
+> 55 |         throw new Error(`API error: ${response.status} - ${text}`)
+     |               ^
+  56 |       }
+  57 |       return text
+  58 |     }
+Call Stack
+2
+
+fetchAPI
+lib\api.ts (55:15)
+async handleEnroll
+app\recommendations\page.tsx (159:7)
+Was this helpful?
+
+
+
+1
+2
+
+4/4
+
+Next.js 15.2.4 (stale)

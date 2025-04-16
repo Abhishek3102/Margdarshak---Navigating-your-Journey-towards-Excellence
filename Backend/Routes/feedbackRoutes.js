@@ -1,7 +1,13 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const feedbackController = require('../Controllers/feedbackController');
+const { protect } = require("../Middleware/authMiddleware");
+const feedbackController = require("../Controllers/feedbackController");
 
-router.post('/', feedbackController.submitFeedback);
+// Submit feedback
+router.post("/course", protect, feedbackController.submitCourseFeedback);
+router.post("/platform", protect, feedbackController.submitPlatformFeedback);
+
+// Get feedback
+router.get("/course/:id", feedbackController.getCourseFeedback);
 
 module.exports = router;
