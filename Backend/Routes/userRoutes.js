@@ -3,6 +3,7 @@ const { protect } = require("../Middleware/authMiddleware");
 const { authorize } = require("../Middleware/authMiddleware");
 const adminController = require("../Controllers/adminController");
 const resourceController = require("../Controllers/resourceController");
+const courseController = require("../Controllers/courseController");
 
 console.log("adminController:", adminController);
 console.log("resourceController:", resourceController);
@@ -31,6 +32,9 @@ router.get("/resources/:id", resourceController.getResourceById);
 router.post("/resources", resourceController.createResource);
 router.put("/resources/:id", resourceController.updateResource);
 router.delete("/resources/:id", resourceController.deleteResource);
+
+// Get enrolled courses (Must be before /:userId)
+router.get("/courses", protect, courseController.getEnrolledCourses);
 
 // Put userId routes at the end to prevent conflict
 router.get("/:userId", userController.getUserProfile);

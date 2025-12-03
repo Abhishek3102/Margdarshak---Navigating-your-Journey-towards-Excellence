@@ -3,10 +3,14 @@ const UserProfile = require("../Models/userProfile");
 const jwt = require("jsonwebtoken");
 
 // Generate JWT Token
-const generateToken = (userId) => {
-  return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
-    expiresIn: "30d",
-  });
+const generateToken = (user) => {
+  return jwt.sign(
+    { id: user._id, name: user.name, email: user.email, role: user.role },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "30d",
+    }
+  );
 };
 
 // @desc    Register new user
@@ -15,7 +19,7 @@ const generateToken = (userId) => {
 exports.register = async (req, res) => {
   console.log("Register request body:", req.body);
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
     // Check if user already exists
     const userExists = await User.findOne({ email });
@@ -31,6 +35,7 @@ exports.register = async (req, res) => {
       name,
       email,
       password,
+      role: role || "user",
     });
 
     // Create user profile
@@ -41,7 +46,7 @@ exports.register = async (req, res) => {
     });
 
     // Generate token
-    const token = generateToken(user._id);
+    const token = generateToken(user);
 
     res.status(201).json({
       success: true,
@@ -93,7 +98,8 @@ exports.login = async (req, res) => {
     }
 
     // Generate token
-    const token = generateToken(user._id);
+    // Generate token
+    const token = generateToken(user);
 
     res.json({
       success: true,

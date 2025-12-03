@@ -1,6 +1,6 @@
+const { PythonShell } = require("python-shell");
+const path = require("path");
 const Course = require("../Models/course");
-const User = require("../Models/user");
-const { faker } = require("@faker-js/faker");
 
 /**
  * @desc    Get personalized recommendations
@@ -10,34 +10,48 @@ const { faker } = require("@faker-js/faker");
 exports.getRecommendations = async (req, res) => {
   try {
     const userId = req.user ? req.user.id : null;
-    let recommendations = [];
+    let recommendedCourseIds = [];
 
-    // If user is logged in, try to get personalized recommendations
+    // If user is logged in and has enrolled courses, use Python script
     if (userId) {
-      // Find user's enrolled courses
-      const userCourses = await Course.find({ enrolledUsers: userId });
+      // Get one of the user's enrolled courses to base recommendations on
+      // For simplicity, we'll take the last enrolled course
+      const userCourses = await Course.find({ enrolledUsers: userId }).sort({ _id: -1 }).limit(1);
+      
+      if (userCourses.length > 0) {
+        const lastCourseId = userCourses[0]._id.toString();
 
-      // Get categories user is interested in
-      const userCategories = [
-        ...new Set(userCourses.map((course) => course.category)),
-      ];
+        const options = {
+          mode: "json",
+          pythonPath: "python", // Ensure python is in PATH
+          scriptPath: path.join(__dirname, "../scripts"),
+          args: [lastCourseId],
+        };
 
-      if (userCategories.length) {
-        // Find courses in same categories that user isn't enrolled in
-        recommendations = await Course.find({
-          category: { $in: userCategories },
-          enrolledUsers: { $ne: userId },
-        }).limit(3);
+        try {
+            const results = await PythonShell.run("recommendation_engine.py", options);
+            if (results && results.length > 0) {
+                recommendedCourseIds = results[0];
+            }
+        } catch (pyError) {
+            console.error("Python script error:", pyError);
+            // Fallback to basic logic if python fails
+        }
       }
     }
 
-    // If no personalized recommendations or not logged in, get popular courses
+    let recommendations = [];
+    if (recommendedCourseIds.length > 0) {
+        recommendations = await Course.find({ _id: { $in: recommendedCourseIds } });
+    }
+
+    // Fallback: If no recommendations (or not logged in), get popular courses
     if (recommendations.length < 3) {
       const popularCourses = await Course.find(
         userId ? { enrolledUsers: { $ne: userId } } : {}
       )
         .sort({ students: -1 })
-        .limit(3 - recommendations.length);
+        .limit(5 - recommendations.length);
 
       recommendations = [...recommendations, ...popularCourses];
     }

@@ -1,5 +1,7 @@
 const Course = require("../Models/course");
 const User = require("../Models/user");
+const mongoose = require("mongoose");
+const mongoose_fuzzy_searching = require("mongoose-fuzzy-searching");
 
 /**
  * @desc    Get all courses with filters and search
@@ -87,8 +89,14 @@ exports.enrollCourse = async (req, res) => {
       });
     }
 
+    console.log(`Enrolling user ${req.user._id} in course ${course._id}`);
+
     // Check if user is already enrolled
-    if (course.enrolledUsers.includes(req.user.id)) {
+    const isEnrolled = course.enrolledUsers.some(
+      (id) => id.toString() === req.user._id.toString()
+    );
+
+    if (isEnrolled) {
       return res.status(400).json({
         success: false,
         error: "Already enrolled in this course",
@@ -96,7 +104,7 @@ exports.enrollCourse = async (req, res) => {
     }
 
     // Add user to enrolled users
-    course.enrolledUsers.push(req.user.id);
+    course.enrolledUsers.push(req.user._id);
     course.students += 1;
     await course.save();
 
@@ -122,7 +130,7 @@ exports.enrollCourse = async (req, res) => {
 exports.getEnrolledCourses = async (req, res) => {
   try {
     const courses = await Course.find({
-      enrolledUsers: req.user.id,
+      enrolledUsers: req.user._id,
     });
 
     res.status(200).json({

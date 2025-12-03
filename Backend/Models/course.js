@@ -9,6 +9,7 @@ const courseSchema = new mongoose.Schema({
   description: String,
   category: String,
   difficulty: String,
+  tags: [String],
   prerequisites: [String],
   enrolledUsers: [
     {
