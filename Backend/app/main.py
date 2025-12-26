@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import auth, content
+from app.api import auth, content, monitoring
 
 app = FastAPI(title="AMEP API", version="0.1.0")
 
@@ -21,6 +21,7 @@ app.add_middleware(
 # Include Routers
 app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(content.router, prefix="/api/content", tags=["content"])
+app.include_router(monitoring.router, prefix="/api/monitoring", tags=["monitoring"])
 
 @app.get("/")
 async def root():

@@ -32,6 +32,7 @@ class Chapter(BaseModel):
     title: str
     description: Optional[str] = None
     sequence_order: int
+    prerequisites: Optional[List[UUID]] = [] # IDs of required chapters
 
 class ConceptTag(BaseModel):
     """Represents a node in the Knowledge Graph"""
