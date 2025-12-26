@@ -1,32 +1,29 @@
 "use client"
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react"
-import { getCurrentUser, isAuthenticated } from "@/lib/auth"
+import { supabase } from "@/lib/supabase"
 import { useRouter, usePathname } from "next/navigation"
-
-// Flag to track if we're using mock authentication
-const USING_MOCK_AUTH =
-  typeof window !== "undefined" && localStorage.getItem("token") === "mock-jwt-token-for-testing-purposes-only"
 
 interface User {
   id: string
-  name: string
-  email: string
+  name?: string
+  email?: string
   role?: string
+  grade?: string
 }
 
 interface AuthContextType {
   user: User | null
   isLoggedIn: boolean
   loading: boolean
-  refreshUser: () => void
+  refreshUser: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
   isLoggedIn: false,
   loading: true,
-  refreshUser: () => {},
+  refreshUser: async () => {},
 })
 
 export const useAuth = () => useContext(AuthContext)
@@ -38,59 +35,63 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
 
-  // Add a notification for mock auth in development mode
-  useEffect(() => {
-    if (USING_MOCK_AUTH && process.env.NODE_ENV === "development") {
-      console.info("Using mock authentication for development")
-    }
-  }, [])
-
-  const checkAuth = () => {
-    const authenticated = isAuthenticated()
-    setIsLoggedIn(authenticated)
-
-    if (authenticated) {
-      const currentUser = getCurrentUser()
-      setUser(currentUser)
+  const refreshUser = async () => {
+    // Manually fetch session
+    const { data: { session } } = await supabase.auth.getSession()
+    if (session?.user) {
+        setUser({
+            id: session.user.id,
+            email: session.user.email,
+            role: session.user.user_metadata?.role || 'student',
+            name: session.user.user_metadata?.full_name,
+            grade: session.user.user_metadata?.grade
+        })
+        setIsLoggedIn(true)
     } else {
-      setUser(null)
+        setUser(null)
+        setIsLoggedIn(false)
     }
-
     setLoading(false)
   }
 
-  const refreshUser = () => {
-    checkAuth()
-  }
-
   useEffect(() => {
-    checkAuth()
+    // Initial fetch
+    refreshUser()
 
-    // Listen for storage events (for multi-tab logout)
-    const handleStorageChange = () => {
-      checkAuth()
-    }
-
-    // Listen for custom auth change events
-    const handleAuthChange = () => {
-      checkAuth()
-    }
-
-    window.addEventListener("storage", handleStorageChange)
-    window.addEventListener("auth-change", handleAuthChange)
+    // Listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("Auth State Change:", event)
+      if (session?.user) {
+        setUser({
+            id: session.user.id,
+            email: session.user.email,
+            role: session.user.user_metadata?.role || 'student',
+            name: session.user.user_metadata?.full_name,
+            grade: session.user.user_metadata?.grade
+        })
+        setIsLoggedIn(true)
+      } else {
+        setUser(null)
+        setIsLoggedIn(false)
+      }
+      setLoading(false)
+    })
 
     return () => {
-      window.removeEventListener("storage", handleStorageChange)
-      window.removeEventListener("auth-change", handleAuthChange)
+      subscription.unsubscribe()
     }
   }, [])
 
-  // Redirect to login if token is removed/expired and on a protected route
+  // Redirect Logic
   useEffect(() => {
     if (!loading && !isLoggedIn) {
-      const protectedRoutes = ["/profile", "/dashboard"]
+      const protectedRoutes = ["/dashboard", "/profile"]
+      // Check if current path starts with any protected route
       if (protectedRoutes.some((route) => pathname?.startsWith(route))) {
-        router.push(`/login?callbackUrl=${encodeURIComponent(pathname || "/")}`)
+         // Avoid infinite loop if already on login
+         if (pathname !== "/login") {
+            router.push(`/login?callbackUrl=${encodeURIComponent(pathname || "/")}`)
+         }
       }
     }
   }, [isLoggedIn, loading, pathname, router])

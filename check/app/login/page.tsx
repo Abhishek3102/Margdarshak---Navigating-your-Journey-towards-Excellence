@@ -1,19 +1,22 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useEffect } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
+import Link from "next/link"
+import { supabase } from "@/lib/supabase"
+import { useAuth } from "@/components/auth-provider"
+
+// UI Components
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { useToast } from "@/hooks/use-toast"
-import Link from "next/link"
-import { ArrowLeft, Loader2, AlertCircle } from "lucide-react"
-import { login, register, isAuthenticated } from "@/lib/auth"
-import { useRouter, useSearchParams } from "next/navigation"
-import { useAuth } from "@/components/auth-provider"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { ArrowLeft, Loader2, BookOpen } from "lucide-react"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -21,7 +24,6 @@ export default function LoginPage() {
   const { toast } = useToast()
   const { refreshUser } = useAuth()
   const [isLoading, setIsLoading] = useState(false)
-  const [apiError, setApiError] = useState(false)
 
   // Login form state
   const [loginEmail, setLoginEmail] = useState("")
@@ -32,239 +34,146 @@ export default function LoginPage() {
   const [registerEmail, setRegisterEmail] = useState("")
   const [registerPassword, setRegisterPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
-  const [role, setRole] = useState("user")
+  const [role, setRole] = useState("student")
+  const [grade, setGrade] = useState("Class 10")
+  const [agreedToTerms, setAgreedToTerms] = useState(false)
 
-  // For development, pre-fill with test credentials
-  useEffect(() => {
-    if (process.env.NODE_ENV === "development") {
-      setLoginEmail("test@example.com")
-      setLoginPassword("password123")
-    }
-  }, [])
-
-  // Check if user is already logged in
-  useEffect(() => {
-    if (isAuthenticated()) {
-      router.push("/")
-    }
-  }, [router])
-
+  // Login Handler
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-
     if (!loginEmail || !loginPassword) {
-      toast({
-        title: "Error",
-        description: "Please fill in all fields",
-        variant: "destructive",
-      })
+      toast({ title: "Error", description: "Please fill in all fields", variant: "destructive" })
       return
     }
 
     try {
       setIsLoading(true)
-      setApiError(false)
-      await login(loginEmail, loginPassword)
-
-      // Force auth context to update
-      refreshUser()
-
-      toast({
-        title: "Success",
-        description: "You have been logged in successfully",
+      const { error } = await supabase.auth.signInWithPassword({
+        email: loginEmail,
+        password: loginPassword,
       })
 
-      // Redirect to the callback URL or home
-      const callbackUrl = searchParams.get("callbackUrl") || "/"
-      router.push(callbackUrl)
-    } catch (error) {
-      console.error("Login error:", error)
+      if (error) throw error
 
-      // Check if it's a network error
-      if (
-        error instanceof TypeError ||
-        (error instanceof Error &&
-          (error.message.includes("Failed to fetch") ||
-            error.message.includes("NetworkError") ||
-            error.message.includes("Network request failed")))
-      ) {
-        setApiError(true)
+      if (error) throw error
 
-        // If using test credentials in dev mode, show special message
-        if (
-          process.env.NODE_ENV === "development" &&
-          loginEmail === "test@example.com" &&
-          loginPassword === "password123"
-        ) {
-          toast({
-            title: "Demo Mode Active",
-            description: "Using mock authentication for demo purposes",
-          })
-        } else {
-          toast({
-            title: "Connection Error",
-            description: "Could not connect to authentication server",
-            variant: "destructive",
-          })
-        }
-      } else {
-        toast({
-          title: "Error",
-          description: error instanceof Error ? error.message : "Failed to login",
-          variant: "destructive",
-        })
-      }
+      await refreshUser()
+      toast({ title: "Welcome back!", description: "You have been logged in successfully." })
+      
+      // Artificial delay to ensure state propagates
+      setTimeout(() => {
+        router.push(searchParams.get("callbackUrl") || "/dashboard")
+      }, 500)
+    } catch (error: any) {
+      toast({ title: "Login Failed", description: error.message, variant: "destructive" })
     } finally {
       setIsLoading(false)
     }
   }
 
+  // Register Handler
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (!name || !registerEmail || !registerPassword || !confirmPassword) {
-      toast({
-        title: "Error",
-        description: "Please fill in all fields",
-        variant: "destructive",
-      })
+      toast({ title: "Error", description: "All fields are required.", variant: "destructive" })
       return
     }
-
     if (registerPassword !== confirmPassword) {
-      toast({
-        title: "Error",
-        description: "Passwords do not match",
-        variant: "destructive",
-      })
+      toast({ title: "Error", description: "Passwords do not match.", variant: "destructive" })
+      return
+    }
+    if (!agreedToTerms) {
+      toast({ title: "Error", description: "You must agree to the terms.", variant: "destructive" })
       return
     }
 
     try {
       setIsLoading(true)
-      setApiError(false)
-      await register(name, registerEmail, registerPassword, role)
-
-      // Force auth context to update
-      refreshUser()
-
-      toast({
-        title: "Success",
-        description: "Your account has been created successfully",
+      
+      const { error } = await supabase.auth.signUp({
+        email: registerEmail,
+        password: registerPassword,
+        options: {
+          data: {
+            full_name: name,
+            role: role,
+            grade: role === 'student' ? grade : undefined
+          }
+        }
       })
 
-      router.push("/")
-    } catch (error) {
-      console.error("Registration error:", error)
+      if (error) throw error
 
-      // Check if it's a network error
-      if (
-        error instanceof TypeError ||
-        (error instanceof Error &&
-          (error.message.includes("Failed to fetch") ||
-            error.message.includes("NetworkError") ||
-            error.message.includes("Network request failed")))
-      ) {
-        setApiError(true)
-        toast({
-          title: "Connection Error",
-          description: "Could not connect to authentication server",
-          variant: "destructive",
-        })
-      } else {
-        toast({
-          title: "Error",
-          description: error instanceof Error ? error.message : "Failed to register",
-          variant: "destructive",
-        })
-      }
+      refreshUser()
+      toast({ title: "Account Created", description: "Account created successfully! Logging you in..." })
+      // Auto login or redirect to login (Supabase handles session automatically if email confirm is off)
+      router.push("/dashboard")
+    } catch (error: any) {
+      toast({ title: "Registration Failed", description: error.message, variant: "destructive" })
     } finally {
       setIsLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center hero-bg">
-      <div className="absolute inset-0 bg-gradient-to-b from-slate-900/90 to-slate-900/70 z-0"></div>
+    <div className="min-h-screen flex items-center justify-center bg-black relative overflow-hidden">
+      {/* Background Ambience */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-purple-900/20 via-black to-slate-900/20 z-0"></div>
+      <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[100px]"></div>
 
-      <div className="container relative z-10 px-4 py-16">
-        <Link href="/" className="inline-flex items-center text-white/70 hover:text-white mb-8 transition-colors">
+      <div className="container relative z-10 px-4">
+        <Link href="/" className="inline-flex items-center text-slate-400 hover:text-white mb-8 transition-colors">
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Home
         </Link>
 
         <div className="max-w-md mx-auto">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold mb-2">
-              <span className="gradient-text">Welcome</span> Back
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 mb-4 shadow-lg shadow-purple-500/20">
+              <BookOpen className="h-6 w-6 text-white" />
+            </div>
+            <h1 className="text-3xl font-bold mb-2 text-white">
+              AMEP <span className="text-purple-400">2026</span>
             </h1>
-            <p className="text-white/70">Sign in to continue your learning journey</p>
+            <p className="text-slate-400">Your Adaptive Mastery Engine</p>
           </div>
 
-          {apiError && process.env.NODE_ENV === "development" && (
-            <Alert variant="destructive" className="mb-6">
-              <AlertCircle className="h-4 w-4" />
-              <AlertTitle>API Connection Error</AlertTitle>
-              <AlertDescription>
-                Backend API is unavailable. In development mode, you can use the test credentials:
-                <div className="mt-2 font-mono text-sm">
-                  Email: test@example.com
-                  <br />
-                  Password: password123
-                </div>
-              </AlertDescription>
-            </Alert>
-          )}
-
-          <div className="glass-effect rounded-xl p-8">
+          <div className="backdrop-blur-xl bg-slate-900/60 border border-slate-800 rounded-2xl p-8 shadow-2xl">
             <Tabs defaultValue="login" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-6">
-                <TabsTrigger value="login">Login</TabsTrigger>
-                <TabsTrigger value="register">Register</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-2 mb-6 bg-slate-800/50">
+                <TabsTrigger value="login" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">Login</TabsTrigger>
+                <TabsTrigger value="register" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">Register</TabsTrigger>
               </TabsList>
 
               <TabsContent value="login">
                 <form className="space-y-4" onSubmit={handleLogin}>
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="email" className="text-slate-300">Email</Label>
                     <Input
                       id="email"
                       type="email"
-                      placeholder="your.email@example.com"
-                      className="bg-slate-800/50 border-slate-700"
+                      placeholder="student@example.com"
+                      className="bg-slate-950/50 border-slate-700 text-white placeholder:text-slate-600 focus:border-purple-500 transition-colors"
                       value={loginEmail}
                       onChange={(e) => setLoginEmail(e.target.value)}
                       disabled={isLoading}
                     />
                   </div>
-
                   <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="password">Password</Label>
-                      <Link href="/forgot-password" className="text-sm text-purple-400 hover:text-purple-300">
-                        Forgot password?
-                      </Link>
-                    </div>
+                    <Label htmlFor="password" className="text-slate-300">Password</Label>
                     <Input
                       id="password"
                       type="password"
                       placeholder="••••••••"
-                      className="bg-slate-800/50 border-slate-700"
+                      className="bg-slate-950/50 border-slate-700 text-white placeholder:text-slate-600 focus:border-purple-500 transition-colors"
                       value={loginPassword}
                       onChange={(e) => setLoginPassword(e.target.value)}
                       disabled={isLoading}
                     />
                   </div>
-
-                  <Button type="submit" className="w-full gradient-bg text-white hover:opacity-90" disabled={isLoading}>
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Signing In...
-                      </>
-                    ) : (
-                      "Sign In"
-                    )}
+                  <Button type="submit" className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white border-0" disabled={isLoading}>
+                    {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Sign In"}
                   </Button>
                 </form>
               </TabsContent>
@@ -272,91 +181,105 @@ export default function LoginPage() {
               <TabsContent value="register">
                 <form className="space-y-4" onSubmit={handleRegister}>
                   <div className="space-y-2">
-                    <Label htmlFor="name">Full Name</Label>
+                    <Label htmlFor="name" className="text-slate-300">Full Name</Label>
                     <Input
                       id="name"
-                      type="text"
-                      placeholder="John Doe"
-                      className="bg-slate-800/50 border-slate-700"
+                      placeholder="Ankush ..."
+                      className="bg-slate-950/50 border-slate-700 text-white focus:border-purple-500"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      disabled={isLoading}
                     />
                   </div>
-
                   <div className="space-y-2">
-                    <Label htmlFor="register-email">Email</Label>
+                    <Label htmlFor="reg-email" className="text-slate-300">Email</Label>
                     <Input
-                      id="register-email"
+                      id="reg-email"
                       type="email"
-                      placeholder="your.email@example.com"
-                      className="bg-slate-800/50 border-slate-700"
+                      placeholder="student@example.com"
+                      className="bg-slate-950/50 border-slate-700 text-white focus:border-purple-500"
                       value={registerEmail}
                       onChange={(e) => setRegisterEmail(e.target.value)}
-                      disabled={isLoading}
                     />
+                  </div>
+                  
+                  <div className="space-y-4">
+                     <div className="grid grid-cols-2 gap-4">
+                         <div className="space-y-2">
+                            <Label className="text-slate-300">Role</Label>
+                            <Select value={role} onValueChange={setRole}>
+                              <SelectTrigger className="bg-slate-950/50 border-slate-700 text-white">
+                                <SelectValue placeholder="Select Role" />
+                              </SelectTrigger>
+                              <SelectContent className="bg-slate-900 border-slate-700 text-white">
+                                <SelectItem value="student">Student</SelectItem>
+                                <SelectItem value="teacher">Teacher</SelectItem>
+                                <SelectItem value="admin">Admin</SelectItem>
+                              </SelectContent>
+                            </Select>
+                         </div>
+                     </div>
+
+                     {role === "student" && (
+                        <div className="space-y-3 animate-in fade-in slide-in-from-top-2">
+                            <Label className="text-slate-300">Current Standard</Label>
+                            <RadioGroup value={grade} onValueChange={setGrade} className="flex space-x-4">
+                                {["Class 8", "Class 9", "Class 10"].map((cls) => (
+                                    <div key={cls} className="flex items-center space-x-2">
+                                        <RadioGroupItem value={cls} id={cls} className="border-slate-500 text-purple-600 focus:text-purple-600" />
+                                        <Label htmlFor={cls} className={`text-sm cursor-pointer ${grade === cls ? 'text-white' : 'text-slate-400'}`}>{cls}</Label>
+                                    </div>
+                                ))}
+                            </RadioGroup>
+                        </div>
+                     )}
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="register-password">Password</Label>
+                    <Label htmlFor="reg-pass" className="text-slate-300">Password</Label>
                     <Input
-                      id="register-password"
+                      id="reg-pass"
                       type="password"
-                      placeholder="••••••••"
-                      className="bg-slate-800/50 border-slate-700"
+                      className="bg-slate-950/50 border-slate-700 text-white focus:border-purple-500"
                       value={registerPassword}
                       onChange={(e) => setRegisterPassword(e.target.value)}
-                      disabled={isLoading}
                     />
                   </div>
-
                   <div className="space-y-2">
-                    <Label htmlFor="confirm-password">Confirm Password</Label>
+                    <Label htmlFor="confirm-pass" className="text-slate-300">Confirm Password</Label>
                     <Input
-                      id="confirm-password"
+                      id="confirm-pass"
                       type="password"
-                      placeholder="••••••••"
-                      className="bg-slate-800/50 border-slate-700"
+                      className="bg-slate-950/50 border-slate-700 text-white focus:border-purple-500"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      disabled={isLoading}
                     />
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="role">Role</Label>
-                    <select
-                      id="role"
-                      className="flex h-10 w-full rounded-md border border-slate-700 bg-slate-800/50 px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                      value={role}
-                      onChange={(e) => setRole(e.target.value)}
-                      disabled={isLoading}
+                  <div className="flex items-center space-x-2 pt-2">
+                    <Checkbox 
+                        id="terms" 
+                        checked={agreedToTerms}
+                        onCheckedChange={(checked) => setAgreedToTerms(checked as boolean)}
+                        className="data-[state=checked]:bg-purple-600 border-slate-600"
+                    />
+                    <label
+                      htmlFor="terms"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-slate-400"
                     >
-                      <option value="user">User</option>
-                      <option value="admin">Admin</option>
-                    </select>
+                      Accept terms and conditions
+                    </label>
                   </div>
 
-                  <Button type="submit" className="w-full gradient-bg text-white hover:opacity-90" disabled={isLoading}>
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Creating Account...
-                      </>
-                    ) : (
-                      "Create Account"
-                    )}
+                  <Button type="submit" className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white border-0 mt-4" disabled={isLoading}>
+                    {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Create Account"}
                   </Button>
                 </form>
               </TabsContent>
             </Tabs>
-
-            <div className="mt-6 pt-6 border-t border-slate-700 text-center text-sm text-white/70">
-              <p>Join our community today</p>
-            </div>
           </div>
         </div>
       </div>
     </div>
   )
 }
+

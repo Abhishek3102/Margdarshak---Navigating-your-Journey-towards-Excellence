@@ -3,6 +3,7 @@ import { Inter } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
 import { AuthProvider } from "@/components/auth-provider"
 import { MockModeIndicator } from "@/components/mock-mode-indicator"
+import { Toaster } from "@/components/ui/toaster"
 import "./globals.css"
 
 const inter = Inter({ subsets: ["latin"] })
@@ -25,6 +26,7 @@ export default function RootLayout({
           <AuthProvider>
             {children}
             <MockModeIndicator />
+            <Toaster />
           </AuthProvider>
         </ThemeProvider>
       </body>
