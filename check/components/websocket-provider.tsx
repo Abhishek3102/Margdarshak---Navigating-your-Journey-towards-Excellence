@@ -46,6 +46,8 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
         }
 
         const connect = () => {
+            if (!user?.id) return
+
             // Avoid multiple connections
             if (wsRef.current?.readyState === WebSocket.OPEN) return
 
@@ -58,7 +60,7 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
             ws.onopen = () => {
                 console.log("[WebSocket] Connected successfully")
                 setIsConnected(true)
-                // Reset errors if any
+                if (reconnectTimeout.current) clearTimeout(reconnectTimeout.current)
             }
 
             ws.onmessage = (event) => {
@@ -87,7 +89,8 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
             }
 
             ws.onerror = (err) => {
-                console.error("[WebSocket] Connection Error. Check if backend is running on port 8000.", err)
+                // Common issue: backend not running. Don't spam console too much if it's just a refesh.
+                console.warn("[WebSocket] Connection Warning/Error. Backend might be down or restarting.")
                 ws.close()
             }
 

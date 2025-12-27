@@ -11,9 +11,10 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import Link from "next/link"
-import { ArrowLeft, Play, Clock, ChevronRight, Loader2, Plus, Upload, CheckCircle2, Film, Image as ImageIcon, X,  Maximize2 } from "lucide-react"
+import { ArrowLeft, Play, Clock, ChevronRight, Loader2, Plus, Upload, CheckCircle2, Film, Image as ImageIcon, X,  Maximize2, Users } from "lucide-react"
 import { useAuth } from "@/components/auth-provider"
 import { toast } from "sonner"
+import { WatchPartyModal } from "@/components/watch-party-modal"
 
 // Simple Modal Component
 const VideoModal = ({ video, onClose }: { video: any, onClose: () => void }) => {
@@ -68,9 +69,61 @@ export default function ChapterPage() {
     
     // Player State
     const [playingVideo, setPlayingVideo] = useState<any>(null)
+    const [watchPartyRoomId, setWatchPartyRoomId] = useState<string | null>(null)
+    const [watchPartyVideo, setWatchPartyVideo] = useState<any>(null)
 
     const videoInputRef = useRef<HTMLInputElement>(null)
     const thumbInputRef = useRef<HTMLInputElement>(null)
+
+    // Check for Watch Party Invite
+    useEffect(() => {
+        const searchParams = new URLSearchParams(window.location.search)
+        const partyId = searchParams.get('partyId')
+        if (partyId && videos.length > 0) {
+             // Fetch room details to know which video to play
+             // For simplify, we assume the first video or we check the room API
+             fetch(`http://localhost:8000/api/watch-party/${partyId}`)
+                .then(res => res.json())
+                .then(data => {
+                    setWatchPartyRoomId(partyId)
+                    setWatchPartyVideo({
+                        video_url: data.video_url,
+                        video_title: data.video_title,
+                        // recreate basic video obj structure so modal works
+                    })
+                })
+                .catch(err => toast.error("Watch Party expired or not found"))
+        }
+    }, [videos]) // Run when videos load so we have context if needed, though we fetch room data independently
+
+    const startWatchParty = async (video: any) => {
+        if (!user) {
+            toast.error("Please login to watch")
+            return
+        }
+        try {
+            // Check if we are ALREADY in a party for this video (from URL)? 
+            // Nay, new click = new session usually, unless we want to join existing?
+            // For now, simple: Create new session for this user.
+            const res = await fetch("http://localhost:8000/api/watch-party/create", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    video_url: video.video_url,
+                    video_title: video.title,
+                    host_id: user.id,
+                    host_name: user.name || "Viewer"
+                })
+            })
+            const data = await res.json()
+            
+            // Redirect to dedicated Study Group Page
+            window.location.href = `/study-group/${data.room_id}`
+            
+        } catch (e) {
+            toast.error("Failed to load video player")
+        }
+    }
 
     useEffect(() => {
         const fetchData = async () => {
@@ -223,8 +276,18 @@ export default function ChapterPage() {
         <main className="min-h-screen bg-black text-white">
             <Navbar />
             
-            {/* Custom Modal Player */}
-            {playingVideo && <VideoModal video={playingVideo} onClose={() => setPlayingVideo(null)} />}
+            {/* Unified Watch Party Player */}
+            {watchPartyRoomId && watchPartyVideo && (
+                <WatchPartyModal 
+                    roomId={watchPartyRoomId} 
+                    initialData={watchPartyVideo} 
+                    onClose={() => {
+                        setWatchPartyRoomId(null)
+                        setWatchPartyVideo(null)
+                        window.history.pushState({}, "", window.location.pathname) // Clear URL
+                    }} 
+                />
+            )}
 
             <div className="container mx-auto px-4 pt-24 pb-12">
                  {/* Breadcrumb ... */}
@@ -352,6 +415,9 @@ export default function ChapterPage() {
                                         <Button size="sm" className="bg-white/10 hover:bg-white/20 text-white" onClick={() => setPlayingVideo(vid)}>
                                             <Play className="w-4 h-4 mr-2" /> Watch Now
                                         </Button>
+                                        <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-white" onClick={() => startWatchParty(vid)}>
+                                            <Users className="w-4 h-4 mr-2" /> Study Group
+                                        </Button>
                                     </div>
                                 </div>
                             </CardContent>
@@ -365,6 +431,9 @@ export default function ChapterPage() {
                     )}
                 </div>
             </div>
+            
+             {/* Normal Video Modal */}
+             {playingVideo && <VideoModal video={playingVideo} onClose={() => setPlayingVideo(null)} />}
         </main>
     )
 }
