@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import auth, content, monitoring, upload
+from app.api import auth, content, monitoring, upload, notifications
 
 app = FastAPI(title="AMEP API", version="0.1.0")
 
@@ -23,6 +23,7 @@ app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(content.router, prefix="/api/content", tags=["content"])
 app.include_router(monitoring.router, prefix="/api/monitoring", tags=["monitoring"])
 app.include_router(upload.router, prefix="/api", tags=["upload"])
+app.include_router(notifications.router, prefix="/api/notifications", tags=["notifications"])
 
 @app.get("/")
 async def root():

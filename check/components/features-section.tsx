@@ -1,6 +1,6 @@
 "use client"
 import { useInView } from "react-intersection-observer"
-import { BookOpen, Users, TrendingUp, MessageSquare, Award, Compass } from "lucide-react"
+import { BookOpen, Users, TrendingUp, MessageSquare, Award, Compass, BrainCircuit, FileText, CheckCircle } from "lucide-react"
 
 export function FeaturesSection() {
   const { ref: sectionRef, inView } = useInView({
@@ -11,38 +11,38 @@ export function FeaturesSection() {
   const features = [
     {
       icon: <BookOpen className="h-8 w-8" />,
-      title: "Personalized Learning Paths",
-      description: "Courses tailored to your skill level, goals, and learning style.",
+      title: "Syllabus Aligned Content",
+      description: "Strictly follows NCERT and State Board curriculum for Class 8, 9, and 10.",
       delay: 0,
     },
     {
-      icon: <Users className="h-8 w-8" />,
-      title: "Expert Mentorship",
-      description: "Connect with industry professionals for guidance and feedback.",
+      icon: <BrainCircuit className="h-8 w-8" />,
+      title: "AI Personal Tutor",
+      description: "Stuck on a math problem? Our AI explains it step-by-step instantly.",
       delay: 100,
     },
     {
       icon: <TrendingUp className="h-8 w-8" />,
-      title: "Progress Tracking",
-      description: "Visualize your growth with detailed analytics and insights.",
+      title: "Smart Progress Tracking",
+      description: "Identify your weak areas and get recommendations to improve.",
       delay: 200,
     },
     {
-      icon: <MessageSquare className="h-8 w-8" />,
-      title: "Community Discussions",
-      description: "Engage with peers to share knowledge and solve challenges together.",
+      icon: <FileText className="h-8 w-8" />,
+      title: "Revision Notes & Summaries",
+      description: "Quick-read notes for last minute revision before exams.",
       delay: 300,
     },
     {
-      icon: <Award className="h-8 w-8" />,
-      title: "Certifications",
-      description: "Earn recognized credentials to showcase your expertise.",
+      icon: <CheckCircle className="h-8 w-8" />,
+      title: "Chapter-wise Quizzes",
+      description: "Test your knowledge after every chapter to ensure concept mastery.",
       delay: 400,
     },
     {
       icon: <Compass className="h-8 w-8" />,
-      title: "Smart Recommendations",
-      description: "Discover new courses based on your interests and progress.",
+      title: "Career Guidance",
+      description: "Explore future streams and career paths based on your interests.",
       delay: 500,
     },
   ]
@@ -56,15 +56,14 @@ export function FeaturesSection() {
               inView ? "opacity-100" : "opacity-0 translate-y-10"
             }`}
           >
-            <span className="gradient-text">Features</span> Designed for Your Success
+            Everything you need to <span className="gradient-text">Top Your Exams</span>
           </h2>
           <p
             className={`text-lg text-white/70 transition-all duration-700 delay-200 ${
               inView ? "opacity-100" : "opacity-0 translate-y-10"
             }`}
           >
-            Our platform combines cutting-edge technology with proven learning methodologies to help you achieve your
-            goals.
+            We go beyond just videos. Margdarshak provides a complete ecosystem for academic success.
           </p>
         </div>
 

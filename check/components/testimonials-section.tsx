@@ -17,27 +17,27 @@ export function TestimonialsSection() {
   const testimonials = [
     {
       id: 1,
-      name: "Alex Johnson",
-      role: "Software Developer",
+      name: "Aarav Patel",
+      role: "Class 10 Student",
       avatar: "/placeholder.svg?height=40&width=40",
       content:
-        "The personalized learning path helped me transition from a beginner to a professional developer in just 6 months. The mentor support was invaluable.",
+        "The animation-based videos helped me visualize complex Physics concepts. I scored 98% in my Science Pre-boards thanks to Margdarshak!",
     },
     {
       id: 2,
-      name: "Sarah Chen",
-      role: "Data Scientist",
+      name: "Mrs. Sharma",
+      role: "Parent of Class 8 Student",
       avatar: "/placeholder.svg?height=40&width=40",
       content:
-        "I've tried many platforms, but this one stands out with its structured approach and community support. The course recommendations were spot-on for my career goals.",
+        "I was worried about my son's Math anxiety. The AI tutor and step-by-step explanations have boosted his confidence immensely. Highly recommended.",
     },
     {
       id: 3,
-      name: "Michael Rodriguez",
-      role: "UX Designer",
+      name: "Rohan Kumar",
+      role: "Class 9 Student",
       avatar: "/placeholder.svg?height=40&width=40",
       content:
-        "The feedback system helped me refine my design skills rapidly. I landed my dream job after completing just two of the recommended courses.",
+        "The practice quizzes after every chapter are a game changer. I know exactly where I am weak and the app suggests videos to fix it.",
     },
   ]
 
@@ -65,7 +65,7 @@ export function TestimonialsSection() {
               inView ? "opacity-100" : "opacity-0 translate-y-10"
             }`}
           >
-            Hear from learners who transformed their careers through our platform.
+            Hear from students and parents who trust Margdarshak.
           </p>
         </div>
 

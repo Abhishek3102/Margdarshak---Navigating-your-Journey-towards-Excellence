@@ -2,6 +2,7 @@ import type React from "react"
 import { Inter } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
 import { AuthProvider } from "@/components/auth-provider"
+import { WebSocketProvider } from "@/components/websocket-provider"
 import { MockModeIndicator } from "@/components/mock-mode-indicator"
 import { Toaster } from "@/components/ui/toaster"
 import "./globals.css"
@@ -24,9 +25,11 @@ export default function RootLayout({
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
           <AuthProvider>
-            {children}
-            <MockModeIndicator />
-            <Toaster />
+            <WebSocketProvider>
+              {children}
+              <MockModeIndicator />
+              <Toaster />
+            </WebSocketProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>
