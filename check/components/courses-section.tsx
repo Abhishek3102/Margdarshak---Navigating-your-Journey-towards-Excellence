@@ -173,15 +173,15 @@ export function CoursesSection() {
                   <div className="flex items-center justify-between text-sm text-white/60">
                     <div className="flex items-center">
                       <Clock className="h-4 w-4 mr-1" />
-                      <span>{course.duration}</span>
+                      <span>{course.duration || "N/A"}</span>
                     </div>
                     <div className="flex items-center">
                       <Users className="h-4 w-4 mr-1" />
-                      <span>{course.students.toLocaleString()} students</span>
+                      <span>{(course.students || 0).toLocaleString()} students</span>
                     </div>
                     <div className="flex items-center">
                       <Star className="h-4 w-4 mr-1 text-yellow-500 fill-yellow-500" />
-                      <span>{course.rating}</span>
+                      <span>{course.rating || 0}</span>
                     </div>
                   </div>
                 </CardContent>
