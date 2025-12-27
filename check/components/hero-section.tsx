@@ -23,7 +23,7 @@ export function HeroSection() {
               isVisible ? "opacity-100" : "opacity-0 translate-y-10"
             }`}
           >
-            <span className="gradient-text">Embark</span> on Your Learning Journey
+            <span className="gradient-text">Navigating</span> your Journey towards Excellence
           </h1>
 
           <p

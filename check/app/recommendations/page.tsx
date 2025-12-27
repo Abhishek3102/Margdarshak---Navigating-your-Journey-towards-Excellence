@@ -58,8 +58,7 @@ export default function RecommendationsPage() {
         if (isLoggedIn) {
           try {
             const enrolledResponse = await courseAPI.getEnrolled()
-            const enrolledData = enrolledResponse.data || []
-            const enrolledIds = enrolledData.map((course: any) => course._id || course.id)
+            const enrolledIds = (enrolledResponse || []).map((course: any) => course._id || course.id)
             setEnrolledCourseIds(enrolledIds)
           } catch (error) {
             console.error("Failed to fetch enrolled courses:", error)

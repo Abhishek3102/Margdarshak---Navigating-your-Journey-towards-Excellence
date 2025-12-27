@@ -10,7 +10,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-1">
             <Link href="/" className="inline-block mb-4">
-              <span className="text-2xl font-bold gradient-text">Learning Journey</span>
+              <span className="text-2xl font-bold gradient-text">Margdarshak</span>
             </Link>
             <p className="text-white/70 mb-4">
               Empowering learners to achieve their goals through personalized education and community support.
@@ -100,7 +100,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-slate-800 mt-12 pt-8 text-center text-white/50 text-sm">
-          <p>&copy; {new Date().getFullYear()} Learning Journey. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Margdarshak. All rights reserved.</p>
         </div>
       </div>
     </footer>

@@ -134,9 +134,9 @@ export default function LoginPage() {
               <BookOpen className="h-6 w-6 text-white" />
             </div>
             <h1 className="text-3xl font-bold mb-2 text-white">
-              AMEP <span className="text-purple-400">2026</span>
+              Margdarshak <span className="text-purple-400">2026</span>
             </h1>
-            <p className="text-slate-400">Your Adaptive Mastery Engine</p>
+            <p className="text-slate-400">Navigating your Journey towards Excellence</p>
           </div>
 
           <div className="backdrop-blur-xl bg-slate-900/60 border border-slate-800 rounded-2xl p-8 shadow-2xl">
