@@ -53,8 +53,16 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
             // Avoid multiple connections
             if (wsRef.current?.readyState === WebSocket.OPEN) return
 
-            // Use 127.0.0.1 to avoid localhost IPv4/IPv6 resolution issues on Windows
-            const wsUrl = `ws://127.0.0.1:8000/api/notifications/ws/${user.id}/${user.role || 'student'}`
+            // Dynamic WebSocket URL Construction
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api"
+            const wsProtocol = apiUrl.startsWith("https") ? "wss" : "ws"
+            const wsHost = apiUrl.replace(/^https?:\/\//, "")
+            
+            // Remove '/api' from the host if present to get base domain, then append exact WS path
+            // Actually, wait, the API_URL usually includes /api. 
+            // If API_URL = https://render.com/api, we want wss://render.com/api/notifications/ws/...
+            
+            const wsUrl = `${wsProtocol}://${wsHost}/notifications/ws/${user.id}/${user.role || 'student'}`
             console.log("[WebSocket] Connecting to:", wsUrl)
             
             const ws = new WebSocket(wsUrl)

@@ -48,7 +48,11 @@ export function WatchPartyModal({ roomId, initialData, onClose }: WatchPartyModa
         if (!user || !roomId) return
 
         // Connect to WS
-        const wsUrl = `ws://127.0.0.1:8000/api/watch-party/ws/${roomId}/${user.id}`
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api"
+        const wsProtocol = apiUrl.startsWith("https") ? "wss" : "ws"
+        const wsHost = apiUrl.replace(/^https?:\/\//, "")
+        const wsUrl = `${wsProtocol}://${wsHost}/watch-party/ws/${roomId}/${user.id}`
+        
         const ws = new WebSocket(wsUrl)
         wsRef.current = ws
 
