@@ -16,8 +16,10 @@ import {
 } from "recharts"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { CheckCircle2, AlertTriangle, TrendingUp, Clock, RotateCcw } from "lucide-react"
+import { CheckCircle2, AlertTriangle, TrendingUp, Clock, RotateCcw, BookOpen, BrainCircuit, Loader2, ArrowLeft, Download } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
+import axiosInstance from "@/lib/axios"
 
 interface QuizReportProps {
   result: {
@@ -28,6 +30,7 @@ interface QuizReportProps {
     detailed_report?: any[]
     time_analysis?: any[]
     memory_saved?: string
+    quiz_grade?: string
   }
   showRetake?: boolean
 }
@@ -38,18 +41,53 @@ export function QuizReport({ result, showRetake = false }: QuizReportProps) {
   // Calculate percentage
   const percentage = Math.round((result.score / result.total) * 100)
 
+  // State for Solutions View
+  const [loadingSolutions, setLoadingSolutions] = useState(false)
+  const [solutions, setSolutions] = useState<any[]>([])
+  const [showClassSelector, setShowClassSelector] = useState(false)
+  const [selectedClass, setSelectedClass] = useState<string | null>(null)
+  
+  const [error, setError] = useState<string | null>(null)
+
+  const handleViewSolutionsClick = () => {
+       if (solutions.length > 0 || showClassSelector) {
+           // Toggle off
+           setSolutions([])
+           setShowClassSelector(false)
+           setSelectedClass(null)
+       } else {
+           // Show Selector
+           setShowClassSelector(true)
+       }
+  }
+
+  const fetchSolutionsForClass = async (grade: string) => {
+      setLoadingSolutions(true)
+      setSelectedClass(grade)
+      setError(null)
+      try {
+          const res = await axiosInstance.get(`/quiz/solutions/${encodeURIComponent(grade)}`)
+          if (res.data) {
+              setSolutions(res.data)
+          }
+      } catch (err: any) {
+          console.error("Failed to fetch solutions", err)
+          setError(err.message || "Failed to load solutions")
+      } finally {
+          setLoadingSolutions(false)
+      }
+  }
+
   // Process Breakdown Data for Chart
-  const chartData = Object.entries(result.breakdown).map(([subject, stats]) => ({
+  const breakdownData = Object.entries(result.breakdown).map(([subject, stats]) => ({
     subject,
     score: Math.round((stats.correct / stats.total) * 100),
   }))
 
-  const strongest = chartData.reduce((prev, current) => (prev.score > current.score ? prev : current), chartData[0])
-  const weakest = chartData.reduce((prev, current) => (prev.score < current.score ? prev : current), chartData[0])
+  const strongest = breakdownData.reduce((prev, current) => (prev.score > current.score ? prev : current), breakdownData[0])
+  const weakest = breakdownData.reduce((prev, current) => (prev.score < current.score ? prev : current), breakdownData[0])
 
   // Process Time Analysis Data
-  // Ensure we use the detailed array if available (stored in time_analysis for backward compact)
-  // Currently backend returns detailed_report list either in 'detailed_report' key or 'time_analysis' key
   const reportList = Array.isArray(result.time_analysis) ? result.time_analysis : (result.detailed_report || [])
   
   const timeData = reportList.map((item: any, index: number) => ({
@@ -61,6 +99,7 @@ export function QuizReport({ result, showRetake = false }: QuizReportProps) {
       fill: item.is_correct ? '#22c55e' : '#ef4444' // Green/Red
   })) || []
 
+  // PDF Download (Client-Side)
   const downloadPDF = async () => {
     const input = document.getElementById('report-content');
     if (input) {
@@ -97,104 +136,186 @@ export function QuizReport({ result, showRetake = false }: QuizReportProps) {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4 max-w-[95vw] lg:max-w-7xl">
-       <div id="report-content" className="bg-slate-950 p-6 md:p-8 rounded-xl border border-slate-800 shadow-2xl"> 
-         {/* Header */}
-         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 border-b border-slate-800 pb-6">
-           <div>
-             <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
-               Diagnostic Results
-             </h1>
-             <p className="text-muted-foreground mt-1">Personalized performance analysis & AI feedback.</p>
-           </div>
-           
-           <div className="flex gap-2">
-            <Button variant="outline" onClick={() => router.push('/quiz')}>
-              <RotateCcw className="w-4 h-4 mr-2" />
-              Dashboard
-            </Button>
-            {showRetake && (
-                <Button onClick={() => router.push('/quiz/test')} className="bg-purple-600 hover:bg-purple-700 text-white">
-                    <RotateCcw className="w-4 h-4 mr-2" />
-                    Retake Quiz
+    <div className="min-h-screen bg-black font-sans selection:bg-white/10">
+      
+      {/* Top Banner (Optional, sticky info could go here) */}
+      
+      <div className="container mx-auto py-8 px-4 max-w-7xl">
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+            <div>
+                <Button variant="ghost" className="pl-0 text-slate-400 hover:text-white mb-2" onClick={() => router.push("/dashboard")}>
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    Back to Dashboard
                 </Button>
-            )}
-           </div>
-         </div>
+                <h1 className="text-3xl font-bold text-white tracking-tight">
+                    Diagnostic Results
+                </h1>
+                <p className="text-slate-400 mt-1">
+                    Personalized performance analysis & AI feedback.
+                </p>
+            </div>
+            <div className="flex gap-3">
+                 {showRetake && (
+                    <Button variant="outline" className="border-slate-700 hover:bg-slate-800 text-slate-200" onClick={() => router.push("/quiz")}>
+                        <RotateCcw className="w-4 h-4 mr-2" />
+                        Retake Quiz
+                    </Button>
+                 )}
+                 <Button variant="secondary" className="bg-slate-800 text-white hover:bg-slate-700" onClick={downloadPDF}>
+                    <Download className="w-4 h-4 mr-2" />
+                    Download Report
+                 </Button>
+            </div>
+        </div>
 
-         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Main Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             
-            {/* Left Column: Stats & Breakdown (4 cols) */}
+            {/* Left Column: Score & Stats (4 cols) */}
             <div className="lg:col-span-4 space-y-6">
-                {/* Compact Score Card */}
-                <Card className="bg-slate-900 border-slate-800 overflow-hidden relative">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
-                    <CardContent className="p-6 flex items-center justify-between">
-                        <div>
-                             <p className="text-sm text-slate-400 font-medium uppercase tracking-wider mb-1">Overall Score</p>
-                             <div className="text-5xl font-bold text-white tracking-tight">{percentage}%</div>
-                             <p className="text-xs text-slate-500 mt-1">{result.score} / {result.total} Correct</p>
-                        </div>
-                        <div className="w-20 h-20 rounded-full border-4 border-slate-800 flex items-center justify-center relative">
-                             <svg className="w-full h-full transform -rotate-90">
-                                 <circle cx="36" cy="36" r="32" stroke="currentColor" strokeWidth="6" fill="transparent" className="text-slate-800" />
-                                 <circle cx="36" cy="36" r="32" stroke="currentColor" strokeWidth="6" fill="transparent" className="text-blue-500" 
-                                         strokeDasharray={`${2 * Math.PI * 32}`} 
-                                         strokeDashoffset={`${2 * Math.PI * 32 * (1 - percentage / 100)}`} 
-                                 />
-                             </svg>
+                {/* Overall Score Card */}
+                <Card className="bg-slate-900 border-slate-800 relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500" />
+                    <CardContent className="p-6">
+                        <div className="flex justify-between items-center mb-6">
+                            <div>
+                                <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Overall Score</h3>
+                                <div className="text-5xl font-bold text-white">{percentage}%</div>
+                                <div className="text-slate-500 text-sm mt-1">{result.score} / {result.total} Correct</div>
+                            </div>
+                            <div className="w-20 h-20">
+                                {/* Simple Circular Progress Placeholder */}
+                                <svg className="transform -rotate-90 w-full h-full">
+                                    <circle cx="40" cy="40" r="36" stroke="#1e293b" strokeWidth="8" fill="transparent" />
+                                    <circle cx="40" cy="40" r="36" stroke="#3b82f6" strokeWidth="8" fill="transparent" strokeDasharray={`${percentage * 2.26} 226`} />
+                                </svg>
+                            </div>
                         </div>
                     </CardContent>
                 </Card>
 
-                {/* Key Insights Stats */}
-                <div className="grid grid-cols-1 gap-3">
-                    {strongest && (
-                      <div className="flex items-center justify-between bg-emerald-950/20 border border-emerald-500/20 p-4 rounded-lg">
-                        <div className="flex items-center gap-3">
-                            <div className="p-2 bg-emerald-500/10 rounded-full text-emerald-500"><CheckCircle2 className="w-5 h-5" /></div>
-                            <div>
-                                <p className="text-xs text-emerald-500 font-medium uppercase">Strongest Subject</p>
-                                <p className="text-white font-semibold">{strongest.subject}</p>
-                            </div>
-                        </div>
-                        <span className="text-xl font-bold text-emerald-400">{strongest.score}%</span>
-                      </div>
-                    )}
-                    {weakest && weakest.score < 100 && (
-                      <div className="flex items-center justify-between bg-amber-950/20 border border-amber-500/20 p-4 rounded-lg">
-                        <div className="flex items-center gap-3">
-                            <div className="p-2 bg-amber-500/10 rounded-full text-amber-500"><AlertTriangle className="w-5 h-5" /></div>
-                            <div>
-                                <p className="text-xs text-amber-500 font-medium uppercase">Needs Improvement</p>
-                                <p className="text-white font-semibold">{weakest.subject}</p>
-                            </div>
-                        </div>
-                        <span className="text-xl font-bold text-amber-400">{weakest.score}%</span>
-                      </div>
-                    )}
+                {/* Key Insights (Strongest/Weakest) */}
+                <div className="grid grid-cols-1 gap-4">
+                    {/* Calculation logic for strongest/weakest... */}
+                    {(() => {
+                        const entries = Object.entries(result.breakdown);
+                        if (entries.length === 0) return null;
+                        const sorted = entries.sort((a, b) => (b[1].correct/b[1].total) - (a[1].correct/a[1].total));
+                        const strongest = sorted[0];
+                        const weakest = sorted[sorted.length - 1];
+                        
+                        return (
+                            <>
+                            <Card className="bg-emerald-950/20 border border-emerald-900/50">
+                                <div className="p-4 flex items-center justify-between">
+                                    <div>
+                                        <div className="text-emerald-500 text-xs font-bold uppercase mb-1 flex items-center gap-1">
+                                            <CheckCircle2 className="w-3 h-3" /> Strongest Subject
+                                        </div>
+                                        <div className="text-white font-medium">{strongest[0]}</div>
+                                    </div>
+                                    <div className="text-emerald-400 font-bold text-xl">
+                                        {Math.round((strongest[1].correct/strongest[1].total)*100)}%
+                                    </div>
+                                </div>
+                            </Card>
+                            <Card className="bg-amber-950/20 border border-amber-900/50">
+                                <div className="p-4 flex items-center justify-between">
+                                    <div>
+                                        <div className="text-amber-500 text-xs font-bold uppercase mb-1 flex items-center gap-1">
+                                            <AlertTriangle className="w-3 h-3" /> Needs Improvement
+                                        </div>
+                                        <div className="text-white font-medium">{weakest[0]}</div>
+                                    </div>
+                                    <div className="text-amber-400 font-bold text-xl">
+                                        {Math.round((weakest[1].correct/weakest[1].total)*100)}%
+                                    </div>
+                                </div>
+                            </Card>
+                            </>
+                        )
+                    })()}
                 </div>
 
-                {/* Breakdown Histogram */}
+                {/* Subject Mastery Chart */}
                 <Card className="bg-slate-900 border-slate-800">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm text-slate-400 uppercase tracking-wider">Subject Mastery</CardTitle>
-                  </CardHeader>
-                  <CardContent className="h-[250px]">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 30, left: 40, bottom: 5 }}>
-                        <XAxis type="number" hide />
-                        <YAxis dataKey="subject" type="category" stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} width={80} />
-                        <Tooltip contentStyle={{ backgroundColor: "#1e293b", border: "1px solid #334155", color: "#fff" }} cursor={{fill: 'transparent'}} />
-                        <Bar dataKey="score" radius={[0, 4, 4, 0]} barSize={20}>
-                          {chartData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.score > 75 ? "#10b981" : entry.score > 40 ? "#eab308" : "#ef4444"} />
-                          ))}
-                        </Bar>
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </CardContent>
+                    <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium text-slate-300 uppercase tracking-widest">Subject Mastery</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="space-y-4 mt-2">
+                            {breakdownData.map((item) => (
+                                <div key={item.subject}>
+                                    <div className="flex justify-between text-xs text-slate-400 mb-1">
+                                        <span>{item.subject}</span>
+                                        <span>{item.score}%</span>
+                                    </div>
+                                    <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
+                                        <div 
+                                            className={`h-full rounded-full ${item.score > 70 ? 'bg-yellow-400' : item.score > 40 ? 'bg-blue-500' : 'bg-red-500'}`} 
+                                            style={{ width: `${item.score}%` }}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </CardContent>
                 </Card>
+
+                {/* Detailed Solutions CTA */}
+                <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 text-center">
+                    <div className="p-3 bg-blue-500/10 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
+                        <BookOpen className="w-6 h-6 text-blue-400"/>
+                    </div>
+                    <h3 className="text-white font-semibold mb-2">Detailed Analysis</h3>
+                    <p className="text-slate-400 text-xs mb-4">Select a class to view solutions.</p>
+                    
+                    {!showClassSelector && !solutions.length ? (
+                        <Button 
+                            onClick={handleViewSolutionsClick} 
+                            disabled={loadingSolutions}
+                            className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                            size="sm"
+                        >
+                            View Detailed Solutions
+                        </Button>
+                    ) : (
+                        <div className="space-y-3 animate-in fade-in duration-300">
+                             <div className="grid grid-cols-2 gap-2">
+                                {["Class 7", "Class 8", "Class 9", "Class 10"].map((cls) => (
+                                    <Button
+                                        key={cls}
+                                        variant={selectedClass === cls ? "default" : "outline"}
+                                        className={`text-xs ${selectedClass === cls ? 'bg-blue-600 border-transparent' : 'border-slate-700 text-slate-300 hover:bg-slate-800'}`}
+                                        onClick={() => fetchSolutionsForClass(cls)}
+                                        size="sm"
+                                    >
+                                        {cls}
+                                    </Button>
+                                ))}
+                             </div>
+                             {solutions.length > 0 && (
+                                 <Button 
+                                     onClick={() => { setSolutions([]); setShowClassSelector(false); setSelectedClass(null); }} 
+                                     variant="ghost" 
+                                     className="w-full text-slate-500 text-xs hover:text-white"
+                                     size="sm"
+                                 >
+                                     Hide Solutions
+                                 </Button>
+                             )}
+                        </div>
+                    )}
+
+                    {loadingSolutions && <div className="mt-3"><Loader2 className="w-5 h-5 animate-spin mx-auto text-blue-500"/></div>}
+
+                    {error && (
+                        <div className="mt-3 bg-red-950/50 border border-red-500/50 rounded-lg p-2 text-red-200 text-xs text-left">
+                            <p className="font-mono break-all">{error}</p>
+                        </div>
+                    )}
+                </div>
             </div>
 
             {/* Right Column: AI Analysis & Detailed Charts (8 cols) */}
@@ -266,7 +387,7 @@ export function QuizReport({ result, showRetake = false }: QuizReportProps) {
                                             return null;
                                         }}
                                     />
-                                    <ReferenceLine y={60} stroke="#f59e0b" strokeDasharray="3 3" opacity={0.5} label={{ value: "1m", fill: "#f59e0b", fontSize: 10 }} />
+                                    {/* <ReferenceLine y={60} stroke="#f59e0b" strokeDasharray="3 3" opacity={0.5} label={{ value: "1m", fill: "#f59e0b", fontSize: 10 }} /> */}
                                     <Scatter name="Questions" data={timeData}>
                                         {timeData.map((entry: any, index: number) => (
                                             <Cell key={`cell-${index}`} fill={entry.fill} strokeWidth={2} />
@@ -278,7 +399,77 @@ export function QuizReport({ result, showRetake = false }: QuizReportProps) {
                     </Card>
                 )}
             </div>
-         </div>
+
+            {/* Detailed Solutions Section (Full Width) */}
+            {solutions.length > 0 && (
+                <div className="lg:col-span-12 space-y-6 mt-8 animate-in fade-in slide-in-from-bottom-4 duration-500 border-t border-slate-800 pt-8">
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="p-2 bg-blue-500/10 rounded-lg"><BookOpen className="w-6 h-6 text-blue-400" /></div>
+                         <h2 className="text-2xl font-bold text-white">Detailed Solutions & Remedial Concepts</h2>
+                         <span className="ml-auto text-xs font-mono text-slate-500 border border-slate-800 px-2 py-1 rounded-full">Viewing: {selectedClass}</span>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {solutions.map((q, i) => (
+                                <Card key={q.id || i} className="bg-slate-900 border-slate-800">
+                                    <CardHeader className="pb-3">
+                                        <div className="flex justify-between items-start gap-4">
+                                            <span className="text-xs font-mono text-slate-500 bg-slate-950 px-2 py-1 rounded">Q{i + 1} • {q.subject}</span>
+                                        </div>
+                                        <p className="text-slate-200 mt-2 font-medium leading-relaxed">{q.question}</p>
+                                    </CardHeader>
+                                    <CardContent className="space-y-4">
+                                        {/* Options */}
+                                        <div className="grid grid-cols-1 gap-2">
+                                            {Object.entries(q.options || {}).map(([key, val]) => (
+                                                <div 
+                                                    key={key} 
+                                                    className={`px-4 py-3 rounded-lg border text-sm flex items-center gap-3 ${
+                                                        key === q.correct_option 
+                                                            ? "bg-emerald-950/30 border-emerald-500/30 text-emerald-200" 
+                                                            : "bg-slate-950 border-slate-800 text-slate-400 opacity-70"
+                                                    }`}
+                                                >
+                                                    <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                                                        key === q.correct_option ? "bg-emerald-500 text-black" : "bg-slate-800"
+                                                    }`}>
+                                                        {key}
+                                                    </span>
+                                                    {String(val)}
+                                                    {key === q.correct_option && <CheckCircle2 className="w-4 h-4 text-emerald-500 ml-auto"/>}
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        {/* Remedial Concept Box */}
+                                        {(q.concept || q.formula) && (
+                                            <div className="mt-4 bg-indigo-950/20 border border-indigo-500/20 rounded-lg p-4">
+                                                <div className="flex items-center gap-2 mb-2 text-indigo-400 font-semibold text-sm">
+                                                    <BrainCircuit className="w-4 h-4" />
+                                                    Concept: {q.concept || "Key Concept"}
+                                                </div>
+                                                
+                                                {q.explanation && (
+                                                    <p className="text-slate-300 text-sm mb-3 leading-relaxed">
+                                                        {q.explanation}
+                                                    </p>
+                                                )}
+                                                
+                                                {q.formula && q.formula !== "N/A" && (
+                                                    <div className="bg-black/40 rounded p-3 font-mono text-xs text-indigo-200 border-l-2 border-indigo-500">
+                                                        <span className="text-indigo-500 font-bold block mb-1 text-[10px] uppercase">Formula / Rule</span>
+                                                        {q.formula}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+                                    </CardContent>
+                                </Card>
+                        ))}
+                    </div>
+                </div>
+            )}
+        </div>
          
          {/* Bottom Actions & Memory */}
          <div className="mt-8 pt-8 border-t border-slate-800">
@@ -311,7 +502,8 @@ export function QuizReport({ result, showRetake = false }: QuizReportProps) {
                 </div>
              )}
          </div>
-    </div>
+
+       </div>
     </div>
   )
 }

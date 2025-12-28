@@ -13,6 +13,7 @@ interface QuizResult {
   detailed_report?: any[]
   time_analysis?: any[]
   memory_saved?: string
+  quiz_grade?: string
 }
 
 import axiosInstance from "@/lib/axios"
@@ -24,21 +25,14 @@ export default function QuizResultsPage() {
 
   useEffect(() => {
     const fetchResult = async () => {
-        // 1. Try to get from Local Storage first (Fastest)
-        const stored = localStorage.getItem("latestQuizResult")
-        if (stored) {
-            setResult(JSON.parse(stored))
-            setLoading(false)
-            return
-        }
-
-        // 2. Fallback: Fetch from Server
+        // always fetch from server
         try {
             const res = await axiosInstance.get("/quiz/result/latest")
             if (res.data) {
                 setResult(res.data)
+                // update cache
+                localStorage.setItem("latestQuizResult", JSON.stringify(res.data))
             } else {
-                // No result found anywhere, start new quiz
                 router.push("/quiz")
             }
         } catch (error) {

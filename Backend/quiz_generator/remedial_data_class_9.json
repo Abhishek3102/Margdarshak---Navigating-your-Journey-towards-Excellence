@@ -1,0 +1,182 @@
+[
+    {
+        "question_id": 1,
+        "concept": "Indeterminate Forms and Exponents",
+        "explanation": "In mathematics, 0^0 is an indeterminate form, meaning its value cannot be uniquely determined by standard exponent rules alone. However, it is conventionally defined as 1 in many mathematical contexts, such as combinatorics and power series, for consistency and convenience. This definition helps simplify many formulas and theorems.",
+        "formula": "Any non-zero number raised to the power of 0 is 1 (x^0 = 1 for x != 0). 0 raised to any positive power is 0 (0^n = 0 for n > 0). 0^0 is conventionally defined as 1."
+    },
+    {
+        "question_id": 2,
+        "concept": "States of Matter and Intermolecular Forces",
+        "explanation": "Matter exists in various states, primarily solid, liquid, and gas, which are distinguished by the arrangement and movement of their particles. These characteristics are largely determined by the strength of intermolecular forces of attraction between the particles. Gases have the weakest intermolecular forces, allowing their particles to move freely and far apart.",
+        "formula": "Strength of Intermolecular Forces: Solids > Liquids > Gases. Particles in gases have high kinetic energy and negligible attractive forces, enabling them to move randomly and fill any container."
+    },
+    {
+        "question_id": 3,
+        "concept": "Simple Past Tense",
+        "explanation": "The simple past tense is used to describe actions that began and ended at a specific time in the past. It often appears with time expressions like 'yesterday,' 'last week,' or 'in 2005.' For regular verbs, it is formed by adding '-ed' to the base form, while irregular verbs have unique past tense forms.",
+        "formula": "Subject + Verb (past form) + Object/Complement. Example: 'She went' (irregular verb 'go'). 'He walked' (regular verb 'walk')."
+    },
+    {
+        "question_id": 4,
+        "concept": "Key Figures of the French Revolution",
+        "explanation": "The French Revolution was a pivotal period of social and political upheaval in France, beginning in 1789. It led to the end of the monarchy and the establishment of a republic. Louis XVI was the reigning King of France when the revolution commenced, and his reign was marked by severe financial crises and growing social discontent.",
+        "formula": "Historical Fact: Louis XVI was the King of France at the start of the French Revolution in 1789."
+    },
+    {
+        "question_id": 5,
+        "concept": "Polynomial Evaluation",
+        "explanation": "Polynomial evaluation involves substituting a specific numerical value for the variable in a polynomial expression. After substitution, the expression is simplified by performing the indicated arithmetic operations to find the polynomial's numerical value. This process is fundamental for understanding polynomial behavior at different points.",
+        "formula": "To evaluate P(a), substitute 'a' for every 'x' in the polynomial P(x). For P(x) = x^2 - 3x + 5: P(2) = (2)^2 - 3(2) + 5 = 4 - 6 + 5 = 3. P(-2) = (-2)^2 - 3(-2) + 5 = 4 + 6 + 5 = 15. Then P(2) + P(-2) = 3 + 15 = 18."
+    },
+    {
+        "question_id": 6,
+        "concept": "Soil Composition and Properties",
+        "explanation": "Soil is a complex mixture of mineral particles, organic matter, water, and air. Air spaces within the soil are crucial for aeration, allowing plant roots to breathe, and for water retention, as water can be held in these spaces.",
+        "formula": "Soil properties like aeration and water retention are directly influenced by the proportion and size of its constituent components, especially air spaces and organic matter."
+    },
+    {
+        "question_id": 7,
+        "concept": "Modal Auxiliary Verbs",
+        "explanation": "Modal auxiliary verbs are a type of helping verb that express necessity, possibility, permission, or ability. They always precede a main verb and do not change form based on the subject.",
+        "formula": "Common modals include: can, could, may, might, must, shall, should, will, would. Structure: Subject + Modal Verb + Base Form of Main Verb."
+    },
+    {
+        "question_id": 8,
+        "concept": "French Revolution and Enlightenment Ideals",
+        "explanation": "The Declaration of the Rights of Man and of the Citizen was a foundational document of the French Revolution. Inspired by Enlightenment thinkers, it proclaimed the equality of all citizens before the law and abolished the feudal privileges of the clergy and nobility.",
+        "formula": "Enlightenment ideals (liberty, equality, fraternity) -> French Revolution -> Declaration of the Rights of Man and of the Citizen -> Abolition of aristocratic privileges."
+    },
+    {
+        "question_id": 9,
+        "concept": "Collinearity of Three Points",
+        "explanation": "Three points are collinear if they lie on the same straight line. This means the slope between any two pairs of points formed by these three points will be equal.",
+        "formula": "For points (x1, y1), (x2, y2), (x3, y3) to be collinear, the slope of AB must equal the slope of BC. Slope = (y2 - y1) / (x2 - x1). Therefore, (y2 - y1) / (x2 - x1) = (y3 - y2) / (x3 - x2)."
+    },
+    {
+        "question_id": 10,
+        "concept": "Rutherford's Atomic Model (Gold Foil Experiment)",
+        "explanation": "Rutherford's gold foil experiment showed that a small, dense, positively charged nucleus exists at the center of an atom. The strong electrostatic repulsive force between the positively charged alpha particles and this nucleus caused some alpha particles to be deflected at large angles.",
+        "formula": "Electrostatic repulsion between like charges (positive alpha particles and positive nucleus) causes deflection. The magnitude of deflection depends on the charge and proximity to the nucleus."
+    },
+    {
+        "question_id": 11,
+        "concept": "Passive Voice",
+        "explanation": "The passive voice is a grammatical construction where the subject of the sentence receives the action of the verb, rather than performing it. It emphasizes the action and the object receiving it, often making the doer of the action less prominent or omitted. It is formed using a form of 'to be' plus the past participle of the main verb.",
+        "formula": "Object + form of 'to be' + Past Participle of verb + (by + Subject)"
+    },
+    {
+        "question_id": 12,
+        "concept": "Bolshevik Economic Policy (Communism)",
+        "explanation": "The Bolsheviks aimed to transform Russia into a communist state where the means of production were controlled by the state for the benefit of all. This involved eliminating private ownership and implementing central planning for the economy. Collectivization of agriculture meant merging individual farms into large state-controlled collective farms.",
+        "formula": "Central Planning + State Ownership of Means of Production -> Communism/Socialism"
+    },
+    {
+        "question_id": 13,
+        "concept": "Remainder Theorem",
+        "explanation": "The Remainder Theorem states that if a polynomial P(x) is divided by a linear polynomial (x - a), then the remainder is P(a). This theorem provides a quick way to find the remainder without performing long division. A zero of a polynomial P(x) is a value 'a' such that P(a) = 0.",
+        "formula": "If P(x) is divided by (x - a), the remainder is P(a)."
+    },
+    {
+        "question_id": 14,
+        "concept": "SI Units (Systeme Internationale d'Unites)",
+        "explanation": "SI units are a standardized system of measurement used globally in science and commerce. They provide a coherent set of units for various physical quantities, ensuring consistency and ease of communication. Force is a vector quantity that describes the interaction that causes an object to change its motion.",
+        "formula": "Force (F) = mass (m) * acceleration (a). SI unit of Force is Newton (N). 1 N = 1 kg * m / s squared."
+    },
+    {
+        "question_id": 15,
+        "concept": "Determiners (Quantifiers)",
+        "explanation": "Determiners are words that introduce a noun and provide information about quantity, possession, or specificity. Quantifiers are a type of determiner that express the amount or quantity of a noun. 'Much' is typically used with uncountable nouns, while 'many' is used with countable nouns.",
+        "formula": "Determiners precede nouns. 'Much' for uncountable nouns (e.g., water, sugar). 'Many' for countable nouns (e.g., books, apples)."
+    },
+    {
+        "question_id": 16,
+        "concept": "French Revolution - Storming of the Bastille",
+        "explanation": "The Storming of the Bastille on July 14, 1789, was a pivotal event in the French Revolution. It symbolized the end of royal tyranny and the beginning of a new era for France. This act of defiance by the Parisian citizens ignited widespread revolutionary fervor.",
+        "formula": "Rule: The French Revolution began in 1789 with the storming of the Bastille."
+    },
+    {
+        "question_id": 17,
+        "concept": "Distance Formula and Equidistant Points",
+        "explanation": "The distance formula calculates the distance between two points in a coordinate plane. If a point is equidistant from two other points, its distance to each of those points is equal. This often leads to a linear relationship between its coordinates.",
+        "formula": "Distance between (x1, y1) and (x2, y2) is sqrt((x2 - x1)^2 + (y2 - y1)^2). For equidistant points, PA = PB."
+    },
+    {
+        "question_id": 18,
+        "concept": "Plant Tissues - Phloem",
+        "explanation": "Plants have specialized vascular tissues for transport. Phloem is one such complex tissue responsible for transporting sugars, produced during photosynthesis, from the leaves to other parts of the plant where they are needed for growth or storage. This process is called translocation.",
+        "formula": "Rule: Phloem -> Translocation of food (sugars) in plants."
+    },
+    {
+        "question_id": 19,
+        "concept": "Noun Clauses",
+        "explanation": "A noun clause is a dependent clause that functions as a noun within a sentence. It can act as a subject, object of a verb, object of a preposition, or a subject complement. In this case, the clause answers 'what does she believe?', making it the direct object.",
+        "formula": "Rule: A clause functioning as a noun (subject, object, complement) is a Noun Clause."
+    },
+    {
+        "question_id": 20,
+        "concept": "Kinematics - Equations of Motion (Constant Acceleration)",
+        "explanation": "When an object moves with constant acceleration, its velocity changes at a steady rate. This means that for every unit of time that passes, the speed increases by a constant amount. This relationship is described by the first equation of motion.",
+        "formula": "v = u + at, where v is final velocity, u is initial velocity, a is constant acceleration, and t is time. This shows a linear relationship between v and t."
+    },
+    {
+        "question_id": 21,
+        "concept": "Properties of Parallelograms (Adjacent Angles)",
+        "explanation": "In a parallelogram, adjacent angles are supplementary, meaning their sum is 180 degrees. Opposite angles are equal. This property helps in finding unknown angles within the parallelogram.",
+        "formula": "Sum of adjacent angles in a parallelogram = 180 degrees"
+    },
+    {
+        "question_id": 22,
+        "concept": "Disease-Causing Microorganisms (Malaria)",
+        "explanation": "Malaria is a serious disease caused by a parasitic microorganism called Plasmodium, which is a type of protozoa. It is transmitted to humans through the bite of infected female Anopheles mosquitoes, which act as vectors.",
+        "formula": "Malaria -> Caused by Protozoa (Plasmodium) -> Transmitted by Anopheles mosquito"
+    },
+    {
+        "question_id": 23,
+        "concept": "Indirect Speech (Reporting Commands/Orders)",
+        "explanation": "When reporting commands or orders in indirect speech, the reporting verb changes (e.g., 'said to' becomes 'ordered', 'commanded', 'told'). The imperative mood of the direct speech is changed to an infinitive phrase (to + verb) in the indirect speech.",
+        "formula": "Direct Command: Subject + said to + Object, 'Verb + Object.' -> Indirect Command: Subject + ordered/told + Object + to + Verb + Object."
+    },
+    {
+        "question_id": 24,
+        "concept": "Area of an Equilateral Triangle",
+        "explanation": "An equilateral triangle is a triangle in which all three sides are equal in length, and all three interior angles are 60 degrees. Its area can be calculated using a specific formula that depends only on the length of one of its sides.",
+        "formula": "Area of equilateral triangle = (sqrt(3) / 4) * side^2"
+    },
+    {
+        "question_id": 25,
+        "concept": "Gravitational Potential Energy",
+        "explanation": "Gravitational potential energy is the energy an object possesses due to its position in a gravitational field. It depends on the object's mass, the acceleration due to gravity, and its height above a chosen reference point.",
+        "formula": "Potential Energy (PE) = mass (m) * acceleration due to gravity (g) * height (h) -> PE = mgh"
+    },
+    {
+        "question_id": 26,
+        "concept": "Prepositions of Movement",
+        "explanation": "Prepositions of movement describe how something moves from one place to another. 'Onto' specifically indicates movement to the top surface of something, implying both motion and destination.",
+        "formula": "Onto is used to show movement towards the top or surface of something."
+    },
+    {
+        "question_id": 27,
+        "concept": "Rise of Nazism",
+        "explanation": "The Treaty of Versailles imposed harsh reparations and territorial losses on Germany, leading to widespread resentment. This, combined with hyperinflation and the Great Depression, created a fertile ground for extremist ideologies like Nazism, which promised to restore national pride and economic stability.",
+        "formula": "Treaty of Versailles + Economic Depression + Political Instability -> Rise of Extremism (Nazism)"
+    },
+    {
+        "question_id": 28,
+        "concept": "Inscribed Angle Theorem",
+        "explanation": "An inscribed angle is an angle formed by two chords in a circle that have a common endpoint on the circle. The measure of an inscribed angle is half the measure of the central angle that subtends the same arc.",
+        "formula": "Inscribed Angle = (1 / 2) * Central Angle subtending the same arc."
+    },
+    {
+        "question_id": 29,
+        "concept": "Diffraction of Light",
+        "explanation": "Diffraction is a phenomenon where waves, such as light waves, spread out as they pass through an aperture or around obstacles. This spreading causes the waves to bend and interfere, creating patterns of light and dark.",
+        "formula": "Diffraction is the bending of waves around obstacles or through openings."
+    },
+    {
+        "question_id": 30,
+        "concept": "Russian Revolution Factions",
+        "explanation": "The Mensheviks were a moderate faction of the Russian Social Democratic Labour Party, advocating for a broad-based socialist movement and gradual change. They contrasted with the Bolsheviks, who favored a smaller, disciplined party and immediate revolution.",
+        "formula": "Mensheviks -> Moderate, gradual change, broad party. Bolsheviks -> Radical, immediate revolution, elite party."
+    }
+]

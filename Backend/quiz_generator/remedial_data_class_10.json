@@ -1,0 +1,182 @@
+[
+    {
+        "question_id": 1,
+        "concept": "Highest Common Factor (HCF)",
+        "explanation": "The HCF of two or more numbers is the largest positive integer that divides each of the integers completely without leaving a remainder. It is also known as the Greatest Common Divisor (GCD) and helps in simplifying fractions and understanding number relationships.",
+        "formula": "To find HCF, list factors of each number and identify the largest common factor. Alternatively, use prime factorization: HCF is the product of the lowest powers of common prime factors. Example: HCF(2, 4) = 2."
+    },
+    {
+        "question_id": 2,
+        "concept": "Displacement Reaction",
+        "explanation": "A displacement reaction is a chemical reaction in which a more reactive element displaces a less reactive element from its compound. This often occurs when a more reactive metal displaces a less reactive metal from its salt solution.",
+        "formula": "A + BC -> AC + B (where A is more reactive than B and displaces B from compound BC)."
+    },
+    {
+        "question_id": 3,
+        "concept": "Simple Present Tense",
+        "explanation": "The Simple Present Tense is used to describe habits, routines, general truths, and scheduled events. It indicates actions that happen regularly or are always true.",
+        "formula": "Subject + Base Form of Verb (for I, You, We, They) OR Subject + Verb + s/es (for He, She, It). Example: They play, He plays."
+    },
+    {
+        "question_id": 4,
+        "concept": "Unification of Italy",
+        "explanation": "The Unification of Italy, known as the Risorgimento, was a 19th-century political and social movement that consolidated different states of the Italian peninsula into a single state, the Kingdom of Italy. This process involved various wars and diplomatic efforts.",
+        "formula": "Key Historical Fact: Victor Emmanuel II, previously King of Sardinia-Piedmont, was proclaimed King of United Italy in 1861, marking a pivotal moment in the nation's unification."
+    },
+    {
+        "question_id": 5,
+        "concept": "Roots of a Quadratic Equation (Sum and Product)",
+        "explanation": "For a quadratic equation in the standard form ax squared + bx + c = 0, there are relationships between the coefficients and its roots. The sum of the roots is equal to -b/a, and the product of the roots is equal to c/a.",
+        "formula": "For ax squared + bx + c = 0: Sum of roots = -b/a. Product of roots = c/a. If one root is known, these formulas can help find the other root or unknown coefficients."
+    },
+    {
+        "question_id": 6,
+        "concept": "pH Scale and Neutrality",
+        "explanation": "The pH scale measures the acidity or alkalinity of a solution. Pure water is considered neutral, meaning it is neither acidic nor basic.",
+        "formula": "A pH of 7 indicates a neutral solution. Values below 7 are acidic, and values above 7 are basic (alkaline)."
+    },
+    {
+        "question_id": 7,
+        "concept": "Modal Verbs (Obligation/Recommendation)",
+        "explanation": "Modal verbs are auxiliary verbs that express necessity, possibility, permission, or obligation. 'Should' is used to give advice or make a recommendation, indicating a moral obligation or a good idea.",
+        "formula": "Modal verb + base form of the main verb. Example: should + obey."
+    },
+    {
+        "question_id": 8,
+        "concept": "Nationalism and Romanticism (Volksgeist)",
+        "explanation": "Volksgeist, meaning 'spirit of the people' or 'national spirit,' is a concept in philosophy referring to the unique identity of a people. Johann Gottfried Herder was a key figure in developing this idea, emphasizing the distinct cultural and linguistic character of each nation.",
+        "formula": "Volksgeist -> unique cultural and national identity. Associated with Johann Gottfried Herder."
+    },
+    {
+        "question_id": 9,
+        "concept": "Arithmetic Progression (n-th term)",
+        "explanation": "An Arithmetic Progression (AP) is a sequence of numbers where the difference between consecutive terms is constant. The n-th term formula allows you to find any term in the sequence if you know its position.",
+        "formula": "To find the first term (a_1), substitute n = 1 into the given formula for the n-th term. For a_n = 3n + 5, a_1 = 3(1) + 5."
+    },
+    {
+        "question_id": 10,
+        "concept": "Protein Digestion",
+        "explanation": "Protein digestion begins in the stomach and continues in the small intestine. The duodenum, the first part of the small intestine, is where pancreatic enzymes complete the breakdown of proteins into amino acids.",
+        "formula": "Stomach (partial digestion) -> Duodenum (complete digestion by pancreatic enzymes) -> Amino acids."
+    },
+    {
+        "question_id": 11,
+        "concept": "Passive Voice Transformation",
+        "explanation": "The passive voice is used when the subject of the sentence receives the action rather than performing it. It emphasizes the action or the object of the action. To transform a sentence, the object of the active voice becomes the subject of the passive voice.",
+        "formula": "Object + be verb (appropriate tense) + past participle of main verb + (by + subject) + rest of sentence."
+    },
+    {
+        "question_id": 12,
+        "concept": "Greek Independence",
+        "explanation": "The Treaty of London (1832) was an international agreement that formally recognized Greece as an independent kingdom, ending centuries of Ottoman rule. It established the boundaries of the new Greek state and marked a significant event in European history.",
+        "formula": "Treaty of London (1832) -> Recognition of Greece as an independent nation."
+    },
+    {
+        "question_id": 13,
+        "concept": "Area and Perimeter Ratios (Circle and Square)",
+        "explanation": "This concept involves comparing the dimensions of a circle and a square when their areas are equal. It requires understanding the formulas for area and perimeter of both shapes to find their ratio. The relationship between their radii and side lengths is key.",
+        "formula": "Area of circle = pi * r squared; Area of square = s squared; Perimeter of circle = 2 * pi * r; Perimeter of square = 4 * s. If Area_circle = Area_square, then pi * r squared = s squared."
+    },
+    {
+        "question_id": 14,
+        "concept": "Phototropism and Auxin",
+        "explanation": "Phototropism is the growth of a plant towards a light source, a directional response to light. Auxin is a plant hormone primarily responsible for this growth, accumulating on the shaded side of the stem and promoting cell elongation, causing the plant to bend.",
+        "formula": "Light stimulus -> Auxin migrates to shaded side -> Cell elongation on shaded side -> Plant bends towards light."
+    },
+    {
+        "question_id": 15,
+        "concept": "Subordinate Clauses",
+        "explanation": "A subordinate clause (also known as a dependent clause) is a group of words that contains a subject and a verb but cannot stand alone as a complete sentence. It depends on an independent clause to make sense and is often introduced by a subordinating conjunction.",
+        "formula": "Subordinating Conjunction + Subject + Verb + (rest of clause). Examples of conjunctions: although, because, while, if, when."
+    },
+    {
+        "question_id": 16,
+        "concept": "Ghadar Party and Indian Independence Movement",
+        "explanation": "The Ghadar Party was an organization formed by Indians in the USA and Canada with the aim of liberating India from British rule. They published the 'Ghadar' newspaper to spread their revolutionary ideas and mobilize support among the Indian diaspora.",
+        "formula": "Historical Fact: Lala Hardayal founded the Ghadar newspaper."
+    },
+    {
+        "question_id": 17,
+        "concept": "Probability of Complementary Events",
+        "explanation": "Complementary events are two outcomes of an event that are the only two possible outcomes. The probability of an event happening and the probability of it not happening must add up to 1.",
+        "formula": "P(E) + P(Not E) = 1  OR  P(Not E) = 1 - P(E)"
+    },
+    {
+        "question_id": 18,
+        "concept": "Chemical Formula for Rust",
+        "explanation": "Rust is a common term for iron oxides, specifically hydrated iron(III) oxides. It forms when iron or its alloys are exposed to oxygen and moisture for an extended period, a process known as rusting or oxidation.",
+        "formula": "Chemical Formula: Fe2O3 (Iron(III) oxide)"
+    },
+    {
+        "question_id": 19,
+        "concept": "Determiners (Quantifiers) - Much vs. Many",
+        "explanation": "Determiners are words that introduce a noun. 'Much' is used with uncountable nouns (like water, sugar, information) to indicate a large quantity, especially in negative sentences and questions. 'Many' is used with countable nouns.",
+        "formula": "Rule: Use 'much' with uncountable nouns. Use 'many' with countable nouns."
+    },
+    {
+        "question_id": 20,
+        "concept": "Salt March and Civil Disobedience",
+        "explanation": "The Salt March, also known as the Dandi March, was a nonviolent protest led by Mahatma Gandhi against the British salt monopoly and tax. It was a pivotal act of civil disobedience that aimed to challenge British authority and inspire widespread resistance.",
+        "formula": "Historical Event: Salt March -> Protest against British salt tax"
+    },
+    {
+        "question_id": 21,
+        "concept": "Distance Formula from Origin",
+        "explanation": "This concept explains how to calculate the straight-line distance between any point (x, y) and the origin (0,0) in a 2D coordinate system. It is a special case derived from the general distance formula between two points.",
+        "formula": "Distance = sqrt(x squared + y squared)"
+    },
+    {
+        "question_id": 22,
+        "concept": "Diffraction of Light",
+        "explanation": "Diffraction is the phenomenon where light waves spread out as they pass through an aperture or around the edges of an obstacle. This bending of light waves causes them to deviate from their straight-line path, creating interference patterns.",
+        "formula": "Light waves bend when passing around obstacles or through small openings."
+    },
+    {
+        "question_id": 23,
+        "concept": "Present Perfect Tense",
+        "explanation": "The Present Perfect tense is used to describe an action that started in the past and continues to the present, or an action completed at an unspecified time in the past with a connection to the present. It is also commonly used for actions completed very recently.",
+        "formula": "Subject + has/have + Past Participle (V3)"
+    },
+    {
+        "question_id": 24,
+        "concept": "Viet Minh's Primary Goal",
+        "explanation": "The Viet Minh, a nationalist and communist liberation movement, was founded in Vietnam during World War II. Its primary objective was to achieve independence from French colonial rule and Japanese occupation, ultimately aiming to establish a communist-led independent Vietnamese state.",
+        "formula": "Viet Minh's primary goal was national liberation and establishment of communist rule."
+    },
+    {
+        "question_id": 25,
+        "concept": "Fundamental Trigonometric Identity",
+        "explanation": "This concept uses the fundamental trigonometric identity that relates the sine and cosine of an angle. Given the value of sine for an angle, one can determine the value of its cosine using this identity.",
+        "formula": "sin squared theta + cos squared theta = 1"
+    },
+    {
+        "question_id": 26,
+        "concept": "SI Unit of Magnetic Flux Density",
+        "explanation": "Magnetic flux density, also known as magnetic field strength, measures the strength of a magnetic field. It quantifies the force exerted on a moving charge or current in the field. The SI system provides standardized units for various physical quantities.",
+        "formula": "The SI unit for magnetic flux density is the Tesla (T)."
+    },
+    {
+        "question_id": 27,
+        "concept": "Reporting Commands (Imperative Sentences)",
+        "explanation": "When reporting commands or requests, we often use an infinitive phrase (to + verb) instead of direct speech. The reporting verb (e.g., ordered, asked, told) is followed by the object (the person being commanded) and then the infinitive.",
+        "formula": "Reporting Verb + Object + to + Base Form of Verb."
+    },
+    {
+        "question_id": 28,
+        "concept": "Bismarck's Realpolitik",
+        "explanation": "Realpolitik is a political philosophy focused on practical considerations and material factors, rather than on ideology or ethics. Otto von Bismarck famously employed this approach, using military force and strategic alliances to achieve German unification. His policies prioritized the state's power and interests above all else.",
+        "formula": "Realpolitik = Politics based on practical and material factors, not ideology or ethics."
+    },
+    {
+        "question_id": 29,
+        "concept": "Properties of Tangents to a Circle",
+        "explanation": "When two tangents are drawn from an external point to a circle, the angle between the tangents and the angle subtended by the chord connecting the points of tangency at the center are supplementary. This means their sum is 180 degrees. Also, the radius drawn to the point of tangency is perpendicular to the tangent.",
+        "formula": "Angle APB + Angle AOB = 180 degrees (where P is the external point, A and B are points of tangency, and O is the center)."
+    },
+    {
+        "question_id": 30,
+        "concept": "Mendel's Monohybrid Cross Phenotypic Ratio",
+        "explanation": "A monohybrid cross involves breeding two true-breeding parents that differ in a single trait. In the F2 generation, Mendel observed a consistent phenotypic ratio. This ratio represents the observable characteristics of the offspring.",
+        "formula": "For a monohybrid cross, the typical F2 phenotypic ratio is 3:1 (three dominant phenotypes to one recessive phenotype)."
+    }
+]

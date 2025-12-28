@@ -29,6 +29,10 @@ app.include_router(notifications.router, prefix="/api/notifications", tags=["not
 app.include_router(watch_party.router, prefix="/api/watch-party", tags=["watch-party"])
 app.include_router(quiz.router, prefix="/api/quiz", tags=["quiz"])
 app.include_router(chat.router, prefix="/api/chat", tags=["chat"])
+from app.api import curriculum
+app.include_router(curriculum.router, prefix="/api/curriculum", tags=["curriculum"])
+from app.api import feedback
+app.include_router(feedback.router, prefix="/api/feedback", tags=["feedback"])
 
 @app.get("/")
 async def root():

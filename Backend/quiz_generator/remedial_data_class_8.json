@@ -1,0 +1,182 @@
+[
+    {
+        "question_id": 1,
+        "concept": "Additive Inverse of Rational Numbers",
+        "explanation": "The additive inverse of a number is the value that, when added to the original number, results in zero. For any rational number a/b, the additive inverse is -a/b.",
+        "formula": "Additive Inverse of (a/b) is (-a/b). Additive Inverse of (-3/5) is -(-3/5) which equals 3/5."
+    },
+    {
+        "question_id": 2,
+        "concept": "Methods of Weeding",
+        "explanation": "Weeding is the process of removing unwanted plants (weeds) that compete with crops for resources. Common methods include manual removal, mechanical tools, and chemical control.",
+        "formula": "Methods include: Manual (pulling out), Mechanical (using khurpi/tiller), Chemical (spraying herbicides)."
+    },
+    {
+        "question_id": 3,
+        "concept": "Types of Sentences (Exclamatory)",
+        "explanation": "An exclamatory sentence expresses strong emotion or surprise, such as excitement, shock, or joy. These sentences always end with an exclamation mark (!).",
+        "formula": "Exclamatory Sentence -> Expresses strong feeling and ends with an exclamation mark (!)."
+    },
+    {
+        "question_id": 4,
+        "concept": "The First War of Independence (India)",
+        "explanation": "The First War of Independence, also known as the Sepoy Mutiny, was a major uprising against the rule of the British East India Company. This significant event began in the mid-19th century.",
+        "formula": "First War of Independence (India) started in the year 1857."
+    },
+    {
+        "question_id": 5,
+        "concept": "Solving Linear Equations in One Variable",
+        "explanation": "To solve an equation, the goal is to isolate the variable (y) on one side of the equals sign by performing inverse operations on both sides. First, subtract 5 from both sides, then multiply by 3.",
+        "formula": "Equation: (y / 3) + 5 = 8. Step 1: (y / 3) = 8 - 5. Step 2: y = 3 * 3. Solution: y = 9."
+    },
+    {
+        "question_id": 6,
+        "concept": "Plastics and Polymers",
+        "explanation": "PVC stands for Polyvinyl Chloride, which is a common, versatile thermoplastic polymer. It is widely used in construction for pipes, window frames, and electrical cable insulation due to its durability.",
+        "formula": "Chemical Name: Polyvinyl Chloride"
+    },
+    {
+        "question_id": 7,
+        "concept": "Degrees of Comparison (Adjectives)",
+        "explanation": "The sentence structure 'No other X was ___ than Y' requires the comparative degree of the adjective. The comparative form of 'great' is 'greater'.",
+        "formula": "Comparative Degree: Base Adjective + er (e.g., greater, faster)"
+    },
+    {
+        "question_id": 8,
+        "concept": "British Colonial Policies in India",
+        "explanation": "The Doctrine of Lapse was an annexation policy devised by the British East India Company. It stated that if the ruler of a princely state under direct British influence died without a natural male heir, their kingdom would be annexed by the British.",
+        "formula": "Policy Introduced By: Lord Dalhousie"
+    },
+    {
+        "question_id": 9,
+        "concept": "Properties of Quadrilaterals",
+        "explanation": "A kite is a quadrilateral where two distinct pairs of equal-length sides are adjacent to each other. Its diagonals are perpendicular, and one diagonal bisects the other.",
+        "formula": "Definition: Two pairs of equal, adjacent sides"
+    },
+    {
+        "question_id": 10,
+        "concept": "Combustion in Flames",
+        "explanation": "The outer zone of a candle flame is the non-luminous zone, which is the hottest region because it has access to the most oxygen, allowing for complete combustion of the wax vapors.",
+        "formula": "Hottest Zone: Non-luminous zone (Complete Combustion)"
+    },
+    {
+        "question_id": 11,
+        "concept": "Active and Passive Voice Conversion",
+        "explanation": "The passive voice shifts the focus from the doer of the action (subject) to the receiver of the action (object). For the Present Continuous Tense (is/are + verb-ing), the passive structure uses is/are + being + past participle.",
+        "formula": "Active: Subject + is/are + V-ing + Object -> Passive: Object + is/are + being + V3 + by Subject"
+    },
+    {
+        "question_id": 12,
+        "concept": "Indian National Movement Sessions",
+        "explanation": "The Calcutta Session of 1905 was a pivotal meeting following Lord Curzon's partition of Bengal. At this session, the four key components of the Swadeshi movement were formally adopted as resolutions.",
+        "formula": "Calcutta Session 1905 -> Adoption of Swadeshi, Boycott, National Education, and Swaraj demands"
+    },
+    {
+        "question_id": 13,
+        "concept": "Perfect Squares",
+        "explanation": "A perfect square is an integer that is the square of an integer. To find the square root, you look for the number which, when multiplied by itself, equals the original number.",
+        "formula": "sqrt(x * x) = x. In this case, 14 * 14 = 196."
+    },
+    {
+        "question_id": 14,
+        "concept": "Natural Fibres",
+        "explanation": "Cotton is a natural fibre derived from the seed pods of the cotton plant. It is highly valued for its breathability, softness, and excellent ability to absorb moisture, making it ideal for warm weather clothing.",
+        "formula": "Cotton properties -> Natural, Absorbent, Comfortable in Summer"
+    },
+    {
+        "question_id": 15,
+        "concept": "Algebraic Identities (Squares of Binomials)",
+        "explanation": "This problem uses the identity relating the sum and product of two numbers to the sum of their squares. We use the formula for the square of a binomial sum to isolate the required term.",
+        "formula": "(a + b) squared = a squared + b squared + 2ab. Therefore, a squared + b squared = (a + b) squared - 2ab."
+    },
+    {
+        "question_id": 16,
+        "concept": "Cell Organelles: Rough Endoplasmic Reticulum",
+        "explanation": "The Rough Endoplasmic Reticulum (RER) is studded with ribosomes, which are the sites of protein synthesis. Its primary role involves synthesizing proteins destined for secretion or insertion into membranes, followed by initial folding and modification.",
+        "formula": "RER Function -> Protein Synthesis and Modification"
+    },
+    {
+        "question_id": 17,
+        "concept": "Determiners: Quantifiers",
+        "explanation": "Determiners are words placed before a noun to clarify what the noun refers to. 'Many' is used as a quantifier for countable nouns (like 'books') when referring to a large, unspecified number.",
+        "formula": "Use 'many' with plural countable nouns (e.g., many tables, many students)."
+    },
+    {
+        "question_id": 18,
+        "concept": "History: Colonial Impact on Indian Artisans",
+        "explanation": "During the early phases of British Rule, particularly before the major uprisings of 1857, colonial policies often favored imported goods and suppressed local industries. Iron smelters faced competition and were often viewed with suspicion or disfavor by the new administration.",
+        "formula": "Colonial Policies -> Suppression of Indigenous Craftsmanship (Early British Rule)"
+    },
+    {
+        "question_id": 19,
+        "concept": "Algebraic Identities: Difference of Cubes",
+        "explanation": "This problem uses the algebraic identity for the difference of cubes. The identity states that a cubed minus b cubed equals (a minus b) multiplied by (a squared plus ab plus b squared).",
+        "formula": "a^3 - b^3 = (a - b) * (a^2 + ab + b^2)"
+    },
+    {
+        "question_id": 20,
+        "concept": "Physics: Pressure Relationship",
+        "explanation": "Pressure is defined as the force applied perpendicular to the surface of an object per unit area over which that force is distributed. Therefore, increasing the force increases the pressure, while increasing the area decreases the pressure.",
+        "formula": "Pressure = Force / Area (P is directly proportional to F; P is inversely proportional to A)"
+    },
+    {
+        "question_id": 21,
+        "concept": "Non-Finite Verbs (Infinitives)",
+        "explanation": "Non-finite verbs are verb forms that do not show tense, person, or number, and cannot act as the main verb of a sentence. Infinitives are one type of non-finite verb, often preceded by 'to'.",
+        "formula": "Infinitive Form: to + base form of the verb (e.g., to run, to study)"
+    },
+    {
+        "question_id": 22,
+        "concept": "Educational Policies of Warren Hastings/Cornwallis Era",
+        "explanation": "In the late 18th century, the East India Company established institutions like the Sanskrit College to train Indians in traditional Hindu law and administration. This was done to create a class of Indian subordinates familiar with local legal systems for use in the Company's courts.",
+        "formula": "Goal: Training local administrators using traditional legal frameworks."
+    },
+    {
+        "question_id": 23,
+        "concept": "Solving Linear Equations in One Variable",
+        "explanation": "To solve a linear equation, the goal is to isolate the variable (x) on one side of the equation. This is achieved by performing inverse operations (addition/subtraction, multiplication/division) equally on both sides.",
+        "formula": "Equation: 4x - 10 = 18. Steps: 4x = 18 + 10, then x = 28 / 4."
+    },
+    {
+        "question_id": 24,
+        "concept": "Greenhouse Effect and Global Warming",
+        "explanation": "The greenhouse effect is a natural process where certain gases in the atmosphere trap heat, keeping the Earth warm enough for life. Carbon Dioxide (CO2) is the most significant anthropogenic gas contributing to the enhancement of this effect.",
+        "formula": "Primary Greenhouse Gas: Carbon Dioxide (CO2)"
+    },
+    {
+        "question_id": 25,
+        "concept": "Direct and Indirect Speech Conversion (Imperative Sentences)",
+        "explanation": "When converting a request from Indirect Speech to Direct Speech, the reporting verb (requested) is replaced by a command verb (said) followed by the imperative clause enclosed in quotation marks. The pronoun changes are reversed.",
+        "formula": "Indirect (Request): She requested him to finish... -> Direct (Command): She said, \"Finish the work immediately.\""
+    },
+    {
+        "question_id": 26,
+        "concept": "Colonial Terminology for Tribal Groups",
+        "explanation": "During the British colonial period in India, the term 'Dikus' was often used by outsiders, including the British administration, to refer to the tribal people. This term generally implied that the tribal communities were outsiders or perceived as uncivilized by the ruling powers.",
+        "formula": "N/A (Historical Terminology)"
+    },
+    {
+        "question_id": 27,
+        "concept": "Volume of a Cube",
+        "explanation": "The volume of a cube measures the three-dimensional space it occupies. It is calculated by multiplying the length of one side by itself three times (cubing the side length).",
+        "formula": "Volume = side * side * side or Volume = side^3"
+    },
+    {
+        "question_id": 28,
+        "concept": "Photosynthesis Organelles",
+        "explanation": "Chloroplasts are specialized organelles found within plant cells and some algae. They contain the green pigment chlorophyll, which is essential for capturing light energy to drive the process of photosynthesis.",
+        "formula": "Light Energy + Carbon Dioxide + Water -> Glucose + Oxygen (Simplified)"
+    },
+    {
+        "question_id": 29,
+        "concept": "Prepositions of Origin",
+        "explanation": "Prepositions indicate the relationship between a noun or pronoun and other words in a sentence. The preposition 'from' is used here to show the source or origin of the noise.",
+        "formula": "Noun/Pronoun + Preposition (from) + Source Location"
+    },
+    {
+        "question_id": 30,
+        "concept": "Distance, Speed, and Time Relationship",
+        "explanation": "This problem uses the fundamental relationship between distance, speed, and time. To find the distance traveled, you multiply the constant speed by the time taken for the event.",
+        "formula": "Distance = Speed * Time"
+    }
+]

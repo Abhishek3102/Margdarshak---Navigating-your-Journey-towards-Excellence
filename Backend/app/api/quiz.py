@@ -329,7 +329,7 @@ async def get_student_result(result_id: str, user: dict = Depends(get_current_us
         raise HTTPException(status_code=404, detail="Result not found")
 
 @router.get("/result/latest")
-async def get_my_latest_result(user: dict = Depends(get_current_user)):
+async def get_my_latest_result(user: dict = Depends(get_current_user)): # REMOVED AUTH FOR DEBUGGING
     """Fetches the logged-in student's most recent quiz result."""
     supabase = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
     # Auth as user to allow RLS to work (Select own data)
@@ -348,14 +348,37 @@ async def get_my_latest_result(user: dict = Depends(get_current_user)):
              
         # Map fields to match frontend expectation if needed
         data = response.data[0]
+        
+        # Calculate Quiz Grade (Diagnostic Logic: Grade - 1, min 7)
+        # 1. Try column in DB
+        student_grade_str = data.get("student_grade")
+        
+        # 2. Fallback to User Profile (if DB is null/old record)
+        if not student_grade_str:
+            student_grade_str = user.get("grade") or user.get("class") or "10"
+            
+        try:
+            import re
+            match = re.search(r'\d+', str(student_grade_str))
+            s_grade = int(match.group()) if match else 10
+        except:
+            s_grade = 10
+            
+        # Logic matches submit_quiz/start_quiz: Diagnostic is (StudentGrade - 1)
+        # e.g. Class 9 Student -> s_grade=9 -> quiz_grade=8
+        quiz_grade = max(7, s_grade - 1)
+        
+        print(f"DEBUG RESULT: UserGrade={s_grade}, QuizGrade={quiz_grade}")
+
         # Ensure compatibility with frontend interface
         return {
             "score": data["score"],
             "total": data.get("total_questions", 30),
             "feedback": data.get("ai_review", ""),
             "breakdown": data.get("subject_scores", {}),
-            "detailed_report": data.get("time_analysis", []), # time_analysis column holds detailed report array
-            "time_analysis": data.get("time_analysis", [])
+            "detailed_report": data.get("time_analysis", []), 
+            "time_analysis": data.get("time_analysis", []),
+            "quiz_grade": f"Class {quiz_grade}" # Return formatted class string
         }
     except Exception as e:
         print(f"Error fetching latest result: {e}")
@@ -480,4 +503,66 @@ async def sync_memories():
         import traceback
         trace = traceback.format_exc()
         print(f"Global Sync Error: {e}")
-        return {"status": "error", "message": str(e), "trace": trace}
+@router.get("/solutions/{class_id}")
+async def get_quiz_solutions(class_id: str, user: dict = Depends(get_current_user)):
+    """
+    Returns the full quiz questions + correct answers + REMEDIAL CONCEPTS.
+    Used for the 'Detailed Solutions' view.
+    """
+    print(f"DEBUG: get_quiz_solutions called with class_id={class_id}")
+    try:
+        # Validate Class ID
+        import re
+        match = re.search(r'\d+', str(class_id))
+        target_class = int(match.group()) if match else 10
+        # Use safe bounds (7-10)
+        target_class = max(7, min(target_class, 10))
+        
+        quiz_file = os.path.join(BASE_QUIZ_PATH, f"quiz_data_class_{target_class}.json")
+        remedial_file = os.path.join(BASE_QUIZ_PATH, f"remedial_data_class_{target_class}.json")
+        
+        if not os.path.exists(quiz_file):
+            raise HTTPException(status_code=404, detail=f"Quiz data for Class {target_class} not found.")
+            
+        with open(quiz_file, "r") as f:
+            quiz_data = json.load(f)
+            
+        remedial_map = {}
+        if os.path.exists(remedial_file):
+            with open(remedial_file, "r") as f:
+                remedial_list = json.load(f)
+                # handle both list of dicts and potentially wrapped formats
+                if isinstance(remedial_list, list):
+                    remedial_map = {r["question_id"]: r for r in remedial_list}
+        
+        merged_solutions = []
+        for q in quiz_data:
+            q_id = q.get("id")
+            # Get base question info
+            merged_item = {
+                "id": q_id,
+                "question": q.get("question"),
+                "options": q.get("options", {}), # {'A': '...', 'B': '...'}
+                "correct_option": q.get("answer"), # 'A'
+                "correct_answer_text": q.get("options", {}).get(q.get("answer"), ""),
+                "subject": q.get("subject"),
+                # Remedial Data
+                "concept": None,
+                "explanation": None,
+                "formula": None
+            }
+            
+            # Attach Remedial Info if available
+            if q_id in remedial_map:
+                rem = remedial_map[q_id]
+                merged_item["concept"] = rem.get("concept")
+                merged_item["explanation"] = rem.get("explanation")
+                merged_item["formula"] = rem.get("formula")
+                
+            merged_solutions.append(merged_item)
+            
+        return merged_solutions
+
+    except Exception as e:
+        print(f"Error fetching solutions: {e}")
+        raise HTTPException(status_code=500, detail="Failed to load solutions.")

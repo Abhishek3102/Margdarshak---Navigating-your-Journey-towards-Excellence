@@ -105,6 +105,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
             "id": user_response.user.id,
             "email": user_response.user.email,
             "class": user_response.user.user_metadata.get("grade", "Class 10"), # Default fallback
+            "grade": user_response.user.user_metadata.get("grade", "Class 10"), # For frontend compatibility
             "role": user_response.user.user_metadata.get("role", "student"),
             "full_name": user_response.user.user_metadata.get("full_name", ""),
             "token": token
@@ -114,3 +115,59 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     except Exception as e:
         print(f"Auth Error: {e}")
         raise HTTPException(status_code=401, detail="Could not validate credentials")
+
+@router.get("/me")
+async def get_me(user: dict = Depends(get_current_user)):
+    return {"user": user}
+
+# --- Admin/Teacher Actions ---
+
+class AccessRequest(BaseModel):
+    student_id: str
+    target_class: str
+
+@router.post("/grant-access")
+async def grant_access(request: AccessRequest, current_user: dict = Depends(get_current_user)):
+    # 1. Check Permissions
+    if current_user["role"] not in ["teacher", "admin"]:
+        raise HTTPException(status_code=403, detail="Only teachers can grant access")
+        
+    # 2. Setup Admin Client (Required to update other users)
+    service_key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
+    if not service_key:
+        # Fallback: Try to read from .env file directly if not in os.environ yet
+        # (This handles cases where load_dotenv didn't pick it up or it wasn't exported)
+        # But for now, we'll raise error
+        raise HTTPException(status_code=500, detail="Server misconfiguration: Missing SERVICE_ROLE_KEY")
+        
+    supabase_admin = create_client(url, service_key)
+    
+    try:
+        # 3. Get Student Data
+        user_res = supabase_admin.auth.admin.get_user_by_id(request.student_id)
+        user = user_res.user
+        
+        if not user:
+             raise HTTPException(status_code=404, detail="Student not found")
+             
+        # 4. Update Metadata
+        current_metadata = user.user_metadata or {}
+        allowed = current_metadata.get("allowed_classes", [])
+        
+        if request.target_class not in allowed:
+            allowed.append(request.target_class)
+            
+        update_res = supabase_admin.auth.admin.update_user_by_id(
+            request.student_id,
+            {"user_metadata": {**current_metadata, "allowed_classes": allowed}}
+        )
+        
+        return {"message": f"Access granted to {request.target_class}", "allowed_classes": allowed}
+        
+    except Exception as e:
+        import traceback
+        error_msg = f"Grant Access Error: {str(e)}\n{traceback.format_exc()}"
+        print(error_msg)
+        with open("auth_error.log", "a") as f:
+            f.write(error_msg + "\n")
+        raise HTTPException(status_code=500, detail=str(e))

@@ -1,0 +1,182 @@
+[
+    {
+        "question_id": 1,
+        "concept": "Additive Inverse",
+        "explanation": "The additive inverse of a number is the number that, when added to the original number, results in zero. To find the additive inverse, you simply change the sign of the original number.",
+        "formula": "Additive Inverse of 'a' is '-a', such that a + (-a) = 0"
+    },
+    {
+        "question_id": 2,
+        "concept": "Photosynthesis",
+        "explanation": "Photosynthesis is the vital process used by plants, algae, and some bacteria to convert light energy, usually from the Sun, into chemical energy stored in glucose (sugar). This process requires carbon dioxide and water and releases oxygen as a byproduct.",
+        "formula": "Carbon Dioxide + Water + Light Energy -> Glucose + Oxygen"
+    },
+    {
+        "question_id": 3,
+        "concept": "Parts of Speech: Noun Identification",
+        "explanation": "A noun is a word that names a person, place, thing, or idea. In a sentence, nouns function as the subject performing the action or the object receiving the action.",
+        "formula": "Noun = Person, Place, Thing, or Idea"
+    },
+    {
+        "question_id": 4,
+        "concept": "Medieval Indian Architecture (Qutub Minar)",
+        "explanation": "The Qutub Minar complex in Delhi was initiated by the rulers of the Delhi Sultanate, specifically Qutb-ud-din Aibak, who started its construction in 1192 CE. Subsequent rulers, including Iltutmish and Firoz Shah Tughlaq, added to its height and structure over time.",
+        "formula": "Qutub Minar Construction Start -> Qutb-ud-din Aibak (Delhi Sultanate)"
+    },
+    {
+        "question_id": 5,
+        "concept": "Combining Like Terms in Algebra",
+        "explanation": "To simplify an algebraic expression, you combine 'like terms,' which are terms that have the exact same variable part (e.g., all terms with 'x' or all terms with 'y'). You add or subtract their coefficients while keeping the variable the same.",
+        "formula": "Combine terms with same variable: (a*x + b*x) = (a + b)*x"
+    },
+    {
+        "question_id": 6,
+        "concept": "Components of Blood",
+        "explanation": "Blood is composed of plasma and three main types of cells: Red Blood Cells, White Blood Cells, and Platelets. Platelets, also known as thrombocytes, are crucial cell fragments that initiate the process of coagulation.",
+        "formula": "Blood = Plasma + RBCs + WBCs + Platelets"
+    },
+    {
+        "question_id": 7,
+        "concept": "Degrees of Adjectives (Superlative)",
+        "explanation": "Adjectives change form to show comparison: positive (tall), comparative (taller), and superlative (tallest). The superlative degree is used when comparing three or more items or people, usually preceded by 'the'.",
+        "formula": "Use 'the' + Adjective + est for comparison among three or more."
+    },
+    {
+        "question_id": 8,
+        "concept": "Early Delhi Sultanate Coinage",
+        "explanation": "Iltutmish, considered the real consolidator of the Delhi Sultanate, introduced a standardized currency system. He established the Tanka (silver coin) and the Jital (copper coin) as the primary units of exchange.",
+        "formula": "Ruler: Iltutmish -> Coins: Tanka (Silver) and Jital (Copper)"
+    },
+    {
+        "question_id": 9,
+        "concept": "Fractions and Number Puzzles",
+        "explanation": "To find the whole number when a fraction of it is known, you can set up an algebraic equation. If 'x' is the number, (2/5) times x equals 12. Solve for x by multiplying 12 by the reciprocal of the fraction.",
+        "formula": "Fraction * Number = Part. Number = Part / Fraction"
+    },
+    {
+        "question_id": 10,
+        "concept": "Plant Tissues: Xylem",
+        "explanation": "Xylem is a complex vascular tissue found in plants responsible for structural support and transport. Its primary role is to move water and dissolved mineral nutrients absorbed by the roots upwards to the stem and leaves.",
+        "formula": "Xylem Function: Roots -> Water and Minerals -> Leaves"
+    },
+    {
+        "question_id": 11,
+        "concept": "Active and Passive Voice Conversion",
+        "explanation": "Active voice emphasizes the doer of the action (subject performs the verb), while passive voice emphasizes the receiver of the action (subject receives the verb). To change from passive to active, the object of the passive sentence becomes the subject, and the verb tense must match the original passive form.",
+        "formula": "Passive: Object + was/were + Verb (Past Participle) + by Subject. Active: Subject + Verb (Simple Past) + Object."
+    },
+    {
+        "question_id": 12,
+        "concept": "Medieval Indian Political Geography and Conflict",
+        "explanation": "During the transition period leading up to the Delhi Sultanate, regional powers frequently fought for control over fertile agricultural lands and crucial trade arteries. The Gangetic Plains offered significant agricultural wealth and strategic control over North Indian trade routes.",
+        "formula": "Key Conflict Areas -> Fertile Lands and Trade Routes"
+    },
+    {
+        "question_id": 13,
+        "concept": "Evaluation of Algebraic Expressions with Negative Numbers",
+        "explanation": "This involves substituting given integer values into an expression and following the order of operations (PEMDAS/BODMAS). Remember that cubing a negative number results in a negative number, and squaring a number always results in a positive number.",
+        "formula": "Expression: a^3 - 3 * b^2. Substitute a=-2 and b=3: (-2)^3 - 3 * (3)^2."
+    },
+    {
+        "question_id": 14,
+        "concept": "Distinguishing Physical and Chemical Changes",
+        "explanation": "A physical change alters the form or appearance of a substance but does not create a new chemical substance (e.g., phase changes). A chemical change results in the formation of one or more entirely new substances with different properties (e.g., chemical reactions).",
+        "formula": "Physical Change: Reversible, no new substance formed. Chemical Change: Irreversible (usually), new substance formed."
+    },
+    {
+        "question_id": 15,
+        "concept": "Conversion from Direct to Indirect Speech (Exclamatory Sentences)",
+        "explanation": "When converting exclamatory sentences to indirect speech, the reporting verb (exclaimed) dictates the introductory phrase, and the exclamation is converted into a statement using 'that'. Adverbs like 'very' are often added to convey the intensity of the original exclamation.",
+        "formula": "Direct: He said, 'What a Noun!' -> Indirect: He exclaimed that it was a very Noun."
+    },
+    {
+        "question_id": 16,
+        "concept": "Bhakti Movement Principles",
+        "explanation": "The Bhakti movement emphasized direct, personal devotion to a chosen deity, often bypassing elaborate rituals or priestly mediation. A central social tenet for many reformers was the rejection of rigid social hierarchies, particularly the caste system, promoting equality among devotees.",
+        "formula": "Personal Devotion -> Rejection of Caste Barriers"
+    },
+    {
+        "question_id": 17,
+        "concept": "Decimal Multiplication",
+        "explanation": "To multiply decimals, first multiply the numbers as if they were whole numbers. Then, count the total number of decimal places in the original factors and place the decimal point in the product so that it has that same total number of decimal places.",
+        "formula": "Multiply digits, then count total decimal places in factors to place decimal in product"
+    },
+    {
+        "question_id": 18,
+        "concept": "Weather vs. Climate",
+        "explanation": "Weather refers to the short-term atmospheric conditions at a specific time and place, such as today's temperature or rainfall. Climate, conversely, describes the long-term average of weather patterns in a region, typically calculated over 30 years or more.",
+        "formula": "Climate = Average Weather over a Long Period (e.g., 30 years)"
+    },
+    {
+        "question_id": 19,
+        "concept": "Usage of Indefinite Articles (An)",
+        "explanation": "The indefinite article 'an' is used before words that begin with a vowel sound (a, e, i, o, u). Although 'elephant' starts with the letter 'e', the rule applies to the sound the word begins with.",
+        "formula": "Use 'an' before words starting with a vowel sound (a, e, i, o, u sound)"
+    },
+    {
+        "question_id": 20,
+        "concept": "Tribal Livelihoods and Forests",
+        "explanation": "Tribal communities and nomadic pastoralists historically maintained a very close relationship with forest ecosystems. Their livelihoods, including gathering, hunting, and grazing animals, were directly dependent on the resources provided by the forests.",
+        "formula": "Forest Dependence -> Hunting, Gathering, Grazing, Shifting Cultivation"
+    },
+    {
+        "question_id": 21,
+        "concept": "Angle Sum Property of a Triangle",
+        "explanation": "The sum of all interior angles in any triangle is always equal to 180 degrees. To find the missing angle, subtract the sum of the two known angles from 180 degrees.",
+        "formula": "Angle A + Angle B + Angle C = 180 degrees"
+    },
+    {
+        "question_id": 22,
+        "concept": "Atmospheric Pressure and Wind Systems",
+        "explanation": "Wind is the movement of air from areas of high pressure to areas of low pressure. Significant temperature differences cause large variations in atmospheric pressure, which drives the formation of large-scale weather systems like cyclones.",
+        "formula": "Wind moves from High Pressure Area -> Low Pressure Area"
+    },
+    {
+        "question_id": 23,
+        "concept": "Parts of Speech: Adverbs",
+        "explanation": "An adverb is a word that modifies a verb, an adjective, or another adverb. It often answers questions like how, when, where, or to what extent an action is performed. In this sentence, it describes how the action (sang) was performed.",
+        "formula": "Adverb modifies Verb, Adjective, or another Adverb"
+    },
+    {
+        "question_id": 24,
+        "concept": "Mughal Empire Administration",
+        "explanation": "The Mughal Empire was divided into large administrative units to manage governance, revenue collection, and military affairs across its vast territory. The primary large-scale division was known as a Suba, which was governed by an official appointed by the Emperor.",
+        "formula": "Empire -> Suba (Province) -> Sarkar (District) -> Pargana (Sub-district)"
+    },
+    {
+        "question_id": 25,
+        "concept": "Congruence Criteria for Triangles (ASA)",
+        "explanation": "ASA stands for Angle-Side-Angle congruence rule. For two triangles to be congruent under this rule, one pair of corresponding angles, the side included between those two angles, and the other corresponding angle must be equal.",
+        "formula": "If Angle A = Angle P, Side AB = Side PQ, and Angle B = Angle Q, then Triangle ABC is congruent to Triangle PQR (ASA)"
+    },
+    {
+        "question_id": 26,
+        "concept": "Electrochemical Cells and Salt Bridges",
+        "explanation": "A salt bridge is a crucial component in a galvanic or voltaic cell that connects the two half-cells. Its primary role is to complete the circuit by allowing the migration of inert ions to maintain electrical neutrality in both solutions.",
+        "formula": "Ion migration balances charge buildup in half-cells"
+    },
+    {
+        "question_id": 27,
+        "concept": "Pronoun Case Usage (Objective Case)",
+        "explanation": "Pronouns must be in the objective case (me, him, her, us, them) when they function as the object of a preposition, such as 'between'. The phrase 'Between you and me' correctly uses the objective case for both pronouns.",
+        "formula": "Object of Preposition -> Objective Case Pronoun (e.g., between X and me)"
+    },
+    {
+        "question_id": 28,
+        "concept": "Mughal Architecture Elements",
+        "explanation": "Mughal architecture, prominent in structures like the Taj Mahal, heavily featured the Dome (a rounded vault forming the roof) and the Iwan (a vaulted space opening onto a courtyard). These elements symbolized imperial grandeur, balance, and religious significance.",
+        "formula": "Mughal Power Symbolism = Dome + Iwan"
+    },
+    {
+        "question_id": 29,
+        "concept": "Perimeter of a Square",
+        "explanation": "The perimeter of any polygon is the total distance around its exterior boundary. Since a square has four equal sides, the perimeter is calculated by summing the length of all four sides.",
+        "formula": "Perimeter = s + s + s + s or Perimeter = 4 * s"
+    },
+    {
+        "question_id": 30,
+        "concept": "Sewage Treatment Stages",
+        "explanation": "Sewage treatment involves primary (settling solids), secondary (biological breakdown), and tertiary treatment. The final stage produces treated water, which is called effluent, ready for safe discharge or reuse.",
+        "formula": "Treated Water = Effluent"
+    }
+]

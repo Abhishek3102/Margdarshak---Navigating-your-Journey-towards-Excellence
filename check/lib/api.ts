@@ -17,6 +17,10 @@ export const authAPI = {
   },
   register: async (name: string, email: string, password: string, role: string) => {
     return { token: "mock-jwt-token-for-testing-purposes-only", user: { email, name, role } }
+  },
+  grantAccess: async (studentId: string, targetClass: string) => {
+    const response = await axiosInstance.post('/auth/grant-access', { student_id: studentId, target_class: targetClass })
+    return response.data
   }
 }
 
@@ -81,11 +85,28 @@ export const recommendationAPI = {
 }
 
 export const feedbackAPI = {
-  submit: async (data: any) => { return { success: true } }
+  submit: async (data: any) => {
+    // Data format adjustment if needed
+    if (data.type === 'quick' && data.feedback) {
+      data.message = data.feedback;
+      delete data.feedback;
+    }
+    const response = await axiosInstance.post('/feedback/', data)
+    return response.data
+  }
 }
 
 export const userAPI = {
   updateProfile: async (data: any) => { return { success: true } },
   changePassword: async (data: any) => { return { success: true } }
+}
+
+import axiosInstance from "@/lib/axios"
+
+export const curriculumAPI = {
+  getStructure: async () => {
+    const response = await axiosInstance.get('/curriculum/structure')
+    return response.data;
+  }
 }
 
