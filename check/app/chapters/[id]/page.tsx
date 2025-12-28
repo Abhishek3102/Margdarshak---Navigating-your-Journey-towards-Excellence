@@ -15,6 +15,7 @@ import { ArrowLeft, Play, Clock, ChevronRight, Loader2, Plus, Upload, CheckCircl
 import { useAuth } from "@/components/auth-provider"
 import { toast } from "sonner"
 import { WatchPartyModal } from "@/components/watch-party-modal"
+import axiosInstance from "@/lib/axios"
 
 // Simple Modal Component
 const VideoModal = ({ video, onClose }: { video: any, onClose: () => void }) => {
@@ -82,9 +83,9 @@ export default function ChapterPage() {
         if (partyId && videos.length > 0) {
              // Fetch room details to know which video to play
              // For simplify, we assume the first video or we check the room API
-             fetch(`http://localhost:8000/api/watch-party/${partyId}`)
-                .then(res => res.json())
-                .then(data => {
+             axiosInstance.get(`/watch-party/${partyId}`)
+                .then(res => {
+                    const data = res.data;
                     setWatchPartyRoomId(partyId)
                     setWatchPartyVideo({
                         video_url: data.video_url,
@@ -105,17 +106,13 @@ export default function ChapterPage() {
             // Check if we are ALREADY in a party for this video (from URL)? 
             // Nay, new click = new session usually, unless we want to join existing?
             // For now, simple: Create new session for this user.
-            const res = await fetch("http://localhost:8000/api/watch-party/create", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    video_url: video.video_url,
-                    video_title: video.title,
-                    host_id: user.id,
-                    host_name: user.name || "Viewer"
-                })
+            const res = await axiosInstance.post("/watch-party/create", {
+                video_url: video.video_url,
+                video_title: video.title,
+                host_id: user.id,
+                host_name: user.name || "Viewer"
             })
-            const data = await res.json()
+            const data = res.data
             
             // Redirect to dedicated Study Group Page
             window.location.href = `/study-group/${data.room_id}`
@@ -170,16 +167,11 @@ export default function ChapterPage() {
         formData.append('resource_type', type)
 
         // Point to the Generic /upload endpoint
-        const res = await fetch('http://localhost:8000/api/upload', {
-            method: 'POST',
-            body: formData,
+        const res = await axiosInstance.post('/upload', formData, {
+            headers: { "Content-Type": "multipart/form-data" }
         })
         
-        if (!res.ok) {
-            const err = await res.json()
-            throw new Error(err.detail || "Upload failed")
-        }
-        return res.json()
+        return res.data
     }
 
     const handleAddVideo = async (e: React.FormEvent) => {

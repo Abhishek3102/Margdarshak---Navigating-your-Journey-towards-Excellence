@@ -6,6 +6,7 @@ import { Navbar } from "@/components/navbar"
 import { WatchPartyModal } from "@/components/watch-party-modal"
 import { toast } from "sonner"
 import { Loader2 } from "lucide-react"
+import axiosInstance from "@/lib/axios"
 
 export default function StudyGroupSessionPage() {
     const params = useParams()
@@ -19,11 +20,8 @@ export default function StudyGroupSessionPage() {
     useEffect(() => {
         const fetchRoom = async () => {
             try {
-                const res = await fetch(`http://localhost:8000/api/watch-party/${roomId}`)
-                if (!res.ok) throw new Error("Room not found")
-                
-                const data = await res.json()
-                setRoomData(data)
+                const res = await axiosInstance.get(`/watch-party/${roomId}`)
+                setRoomData(res.data)
             } catch (e) {
                 console.error(e)
                 setError(true)
