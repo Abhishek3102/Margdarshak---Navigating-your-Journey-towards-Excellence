@@ -10,6 +10,8 @@ origins = [
     "http://localhost:3001",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
+    "https://margdarshak-t0jj.onrender.com",
+    "https://margdarshak-t0jj.onrender.com/", 
 ]
 
 app.add_middleware(
