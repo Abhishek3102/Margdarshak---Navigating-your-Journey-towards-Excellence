@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { Navbar } from "@/components/navbar"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { CheckCircle2, BookOpen, BrainCircuit, Loader2, ArrowLeft } from "lucide-react"
 import axiosInstance from "@/lib/axios"
 
-export default function SolutionsPage() {
+function SolutionsContent() {
     const searchParams = useSearchParams()
     const router = useRouter()
     
