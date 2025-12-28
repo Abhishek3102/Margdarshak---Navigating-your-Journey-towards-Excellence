@@ -13,5 +13,7 @@ cloudinary>=1.39.0
 mem0ai
 Pillow
 qdrant-client
+requests
+httpx
 
 
