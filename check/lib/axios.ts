@@ -19,3 +19,5 @@ axiosInstance.interceptors.request.use(async (config: InternalAxiosRequestConfig
 
     return config
 })
+
+export default axiosInstance

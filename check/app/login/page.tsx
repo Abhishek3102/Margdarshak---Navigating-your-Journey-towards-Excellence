@@ -62,7 +62,9 @@ export default function LoginPage() {
       
       // Artificial delay to ensure state propagates
       setTimeout(() => {
-        router.push(searchParams.get("callbackUrl") || "/dashboard")
+        router.refresh() // Force refresh to update server components/middleware awareness
+        const target = searchParams.get("callbackUrl") || "/dashboard"
+        router.push(target)
       }, 500)
     } catch (error: any) {
       toast({ title: "Login Failed", description: error.message, variant: "destructive" })

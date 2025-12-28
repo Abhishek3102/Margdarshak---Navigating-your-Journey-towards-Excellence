@@ -161,12 +161,8 @@ async def submit_quiz(submission: QuizSubmission, user: dict = Depends(get_curre
         # 4. Save to DB using authenticated client (to pass RLS)
         supabase_client: Client = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
         
-        # Set the session manually or just pass Authorization header if client supports it easily.
-        # supabase-py doesn't have a simple 'set_token' for single request easily without session.
-        # But we can try setting the session if we had refresh token (we don't).
-        # HACK: If we can't use Service Key, we must rely on the fact that we have the access token.
-        # We can construct the header manually for the postgrest request.
-        
+        # Manually set auth header if needed, but for now relying on RLS or open access.
+        # Ideally user['token'] is used.
         supabase_client.postgrest.auth(user["token"])
 
         result_data = {
@@ -176,9 +172,20 @@ async def submit_quiz(submission: QuizSubmission, user: dict = Depends(get_curre
             "subject_scores": subject_stats,
             "time_analysis": detailed_report, # Store full report here
             "ai_review": ai_feedback,
+            # New columns (Ensure SQL migration is run!)
+            "student_name": user.get("full_name") or user.get("email"), 
+            "student_grade": str(current_class)
         }
 
-        response = supabase_client.table("quiz_results").insert(result_data).execute()
+        # Use error handling for insert in case migration isn't run yet
+        try:
+             response = supabase_client.table("quiz_results").insert(result_data).execute()
+        except Exception as insert_error:
+             print(f"Insert Error (Schema mismatch?): {insert_error}")
+             # Fallback: Remove new columns and try again
+             del result_data["student_name"]
+             del result_data["student_grade"]
+             response = supabase_client.table("quiz_results").insert(result_data).execute()
         
         return {
             "score": correct_count,
@@ -191,3 +198,84 @@ async def submit_quiz(submission: QuizSubmission, user: dict = Depends(get_curre
     except Exception as e:
         print(f"Error submitting quiz: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+# --- Teacher Endpoints ---
+
+@router.get("/teacher/classes")
+async def get_teacher_classes(user: dict = Depends(get_current_user)):
+    """Returns list of available classes for analysis."""
+    if user.get("role") != "teacher":
+         # In strict mode we'd raise 403, but for now allowing flexible access or returning empty
+         pass 
+    return ["Class 7", "Class 8", "Class 9", "Class 10"]
+
+@router.get("/teacher/{grade}/students")
+async def get_class_students(grade: str, user: dict = Depends(get_current_user)):
+    """Fetches all quiz results for a specific grade."""
+    # Mapping "Class 10" -> "10"
+    import re
+    match = re.search(r'\d+', grade)
+    numeric_grade = match.group() if match else "10"
+    
+    supabase = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
+    
+    # Authenticate via RLS using Teacher's Token
+    supabase.postgrest.auth(user["token"])
+    
+    try:
+        # Fetch results where student_grade matches OR is null (legacy records)
+        # We use the 'or' filter syntax: "student_grade.eq.10,student_grade.is.null"
+        response = supabase.table("quiz_results")\
+            .select("*")\
+            .or_(f"student_grade.eq.{numeric_grade},student_grade.is.null")\
+            .order("created_at", desc=True)\
+            .execute()
+            
+        return response.data
+    except Exception as e:
+        print(f"Error fetching students: {e}")
+        return []
+
+@router.get("/teacher/result/{result_id}")
+async def get_student_result(result_id: str, user: dict = Depends(get_current_user)):
+    supabase = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
+    supabase.postgrest.auth(user["token"])
+    
+    try:
+        response = supabase.table("quiz_results").select("*").eq("id", result_id).single().execute()
+        return response.data
+    except Exception as e:
+        raise HTTPException(status_code=404, detail="Result not found")
+
+@router.get("/result/latest")
+async def get_my_latest_result(user: dict = Depends(get_current_user)):
+    """Fetches the logged-in student's most recent quiz result."""
+    supabase = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
+    # Auth as user to allow RLS to work (Select own data)
+    supabase.postgrest.auth(user["token"])
+    
+    try:
+        response = supabase.table("quiz_results")\
+            .select("*")\
+            .eq("user_id", user["id"])\
+            .order("created_at", desc=True)\
+            .limit(1)\
+            .execute()
+            
+        if not response.data or len(response.data) == 0:
+             return None
+             
+        # Map fields to match frontend expectation if needed
+        data = response.data[0]
+        # Ensure compatibility with frontend interface
+        return {
+            "score": data["score"],
+            "total": data.get("total_questions", 30),
+            "feedback": data.get("ai_review", ""),
+            "breakdown": data.get("subject_scores", {}),
+            "detailed_report": data.get("time_analysis", []), # time_analysis column holds detailed report array
+            "time_analysis": data.get("time_analysis", [])
+        }
+    except Exception as e:
+        print(f"Error fetching latest result: {e}")
+        raise HTTPException(status_code=500, detail="Failed to fetch result")

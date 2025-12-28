@@ -72,21 +72,28 @@ export function Navbar() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/courses" className="text-white/80 hover:text-white transition-colors text-sm font-medium">
-              Curriculum
-            </Link>
-            <Link href="/recommendations" className="text-white/80 hover:text-white transition-colors text-sm font-medium">
-              Mastery Paths
-            </Link>
-            <Link href="/study-group" className="text-white/80 hover:text-white transition-colors text-sm font-medium">
-              Study Groups
-            </Link>
-            <Link href="/feedback" className="text-white/80 hover:text-white transition-colors text-sm font-medium">
-              Feedback
-            </Link>
-            <Link href="/quiz" className="text-white/80 hover:text-white transition-colors text-sm font-medium">
-              Diagnostic Test
-            </Link>
+            {isLoggedIn ? (
+              <>
+                <Link href="/courses" className="text-white/80 hover:text-white transition-colors text-sm font-medium">
+                  Curriculum
+                </Link>
+                <Link href="/recommendations" className="text-white/80 hover:text-white transition-colors text-sm font-medium">
+                  Mastery Paths
+                </Link>
+                <Link href="/study-group" className="text-white/80 hover:text-white transition-colors text-sm font-medium">
+                  Study Groups
+                </Link>
+                <Link href="/feedback" className="text-white/80 hover:text-white transition-colors text-sm font-medium">
+                  Feedback
+                </Link>
+                <Link 
+                  href={user?.role === 'teacher' ? "/quiz/teacher" : "/quiz"} 
+                  className="text-white/80 hover:text-white transition-colors text-sm font-medium"
+                >
+                  Diagnostic Test
+                </Link>
+              </>
+            ) : null}
 
             {isLoggedIn ? (
               <div className="flex items-center gap-4">
@@ -177,21 +184,28 @@ export function Navbar() {
         {/* Mobile Navigation */}
         {isMobile && isMenuOpen && (
           <nav className="md:hidden mt-4 py-4 flex flex-col space-y-4 animate-fade-in bg-slate-900/95 border-t border-slate-800">
-            <Link href="/courses" className="text-white/80 hover:text-white transition-colors px-4">
-              Curriculum
-            </Link>
-            <Link href="/recommendations" className="text-white/80 hover:text-white transition-colors px-4">
-              Mastery Paths
-            </Link>
-            <Link href="/study-group" className="text-white/80 hover:text-white transition-colors px-4">
-              Study Groups
-            </Link>
-            <Link href="/feedback" className="text-white/80 hover:text-white transition-colors px-4">
-              Feedback
-            </Link>
-            <Link href="/quiz" className="text-white/80 hover:text-white transition-colors px-4">
-              Diagnostic Test
-            </Link>
+            {isLoggedIn && (
+              <>
+                <Link href="/courses" className="text-white/80 hover:text-white transition-colors px-4">
+                  Curriculum
+                </Link>
+                <Link href="/recommendations" className="text-white/80 hover:text-white transition-colors px-4">
+                  Mastery Paths
+                </Link>
+                <Link href="/study-group" className="text-white/80 hover:text-white transition-colors px-4">
+                  Study Groups
+                </Link>
+                <Link href="/feedback" className="text-white/80 hover:text-white transition-colors px-4">
+                  Feedback
+                </Link>
+                <Link 
+                  href={user?.role === 'teacher' ? "/quiz/teacher" : "/quiz"}
+                  className="text-white/80 hover:text-white transition-colors px-4"
+                >
+                  Diagnostic Test
+                </Link>
+              </>
+            )}
 
             {isLoggedIn ? (
               <div className="px-4 space-y-2">

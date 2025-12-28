@@ -105,6 +105,8 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
             "id": user_response.user.id,
             "email": user_response.user.email,
             "class": user_response.user.user_metadata.get("grade", "Class 10"), # Default fallback
+            "role": user_response.user.user_metadata.get("role", "student"),
+            "full_name": user_response.user.user_metadata.get("full_name", ""),
             "token": token
         }
         return user_data
