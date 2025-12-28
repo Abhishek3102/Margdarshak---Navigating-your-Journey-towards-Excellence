@@ -84,6 +84,9 @@ export function Navbar() {
             <Link href="/feedback" className="text-white/80 hover:text-white transition-colors text-sm font-medium">
               Feedback
             </Link>
+            <Link href="/quiz" className="text-white/80 hover:text-white transition-colors text-sm font-medium">
+              Diagnostic Test
+            </Link>
 
             {isLoggedIn ? (
               <div className="flex items-center gap-4">
@@ -185,6 +188,9 @@ export function Navbar() {
             </Link>
             <Link href="/feedback" className="text-white/80 hover:text-white transition-colors px-4">
               Feedback
+            </Link>
+            <Link href="/quiz" className="text-white/80 hover:text-white transition-colors px-4">
+              Diagnostic Test
             </Link>
 
             {isLoggedIn ? (

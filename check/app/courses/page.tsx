@@ -39,13 +39,13 @@ export default function CoursesPage() {
       try {
         setLoading(true)
         const response = await courseAPI.getAll(filters)
-        const coursesData = response.data || []
+        const coursesData = (response as any).data || [] // Accessing data safely with casting if needed or define proper type for courseAPI responses
 
         // If user is logged in, fetch enrolled courses to mark them
         if (isLoggedIn && isMounted) {
           try {
             const enrolledResponse = await courseAPI.getEnrolled()
-            const enrolledData = enrolledResponse.data || []
+            const enrolledData = (enrolledResponse as any).data || []
             const enrolledIds = enrolledData.map((course: any) => course._id || course.id)
 
             if (isMounted) {

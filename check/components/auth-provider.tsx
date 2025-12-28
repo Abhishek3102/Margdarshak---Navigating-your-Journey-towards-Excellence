@@ -36,20 +36,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname()
 
   const refreshUser = async () => {
-    // Manually fetch session
-    const { data: { session } } = await supabase.auth.getSession()
-    if (session?.user) {
-        setUser({
-            id: session.user.id,
-            email: session.user.email,
-            role: session.user.user_metadata?.role || 'student',
-            name: session.user.user_metadata?.full_name,
-            grade: session.user.user_metadata?.grade
-        })
-        setIsLoggedIn(true)
-    } else {
-        setUser(null)
-        setIsLoggedIn(false)
+    try {
+      // Manually fetch session
+      const { data: { session }, error } = await supabase.auth.getSession()
+      
+      if (error) {
+        console.warn("Auth Refresh Error", error.message)
+        throw error
+      }
+
+      if (session?.user) {
+          setUser({
+              id: session.user.id,
+              email: session.user.email,
+              role: session.user.user_metadata?.role || 'student',
+              name: session.user.user_metadata?.full_name,
+              grade: session.user.user_metadata?.grade
+          })
+          setIsLoggedIn(true)
+      } else {
+          setUser(null)
+          setIsLoggedIn(false)
+      }
+    } catch (e) {
+      // If refresh token fails, clear state
+      console.error("Session fetch failed:", e)
+      setUser(null)
+      setIsLoggedIn(false)
+      // Optional: Explicitly sign out to clear bad tokens
+      await supabase.auth.signOut() 
     }
     setLoading(false)
   }

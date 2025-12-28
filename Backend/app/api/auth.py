@@ -83,3 +83,32 @@ async def login(user: UserLogin):
         
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+# --- Auth Dependency ---
+from fastapi.security import OAuth2PasswordBearer
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/auth/login")
+
+async def get_current_user(token: str = Depends(oauth2_scheme)):
+    supabase = get_supabase()
+    try:
+        # Verify the token with Supabase
+        user_response = supabase.auth.get_user(token)
+        if not user_response.user:
+             raise HTTPException(status_code=401, detail="Invalid authentication credentials")
+        
+        # Enrich with metadata if needed, but usually user_metadata has 'grade'
+        # Return a dict-like object or the user object directly.
+        # Our quiz app expects user["id"] and user["class"] (from metadata).
+        
+        user_data = {
+            "id": user_response.user.id,
+            "email": user_response.user.email,
+            "class": user_response.user.user_metadata.get("grade", "Class 10"), # Default fallback
+            "token": token
+        }
+        return user_data
+        
+    except Exception as e:
+        print(f"Auth Error: {e}")
+        raise HTTPException(status_code=401, detail="Could not validate credentials")

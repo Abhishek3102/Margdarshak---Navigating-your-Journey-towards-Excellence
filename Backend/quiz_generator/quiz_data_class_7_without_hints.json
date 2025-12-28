@@ -1,0 +1,282 @@
+[
+    {
+        "id": 1,
+        "subject": "Mathematics",
+        "topic": "Integers",
+        "difficulty": "Easy",
+        "question": "What is the additive inverse of -15?",
+        "options": {
+            "A": "15",
+            "B": "-15",
+            "C": "0",
+            "D": "1"
+        },
+        "answer": "A"
+    },
+    {
+        "id": 2,
+        "subject": "Science",
+        "topic": "Nutrition in Plants",
+        "difficulty": "Easy",
+        "question": "Which gas do plants absorb from the atmosphere during photosynthesis?",
+        "options": {
+            "A": "Oxygen",
+            "B": "Nitrogen",
+            "C": "Carbon Dioxide",
+            "D": "Hydrogen"
+        },
+        "answer": "C"
+    },
+    {
+        "id": 3,
+        "subject": "English (Grammar)",
+        "topic": "Nouns",
+        "difficulty": "Easy",
+        "question": "Identify the common noun in the following sentence: 'The teacher read a story to the children.'",
+        "options": {
+            "A": "The",
+            "B": "teacher",
+            "C": "read",
+            "D": "story"
+        },
+        "answer": "B"
+    },
+    {
+        "id": 4,
+        "subject": "History",
+        "topic": "The Mughal Empire",
+        "difficulty": "Easy",
+        "question": "Who was the first Mughal Emperor of India?",
+        "options": {
+            "A": "Akbar",
+            "B": "Humayun",
+            "C": "Babur",
+            "D": "Shah Jahan"
+        },
+        "answer": "C"
+    },
+    {
+        "id": 5,
+        "subject": "Mathematics",
+        "topic": "Fractions and Decimals",
+        "difficulty": "Medium",
+        "question": "Convert the fraction 3/8 into a decimal.",
+        "options": {
+            "A": "0.375",
+            "B": "0.38",
+            "C": "0.83",
+            "D": "0.125"
+        },
+        "answer": "A"
+    },
+    {
+        "id": 6,
+        "subject": "Science",
+        "topic": "Acids, Bases and Salts",
+        "difficulty": "Medium",
+        "question": "Which natural indicator changes its color to blue in basic solution?",
+        "options": {
+            "A": "Turmeric",
+            "B": "Litmus",
+            "C": "China Rose Petals",
+            "D": "Phenolphthalein"
+        },
+        "answer": "C"
+    },
+    {
+        "id": 7,
+        "subject": "English (Grammar)",
+        "topic": "Verbs and Tenses",
+        "difficulty": "Medium",
+        "question": "Choose the correct form of the verb to complete the sentence: 'She _____ homework when the doorbell rang.'",
+        "options": {
+            "A": "does",
+            "B": "is doing",
+            "C": "was doing",
+            "D": "did"
+        },
+        "answer": "C"
+    },
+    {
+        "id": 8,
+        "subject": "History",
+        "topic": "The Delhi Sultans",
+        "difficulty": "Medium",
+        "question": "Which dynasty built the Qutb Minar in Delhi?",
+        "options": {
+            "A": "Mughal Dynasty",
+            "B": "Tughlaq Dynasty",
+            "C": "Slave Dynasty (Mamluk)",
+            "D": "Khilji Dynasty"
+        },
+        "answer": "C"
+    },
+    {
+        "id": 9,
+        "subject": "Mathematics",
+        "topic": "Simple Equations",
+        "difficulty": "Medium",
+        "question": "Solve for x: 2(x + 5) = 18",
+        "options": {
+            "A": "x = 4",
+            "B": "x = 9",
+            "C": "x = 13",
+            "D": "x = -4"
+        },
+        "answer": "A"
+    },
+    {
+        "id": 10,
+        "subject": "Science",
+        "topic": "Transportation in Animals and Plants",
+        "difficulty": "Medium",
+        "question": "In plants, the transport of food from the leaves to other parts is called:",
+        "options": {
+            "A": "Transpiration",
+            "B": "Translocation",
+            "C": "Capillarity",
+            "D": "Absorption"
+        },
+        "answer": "B"
+    },
+    {
+        "id": 11,
+        "subject": "English (Grammar)",
+        "topic": "Adverbs",
+        "difficulty": "Medium",
+        "question": "Which word modifies the verb 'runs' in the sentence: 'The swift horse runs very fast'?",
+        "options": {
+            "A": "swift",
+            "B": "horse",
+            "C": "very",
+            "D": "fast"
+        },
+        "answer": "D"
+    },
+    {
+        "id": 12,
+        "subject": "History",
+        "topic": "Tracing Changes Through A Thousand Years",
+        "difficulty": "Medium",
+        "question": "The term 'Hindustan' during the medieval period was used by historians like Minhaj-i-Siraj to refer primarily to which region?",
+        "options": {
+            "A": "The entire Indian subcontinent",
+            "B": "The Punjab, Haryana, and the lands between the Ganga and Yamuna rivers",
+            "C": "South India only",
+            "D": "The coastal regions"
+        },
+        "answer": "B"
+    },
+    {
+        "id": 13,
+        "subject": "Mathematics",
+        "topic": "Lines and Angles",
+        "difficulty": "Hard",
+        "question": "If two lines intersect, and one angle formed is 75 degrees, what is the measure of the vertically opposite angle?",
+        "options": {
+            "A": "105 degrees",
+            "B": "75 degrees",
+            "C": "90 degrees",
+            "D": "15 degrees"
+        },
+        "answer": "B"
+    },
+    {
+        "id": 14,
+        "subject": "Science",
+        "topic": "Physical and Chemical Changes",
+        "difficulty": "Hard",
+        "question": "Rusting of iron is an example of which type of change?",
+        "options": {
+            "A": "Physical Change only",
+            "B": "Chemical Change only",
+            "C": "Both physical and chemical change",
+            "D": "Reversible Change"
+        },
+        "answer": "B"
+    },
+    {
+        "id": 15,
+        "subject": "English (Grammar)",
+        "topic": "Active and Passive Voice",
+        "difficulty": "Hard",
+        "question": "Change the following sentence to Passive Voice: 'The carpenter built the sturdy table.'",
+        "options": {
+            "A": "The sturdy table was built by the carpenter.",
+            "B": "The sturdy table is built by the carpenter.",
+            "C": "By the carpenter, the sturdy table was built.",
+            "D": "The sturdy table builds the carpenter."
+        },
+        "answer": "A"
+    },
+    {
+        "id": 16,
+        "subject": "History",
+        "topic": "Rulers and Buildings",
+        "difficulty": "Hard",
+        "question": "What architectural feature, prominently used by Shah Jahan, is characterized by a large, onion-shaped dome?",
+        "options": {
+            "A": "Pietra Dura",
+            "B": "Chatri",
+            "C": "Dome",
+            "D": "Minar"
+        },
+        "answer": "C"
+    },
+    {
+        "id": 17,
+        "subject": "Mathematics",
+        "topic": "Exponents and Powers",
+        "difficulty": "Medium",
+        "question": "Simplify: (2^3) * (2^5)",
+        "options": {
+            "A": "2^8",
+            "B": "2^15",
+            "C": "4^8",
+            "D": "8^8"
+        },
+        "answer": "A"
+    },
+    {
+        "id": 18,
+        "subject": "Science",
+        "topic": "Motion and Time",
+        "difficulty": "Hard",
+        "question": "A car travels a distance of 300 km in 5 hours. What is its average speed in meters per second (m/s)? (Note: 1 km = 1000 m, 1 hour = 3600 seconds)",
+        "options": {
+            "A": "16.67 m/s",
+            "B": "60 m/s",
+            "C": "1667 m/s",
+            "D": "30 m/s"
+        },
+        "answer": "A"
+    },
+    {
+        "id": 19,
+        "subject": "English (Grammar)",
+        "topic": "Direct and Indirect Speech",
+        "difficulty": "Hard",
+        "question": "Convert to Indirect Speech: He said, \"I am going to the market tomorrow.\"",
+        "options": {
+            "A": "He said that he was going to the market the next day.",
+            "B": "He said that I am going to the market the next day.",
+            "C": "He told that he was going to the market tomorrow.",
+            "D": "He said he will go to the market the next day."
+        },
+        "answer": "A"
+    },
+    {
+        "id": 20,
+        "subject": "Mathematics",
+        "topic": "Perimeter and Area",
+        "difficulty": "Hard",
+        "question": "The area of a square is 144 cm^2. What is its perimeter?",
+        "options": {
+            "A": "12 cm",
+            "B": "48 cm",
+            "C": "36 cm",
+            "D": "144 cm"
+        },
+        "answer": "B"
+    }
+]

@@ -1,0 +1,422 @@
+[
+    {
+        "id": 1,
+        "subject": "Mathematics",
+        "difficulty": "Easy",
+        "question": "What is the additive inverse of the rational number \\frac{-3}{5}?",
+        "options": {
+            "A": "\\frac{3}{5}",
+            "B": "\\frac{-5}{3}",
+            "C": "\\frac{5}{3}",
+            "D": "\\frac{-3}{5}"
+        },
+        "answer": "A",
+        "hint": "The additive inverse of a number 'x' is '-x'."
+    },
+    {
+        "id": 2,
+        "subject": "Science",
+        "difficulty": "Easy",
+        "question": "Which of the following is a method of weeding?",
+        "options": {
+            "A": "Ploughing",
+            "B": "Irrigation",
+            "C": "Spraying herbicides",
+            "D": "Sowing"
+        },
+        "answer": "C",
+        "hint": "Weeding involves removing unwanted plants (weeds)."
+    },
+    {
+        "id": 3,
+        "subject": "English (Grammar)",
+        "difficulty": "Easy",
+        "question": "Identify the type of sentence: 'What a beautiful painting this is!'",
+        "options": {
+            "A": "Declarative",
+            "B": "Interrogative",
+            "C": "Exclamatory",
+            "D": "Imperative"
+        },
+        "answer": "C",
+        "hint": "Exclamatory sentences express strong emotion and usually end with an exclamation mark."
+    },
+    {
+        "id": 4,
+        "subject": "History",
+        "difficulty": "Easy",
+        "question": "The First War of Independence in India is generally associated with which year?",
+        "options": {
+            "A": "1857",
+            "B": "1757",
+            "C": "1947",
+            "D": "1885"
+        },
+        "answer": "A",
+        "hint": "This major rebellion against British rule took place in the mid-19th century."
+    },
+    {
+        "id": 5,
+        "subject": "Mathematics",
+        "difficulty": "Medium",
+        "question": "The solution to the equation \\frac{y}{3} + 5 = 8 is:",
+        "options": {
+            "A": "y = 9",
+            "B": "y = 39",
+            "C": "y = 4",
+            "D": "y = 11"
+        },
+        "answer": "A",
+        "hint": "First, isolate the term containing 'y' by subtracting 5 from both sides."
+    },
+    {
+        "id": 6,
+        "subject": "Science",
+        "difficulty": "Medium",
+        "question": "Which plastic is known as PVC?",
+        "options": {
+            "A": "Polypropylene",
+            "B": "Polythene",
+            "C": "Polyvinyl Chloride",
+            "D": "Teflon"
+        },
+        "answer": "C",
+        "hint": "PVC stands for Polyvinyl Chloride, widely used in pipes and electrical insulation."
+    },
+    {
+        "id": 7,
+        "subject": "English (Grammar)",
+        "difficulty": "Medium",
+        "question": "Choose the correct degree of comparison for the sentence: 'No other poet in his time was ___ than Shakespeare.'",
+        "options": {
+            "A": "as great",
+            "B": "greater",
+            "C": "greatest",
+            "D": "more great"
+        },
+        "answer": "B",
+        "hint": "The comparative degree is used when comparing two things, indicated by 'than'."
+    },
+    {
+        "id": 8,
+        "subject": "History",
+        "difficulty": "Medium",
+        "question": "The policy of 'Doctrine of Lapse' was introduced by which Governor-General?",
+        "options": {
+            "A": "Lord Curzon",
+            "B": "Lord Dalhousie",
+            "C": "Lord Cornwallis",
+            "D": "Warren Hastings"
+        },
+        "answer": "B",
+        "hint": "This policy led to the annexation of several Indian princely states if the ruler died without a natural male heir."
+    },
+    {
+        "id": 9,
+        "subject": "Mathematics",
+        "difficulty": "Hard",
+        "question": "If a quadrilateral has two pairs of equal, adjacent sides, what is it called?",
+        "options": {
+            "A": "Parallelogram",
+            "B": "Trapezium",
+            "C": "Kite",
+            "D": "Rhombus"
+        },
+        "answer": "C",
+        "hint": "Think about the specific shape where diagonals are perpendicular, and one diagonal bisects the other."
+    },
+    {
+        "id": 10,
+        "subject": "Science",
+        "difficulty": "Hard",
+        "question": "In a candle flame, the zone that is the hottest and performs complete combustion is the:",
+        "options": {
+            "A": "Dark zone",
+            "B": "Luminous zone",
+            "C": "Non-luminous zone (Outer zone)",
+            "D": "Middle zone"
+        },
+        "answer": "C",
+        "hint": "This zone has access to plenty of oxygen for complete burning."
+    },
+    {
+        "id": 11,
+        "subject": "English (Grammar)",
+        "difficulty": "Hard",
+        "question": "Change to Passive Voice: 'The students are cleaning the campus thoroughly.'",
+        "options": {
+            "A": "The campus is being cleaned thoroughly by the students.",
+            "B": "The campus was being cleaned by the students thoroughly.",
+            "C": "The campus is cleaned thoroughly by the students.",
+            "D": "Thoroughly the campus is being cleaned by the students."
+        },
+        "answer": "A",
+        "hint": "For Present Continuous Tense in Passive Voice, use 'is/are + being + Past Participle'."
+    },
+    {
+        "id": 12,
+        "subject": "History",
+        "difficulty": "Hard",
+        "question": "Which resolution was passed at the Calcutta Session of 1905, demanding Swaraj, Swadeshi, Boycott, and National Education?",
+        "options": {
+            "A": "Non-Cooperation Resolution",
+            "B": "Resolution against Partition of Bengal",
+            "C": "Resolution for Purna Swaraj",
+            "D": "Resolution on Fundamental Rights"
+        },
+        "answer": "B",
+        "hint": "This session occurred immediately after the controversial partition of Bengal."
+    },
+    {
+        "id": 13,
+        "subject": "Mathematics",
+        "difficulty": "Easy",
+        "question": "The square root of 196 is:",
+        "options": {
+            "A": "12",
+            "B": "14",
+            "C": "16",
+            "D": "18"
+        },
+        "answer": "B",
+        "hint": "Try multiplying numbers ending in 4 or 6."
+    },
+    {
+        "id": 14,
+        "subject": "Science",
+        "difficulty": "Easy",
+        "question": "Which type of fibre is known for being water-absorbent and comfortable to wear in summer?",
+        "options": {
+            "A": "Nylon",
+            "B": "Rayon",
+            "C": "Cotton",
+            "D": "Polyester"
+        },
+        "answer": "C",
+        "hint": "This fibre comes from the boll of a plant."
+    },
+    {
+        "id": 15,
+        "subject": "Mathematics",
+        "difficulty": "Medium",
+        "question": "If $a+b=6$ and $ab=8$, find the value of $a^2 + b^2$.",
+        "options": {
+            "A": "20",
+            "B": "28",
+            "C": "36",
+            "D": "16"
+        },
+        "answer": "B",
+        "hint": "Use the identity $(a+b)^2 = a^2 + b^2 + 2ab$."
+    },
+    {
+        "id": 16,
+        "subject": "Science",
+        "difficulty": "Medium",
+        "question": "What is the primary function of Rough Endoplasmic Reticulum (RER) in a cell?",
+        "options": {
+            "A": "Energy production",
+            "B": "Protein synthesis and modification",
+            "C": "Waste disposal",
+            "D": "Lipid synthesis"
+        },
+        "answer": "B",
+        "hint": "The 'Rough' aspect is due to the presence of ribosomes, which are key for making proteins."
+    },
+    {
+        "id": 17,
+        "subject": "English (Grammar)",
+        "difficulty": "Easy",
+        "question": "Fill in the blank with an appropriate determiner: 'I have ___ books to read before the exam.'",
+        "options": {
+            "A": "much",
+            "B": "many",
+            "C": "a little",
+            "D": "some"
+        },
+        "answer": "B",
+        "hint": "'Books' is a countable noun, so use a determiner that pairs with countable plurals."
+    },
+    {
+        "id": 18,
+        "subject": "History",
+        "difficulty": "Medium",
+        "question": "During which period were iron smelters often looked down upon by colonial authorities?",
+        "options": {
+            "A": "Pre-Mughal Era",
+            "B": "Early British Rule (Pre-1857)",
+            "C": "Post-Independence",
+            "D": "The Revolt of 1857"
+        },
+        "answer": "B",
+        "hint": "This decline happened when cheaper machine-made metal goods entered the market under British control."
+    },
+    {
+        "id": 19,
+        "subject": "Mathematics",
+        "difficulty": "Hard",
+        "question": "If $a^3 - b^3 = 35$ and $a - b = 5$, find the value of $ab$.",
+        "options": {
+            "A": "12",
+            "B": "3",
+            "C": "6",
+            "D": "10"
+        },
+        "answer": "B",
+        "hint": "Use the identity $a^3 - b^3 = (a - b)(a^2 + ab + b^2)$ and relate $a^2 + b^2$ to $(a-b)^2$."
+    },
+    {
+        "id": 20,
+        "subject": "Science",
+        "difficulty": "Hard",
+        "question": "Which statement correctly describes the relationship between the magnitude of force, the area of contact, and pressure?",
+        "options": {
+            "A": "Pressure is directly proportional to force and inversely proportional to area.",
+            "B": "Pressure is inversely proportional to force and directly proportional to area.",
+            "C": "Pressure is directly proportional to both force and area.",
+            "D": "Pressure is independent of force."
+        },
+        "answer": "A",
+        "hint": "Pressure is defined as Force/Area ($P = F/A$)."
+    },
+    {
+        "id": 21,
+        "subject": "English (Grammar)",
+        "difficulty": "Medium",
+        "question": "Identify the Non-Finite Verb in the following sentence: 'He decided to study late tonight.'",
+        "options": {
+            "A": "decided",
+            "B": "to study",
+            "C": "late",
+            "D": "tonight"
+        },
+        "answer": "B",
+        "hint": "Non-finite verbs do not show tense or agreement with the subject. Look for the infinitive form."
+    },
+    {
+        "id": 22,
+        "subject": "History",
+        "difficulty": "Hard",
+        "question": "The establishment of the Sanskrit College in Varanasi in 1791 was primarily aimed at:",
+        "options": {
+            "A": "Promoting modern Western science.",
+            "B": "Training Indians for administrative posts based on traditional Indian laws.",
+            "C": "Encouraging missionary activities.",
+            "D": "Introducing English as the sole medium of instruction."
+        },
+        "answer": "B",
+        "hint": "This policy, driven by Orientalists, sought to appease local elites by respecting indigenous learning."
+    },
+    {
+        "id": 23,
+        "subject": "Mathematics",
+        "difficulty": "Easy",
+        "question": "If $4x - 10 = 18$, what is the value of $x$?",
+        "options": {
+            "A": "5",
+            "B": "7",
+            "C": "9",
+            "D": "4"
+        },
+        "answer": "B",
+        "hint": "First, add 10 to both sides, then divide by 4."
+    },
+    {
+        "id": 24,
+        "subject": "Science",
+        "difficulty": "Medium",
+        "question": "Which gas is predominantly responsible for the greenhouse effect?",
+        "options": {
+            "A": "Oxygen",
+            "B": "Nitrogen",
+            "C": "Carbon Dioxide",
+            "D": "Hydrogen"
+        },
+        "answer": "C",
+        "hint": "This gas traps heat escaping from the Earth's surface."
+    },
+    {
+        "id": 25,
+        "subject": "English (Grammar)",
+        "difficulty": "Hard",
+        "question": "Convert the following into Direct Speech: 'She requested him to finish the work immediately.'",
+        "options": {
+            "A": "She said, \"Finish the work immediately.\"",
+            "B": "She asked, \"Will you finish the work immediately?\"",
+            "C": "She exclaimed, \"I must finish the work immediately!\"",
+            "D": "She asked, \"Did you finish the work immediately?\""
+        },
+        "answer": "A",
+        "hint": "An imperative sentence in Indirect Speech (using 'requested' + 'to verb') becomes a direct command/request."
+    },
+    {
+        "id": 26,
+        "subject": "History",
+        "difficulty": "Easy",
+        "question": "What term did the British use to refer to tribal people, often implying they were uncivilized?",
+        "options": {
+            "A": "Ryots",
+            "B": "Dikus",
+            "C": "Zamindars",
+            "D": "Sepoys"
+        },
+        "answer": "B",
+        "hint": "This term was used by tribal communities, particularly in Jharkhand, to refer to outsiders."
+    },
+    {
+        "id": 27,
+        "subject": "Mathematics",
+        "difficulty": "Medium",
+        "question": "What is the approximate volume of a cube with side length 5 cm? (Use \\pi \\approx 3.14 for reference if needed, though irrelevant here)",
+        "options": {
+            "A": "25 cm\u00b3",
+            "B": "125 cm\u00b3",
+            "C": "150 cm\u00b3",
+            "D": "75 cm\u00b3"
+        },
+        "answer": "B",
+        "hint": "Volume of a cube is calculated as side \\times side \\times side ($s^3$)."
+    },
+    {
+        "id": 28,
+        "subject": "Science",
+        "difficulty": "Medium",
+        "question": "Which microscopic structure is responsible for converting light energy into chemical energy in plants?",
+        "options": {
+            "A": "Mitochondria",
+            "B": "Nucleus",
+            "C": "Chloroplast",
+            "D": "Ribosome"
+        },
+        "answer": "C",
+        "hint": "This organelle contains the pigment chlorophyll."
+    },
+    {
+        "id": 29,
+        "subject": "English (Grammar)",
+        "difficulty": "Medium",
+        "question": "Choose the correct preposition: 'The noise came ___ the basement.'",
+        "options": {
+            "A": "over",
+            "B": "across",
+            "C": "from",
+            "D": "through"
+        },
+        "answer": "C",
+        "hint": "Use the preposition that indicates the origin or source of the noise."
+    },
+    {
+        "id": 30,
+        "subject": "Mathematics",
+        "difficulty": "Medium",
+        "question": "If the speed of sound is 343 m/s, and a thunderclap is heard 2 seconds later, how far away was the lightning strike (ignoring the speed of light)?",
+        "options": {
+            "A": "686 m",
+            "B": "343 m",
+            "C": "171.5 m",
+            "D": "800 m"
+        },
+        "answer": "A",
+        "hint": "Distance = Speed \\times Time."
+    }
+]

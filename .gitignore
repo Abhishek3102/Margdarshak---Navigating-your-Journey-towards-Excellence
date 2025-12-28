@@ -6,3 +6,4 @@ build/
 *.sublime-workspace
 *.sublime-project
 UUSERS/
+*.env

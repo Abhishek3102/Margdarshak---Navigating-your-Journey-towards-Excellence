@@ -36,7 +36,7 @@ export const courseAPI = {
     return data || []
   },
 
-  getEnrolled: async () => {
+  getEnrolled: async (): Promise<any[]> => {
     // Placeholder for enrolled logic
     // In real app: return supabase.from('enrollments').select('*, course:courses(*)')
     return []

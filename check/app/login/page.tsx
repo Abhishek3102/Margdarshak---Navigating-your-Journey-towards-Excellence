@@ -106,9 +106,9 @@ export default function LoginPage() {
       if (error) throw error
 
       refreshUser()
-      toast({ title: "Account Created", description: "Account created successfully! Logging you in..." })
+      toast({ title: "Account Created", description: "Account created successfully! Redirecting to Diagnostic Test..." })
       // Auto login or redirect to login (Supabase handles session automatically if email confirm is off)
-      router.push("/dashboard")
+      router.push("/quiz")
     } catch (error: any) {
       toast({ title: "Registration Failed", description: error.message, variant: "destructive" })
     } finally {

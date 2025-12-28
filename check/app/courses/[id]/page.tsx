@@ -37,6 +37,11 @@ interface Course {
   }
 }
 
+interface EnrolledCourse {
+  _id?: string
+  id?: string
+}
+
 export default function CoursePage() {
   const { id } = useParams()
   const { isLoggedIn } = useAuth()
@@ -55,8 +60,8 @@ export default function CoursePage() {
         if (isLoggedIn) {
           try {
             const enrolledResponse = await courseAPI.getEnrolled()
-            const enrolledCourses = enrolledResponse.data || []
-            setEnrolled(enrolledCourses.some((c: any) => (c._id || c.id) === id))
+            const enrolledCourses: EnrolledCourse[] = enrolledResponse.data || []
+            setEnrolled(enrolledCourses.some((c) => (c._id || c.id) === id))
           } catch (error) {
             console.error("Failed to check enrollment status:", error)
           }

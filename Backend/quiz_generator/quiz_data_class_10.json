@@ -1,0 +1,422 @@
+[
+    {
+        "id": 1,
+        "subject": "Mathematics",
+        "difficulty": "Easy",
+        "question": "What is the HCF of the smallest prime number and the smallest composite number?",
+        "options": {
+            "A": "1",
+            "B": "2",
+            "C": "4",
+            "D": "0"
+        },
+        "answer": "A",
+        "hint": "Smallest prime is 2, smallest composite is 4. Find their greatest common divisor."
+    },
+    {
+        "id": 2,
+        "subject": "Science",
+        "difficulty": "Easy",
+        "question": "Which type of chemical reaction involves the displacement of one element by another from its salt solution?",
+        "options": {
+            "A": "Combination Reaction",
+            "B": "Decomposition Reaction",
+            "C": "Displacement Reaction",
+            "D": "Redox Reaction"
+        },
+        "answer": "C",
+        "hint": "Think about reactions where one metal pushes another metal out of its compound solution."
+    },
+    {
+        "id": 3,
+        "subject": "English (Grammar)",
+        "difficulty": "Easy",
+        "question": "Choose the correct form of the verb: They _____ football every evening.",
+        "options": {
+            "A": "play",
+            "B": "are playing",
+            "C": "played",
+            "D": "plays"
+        },
+        "answer": "A",
+        "hint": "The phrase 'every evening' suggests a habitual action, requiring the Simple Present Tense."
+    },
+    {
+        "id": 4,
+        "subject": "History",
+        "difficulty": "Easy",
+        "question": "Who was proclaimed the King of United Italy in 1861?",
+        "options": {
+            "A": "Giuseppe Garibaldi",
+            "B": "Count Cavour",
+            "C": "Victor Emmanuel II",
+            "D": "Otto von Bismarck"
+        },
+        "answer": "C",
+        "hint": "Look at the rulers involved in the unification of Italy."
+    },
+    {
+        "id": 5,
+        "subject": "Mathematics",
+        "difficulty": "Medium",
+        "question": "If one root of the quadratic equation $x^2 - 3x + k = 0$ is 4, then the other root is:",
+        "options": {
+            "A": "4",
+            "B": "1",
+            "C": "-1",
+            "D": "3"
+        },
+        "answer": "C",
+        "hint": "Use the relationship between the sum of the roots and the coefficients of the quadratic equation ($x_1 + x_2 = -b/a$)."
+    },
+    {
+        "id": 6,
+        "subject": "Science",
+        "difficulty": "Medium",
+        "question": "What is the pH value of pure water?",
+        "options": {
+            "A": "Less than 7",
+            "B": "Greater than 7",
+            "C": "Exactly 7",
+            "D": "Varies with temperature"
+        },
+        "answer": "C",
+        "hint": "Pure water is neutral; recall the standard pH scale definition for neutral substances."
+    },
+    {
+        "id": 7,
+        "subject": "English (Grammar)",
+        "difficulty": "Medium",
+        "question": "Complete the sentence using an appropriate modal verb: You _____ obey the traffic rules for your own safety.",
+        "options": {
+            "A": "may",
+            "B": "should",
+            "C": "might",
+            "D": "can"
+        },
+        "answer": "B",
+        "hint": "The sentence implies obligation or strong advice."
+    },
+    {
+        "id": 8,
+        "subject": "History",
+        "difficulty": "Medium",
+        "question": "The concept of 'Volksgeist' (the spirit of the German nation) is closely associated with which philosopher?",
+        "options": {
+            "A": "Jean-Jacques Rousseau",
+            "B": "Johann Gottfried Herder",
+            "C": "Giuseppe Mazzini",
+            "D": "Adam Smith"
+        },
+        "answer": "B",
+        "hint": "This idea emphasized shared culture, language, and folk traditions as the basis of the nation."
+    },
+    {
+        "id": 9,
+        "subject": "Mathematics",
+        "difficulty": "Medium",
+        "question": "The $n$-th term of an Arithmetic Progression (AP) is given by $a_n = 3n + 5$. What is the first term ($a_1$)?",
+        "options": {
+            "A": "3",
+            "B": "5",
+            "C": "8",
+            "D": "13"
+        },
+        "answer": "C",
+        "hint": "Substitute $n=1$ into the given formula for the $n$-th term."
+    },
+    {
+        "id": 10,
+        "subject": "Science",
+        "difficulty": "Medium",
+        "question": "In which region of the human digestive system does complete protein digestion occur?",
+        "options": {
+            "A": "Stomach",
+            "B": "Duodenum",
+            "C": "Large Intestine",
+            "D": "Mouth"
+        },
+        "answer": "B",
+        "hint": "Complete digestion involves enzymes from both the pancreas and the intestinal walls in the initial part of the small intestine."
+    },
+    {
+        "id": 11,
+        "subject": "English (Grammar)",
+        "difficulty": "Medium",
+        "question": "Transform the following sentence into the Passive Voice: 'The mechanic repaired the car yesterday.'",
+        "options": {
+            "A": "The car was repaired by the mechanic yesterday.",
+            "B": "Yesterday, the car had been repaired by the mechanic.",
+            "C": "The car is repaired by the mechanic yesterday.",
+            "D": "Repairing the car was done by the mechanic yesterday."
+        },
+        "answer": "A",
+        "hint": "The original sentence is in Simple Past Active; the passive voice must also be in Simple Past."
+    },
+    {
+        "id": 12,
+        "subject": "History",
+        "difficulty": "Medium",
+        "question": "Which treaty recognized Greece as an independent nation in 1832?",
+        "options": {
+            "A": "Treaty of Vienna",
+            "B": "Treaty of Constantinople",
+            "C": "Treaty of London",
+            "D": "Treaty of Versailles"
+        },
+        "answer": "C",
+        "hint": "This treaty formalized the end of the Greek War of Independence, signed by Great Britain, France, and Russia."
+    },
+    {
+        "id": 13,
+        "subject": "Mathematics",
+        "difficulty": "Hard",
+        "question": "If the area of a circle is equal to the area of a square, what is the ratio of their perimeters?",
+        "options": {
+            "A": "\\pi : 3",
+            "B": "3 : \\pi",
+            "C": "2\\pi : 4",
+            "D": "\\sqrt{\\pi} : 2"
+        },
+        "answer": "D",
+        "hint": "Set $\\pi r^2 = s^2$. Then find the ratio $2\\pi r / 4s$ and substitute $s$ or $r$."
+    },
+    {
+        "id": 14,
+        "subject": "Science",
+        "difficulty": "Hard",
+        "question": "If a plant exhibits phototropism towards the light source, which hormone is primarily responsible for this directional growth?",
+        "options": {
+            "A": "Cytokinin",
+            "B": "Gibberellin",
+            "C": "Auxin",
+            "D": "Abscisic acid"
+        },
+        "answer": "C",
+        "hint": "This hormone causes cell elongation and accumulates on the shaded side of the stem when light comes from one direction."
+    },
+    {
+        "id": 15,
+        "subject": "English (Grammar)",
+        "difficulty": "Hard",
+        "question": "Identify the subordinate clause in the following sentence: 'Although it was raining heavily, the team decided to continue the match.'",
+        "options": {
+            "A": "the team decided",
+            "B": "to continue the match",
+            "C": "Although it was raining heavily",
+            "D": "the match"
+        },
+        "answer": "C",
+        "hint": "A subordinate clause begins with a subordinating conjunction (like 'although') and cannot stand alone as a complete sentence."
+    },
+    {
+        "id": 16,
+        "subject": "History",
+        "difficulty": "Hard",
+        "question": "The 'Ghadar' newspaper, advocating for Indian independence, was founded by whom in the USA and Canada?",
+        "options": {
+            "A": "Bhagat Singh",
+            "B": "Lala Hardayal",
+            "C": "Subhas Chandra Bose",
+            "D": "Raja Mahendra Pratap"
+        },
+        "answer": "B",
+        "hint": "This individual was a prominent revolutionary leader based in the West Coast of North America during the early 20th century."
+    },
+    {
+        "id": 17,
+        "subject": "Mathematics",
+        "difficulty": "Easy",
+        "question": "If $P(E) = 0.5$, what is the probability of the event 'Not E' ($P(\\bar{E})$)?",
+        "options": {
+            "A": "0.5",
+            "B": "1.0",
+            "C": "0.25",
+            "D": "0.0"
+        },
+        "answer": "A",
+        "hint": "The sum of the probability of an event and its complement is always 1."
+    },
+    {
+        "id": 18,
+        "subject": "Science",
+        "difficulty": "Easy",
+        "question": "Which of the following represents the chemical formula for rust?",
+        "options": {
+            "A": "FeSO4",
+            "B": "Fe2O3",
+            "C": "Fe3O4",
+            "D": "FeO(OH)"
+        },
+        "answer": "B",
+        "hint": "Rust is iron(III) oxide, which forms when iron is exposed to moisture and oxygen."
+    },
+    {
+        "id": 19,
+        "subject": "English (Grammar)",
+        "difficulty": "Easy",
+        "question": "Fill in the blank with the correct determiner: There is _____ water left in the bottle.",
+        "options": {
+            "A": "many",
+            "B": "few",
+            "C": "much",
+            "D": "several"
+        },
+        "answer": "C",
+        "hint": "'Water' is an uncountable noun, so it requires a determiner used for uncountable quantities."
+    },
+    {
+        "id": 20,
+        "subject": "History",
+        "difficulty": "Easy",
+        "question": "What was the primary aim of the Salt March led by Mahatma Gandhi?",
+        "options": {
+            "A": "To demand land reforms",
+            "B": "To protest the unjust British salt tax",
+            "C": "To establish Swaraj in Bombay",
+            "D": "To boycott foreign cloth"
+        },
+        "answer": "B",
+        "hint": "The march focused specifically on challenging the British monopoly over salt production and taxation."
+    },
+    {
+        "id": 21,
+        "subject": "Mathematics",
+        "difficulty": "Medium",
+        "question": "If the coordinates of a point P are $(x, y)$ and the origin is $O(0,0)$, the distance OP is given by:",
+        "options": {
+            "A": "\\sqrt{x^2 + y^2}",
+            "B": "x^2 + y^2",
+            "C": "\\sqrt{(x-0)^2 + (y-0)^2}",
+            "D": "Both A and C"
+        },
+        "answer": "D",
+        "hint": "Apply the distance formula between two points where one point is the origin."
+    },
+    {
+        "id": 22,
+        "subject": "Science",
+        "difficulty": "Medium",
+        "question": "The phenomenon of light bending around a sharp edge or corner is called:",
+        "options": {
+            "A": "Refraction",
+            "B": "Dispersion",
+            "C": "Diffraction",
+            "D": "Reflection"
+        },
+        "answer": "C",
+        "hint": "This involves the spreading of waves when they pass through a narrow opening or around an obstacle."
+    },
+    {
+        "id": 23,
+        "subject": "English (Grammar)",
+        "difficulty": "Medium",
+        "question": "Which tense is used to describe an action completed just a short time ago?",
+        "options": {
+            "A": "Simple Past",
+            "B": "Past Perfect",
+            "C": "Present Perfect",
+            "D": "Simple Present"
+        },
+        "answer": "C",
+        "hint": "This tense connects a recent past action to the present moment, often using 'just'."
+    },
+    {
+        "id": 24,
+        "subject": "History",
+        "difficulty": "Medium",
+        "question": "What was the primary goal of the Viet Minh established in Vietnam?",
+        "options": {
+            "A": "To promote French colonial rule",
+            "B": "To establish communist rule through national liberation",
+            "C": "To promote Catholicism",
+            "D": "To encourage industrialization"
+        },
+        "answer": "B",
+        "hint": "It was a nationalist movement aimed at achieving independence, heavily influenced by communist ideology."
+    },
+    {
+        "id": 25,
+        "subject": "Mathematics",
+        "difficulty": "Hard",
+        "question": "If $\\sin \\theta = \\frac{a^2 - b^2}{a^2 + b^2}$, what is the value of $\\cos \\theta$?",
+        "options": {
+            "A": "\\frac{a^2 + b^2}{2ab}",
+            "B": "\\frac{2ab}{a^2 + b^2}",
+            "C": "\\frac{2ab}{a^2 - b^2}",
+            "D": "\\frac{a^2 - b^2}{2ab}"
+        },
+        "answer": "B",
+        "hint": "Use the identity $\\sin^2 \\theta + \\cos^2 \\theta = 1$ or consider the sides of a right-angled triangle."
+    },
+    {
+        "id": 26,
+        "subject": "Science",
+        "difficulty": "Hard",
+        "question": "What is the unit of magnetic field strength (Magnetic Flux Density) in the SI system?",
+        "options": {
+            "A": "Weber",
+            "B": "Ampere",
+            "C": "Tesla",
+            "D": "Joule"
+        },
+        "answer": "C",
+        "hint": "This unit relates to the force experienced by a current-carrying conductor in a magnetic field."
+    },
+    {
+        "id": 27,
+        "subject": "English (Grammar)",
+        "difficulty": "Hard",
+        "question": "Report the following command: 'The general ordered, 'March forward immediately!' '",
+        "options": {
+            "A": "The general ordered them to march forward immediately.",
+            "B": "The general ordered that they should march forward immediately.",
+            "C": "The general ordered them that they march forward immediately.",
+            "D": "The general ordered them marching forward immediately."
+        },
+        "answer": "A",
+        "hint": "Commands (Imperative sentences) are reported using an infinitive ('to' + verb)."
+    },
+    {
+        "id": 28,
+        "subject": "History",
+        "difficulty": "Hard",
+        "question": "The process of amalgamation of the German speaking peoples under the leadership of Bismarck often involved which core political philosophy?",
+        "options": {
+            "A": "Liberalism",
+            "B": "Democracy",
+            "C": "Realpolitik (Power Politics)",
+            "D": "Socialism"
+        },
+        "answer": "C",
+        "hint": "Bismarck famously relied on practical, often harsh, application of state power rather than idealistic principles."
+    },
+    {
+        "id": 29,
+        "subject": "Mathematics",
+        "difficulty": "Medium",
+        "question": "If tangents PA and PB from an external point P to a circle with center O are drawn such that $\\angle APB = 80^\\circ$, then the measure of $\\angle AOB$ is:",
+        "options": {
+            "A": "90^\\circ",
+            "B": "80^\\circ",
+            "C": "100^\\circ",
+            "D": "110^\\circ"
+        },
+        "answer": "C",
+        "hint": "The angle subtended by the radii to the points of contact and the angle formed by the tangents are supplementary (add up to 180 degrees)."
+    },
+    {
+        "id": 30,
+        "subject": "Science",
+        "difficulty": "Medium",
+        "question": "According to Mendel's experiments, the phenotypic ratio of the offspring in a monohybrid cross is typically:",
+        "options": {
+            "A": "1:2:1",
+            "B": "3:1",
+            "C": "9:3:3:1",
+            "D": "1:1"
+        },
+        "answer": "B",
+        "hint": "This ratio describes the external appearance (visible traits) resulting from crossing two heterozygous parents (F1 generation)."
+    }
+]

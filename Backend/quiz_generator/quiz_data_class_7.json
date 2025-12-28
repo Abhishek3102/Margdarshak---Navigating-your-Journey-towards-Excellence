@@ -1,0 +1,422 @@
+[
+    {
+        "id": 1,
+        "subject": "Mathematics",
+        "difficulty": "Easy",
+        "question": "What is the additive inverse of -15?",
+        "options": {
+            "A": "-15",
+            "B": "0",
+            "C": "15",
+            "D": "1"
+        },
+        "answer": "C",
+        "hint": "The additive inverse makes the sum equal to zero."
+    },
+    {
+        "id": 2,
+        "subject": "Science",
+        "difficulty": "Easy",
+        "question": "Which process do plants use to make their own food?",
+        "options": {
+            "A": "Respiration",
+            "B": "Transpiration",
+            "C": "Photosynthesis",
+            "D": "Absorption"
+        },
+        "answer": "C",
+        "hint": "This process involves sunlight, water, and carbon dioxide."
+    },
+    {
+        "id": 3,
+        "subject": "English (Grammar)",
+        "difficulty": "Easy",
+        "question": "Identify the Noun in the sentence: 'The cat is sleeping on the mat.'",
+        "options": {
+            "A": "The",
+            "B": "is",
+            "C": "sleeping",
+            "D": "cat"
+        },
+        "answer": "D",
+        "hint": "A noun names a person, place, thing, or idea."
+    },
+    {
+        "id": 4,
+        "subject": "History",
+        "difficulty": "Easy",
+        "question": "Which dynasty built the Qutub Minar in Delhi?",
+        "options": {
+            "A": "Mughal Dynasty",
+            "B": "Chola Dynasty",
+            "C": "Delhi Sultanate (specifically the early rulers)",
+            "D": "Gupta Dynasty"
+        },
+        "answer": "C",
+        "hint": "This structure was initiated by Qutb-ud-din Aibak, who belonged to the Slave Dynasty."
+    },
+    {
+        "id": 5,
+        "subject": "Mathematics",
+        "difficulty": "Medium",
+        "question": "Simplify the expression: 3x - 2y + 5x + 4y",
+        "options": {
+            "A": "8x + 2y",
+            "B": "2x - 6y",
+            "C": "8x - 2y",
+            "D": "2x + 6y"
+        },
+        "answer": "A",
+        "hint": "Combine the like terms (terms with x and terms with y)."
+    },
+    {
+        "id": 6,
+        "subject": "Science",
+        "difficulty": "Medium",
+        "question": "Which component of blood is responsible for blood clotting?",
+        "options": {
+            "A": "Red Blood Cells",
+            "B": "Plasma",
+            "C": "White Blood Cells",
+            "D": "Platelets"
+        },
+        "answer": "D",
+        "hint": "These components are cell fragments essential for stopping bleeding."
+    },
+    {
+        "id": 7,
+        "subject": "English (Grammar)",
+        "difficulty": "Medium",
+        "question": "Choose the correct degree of adjective: She is the ______ girl in the class. (tall)",
+        "options": {
+            "A": "tall",
+            "B": "taller",
+            "C": "tallest",
+            "D": "more tall"
+        },
+        "answer": "C",
+        "hint": "When comparing more than two items, use the superlative degree."
+    },
+    {
+        "id": 8,
+        "subject": "History",
+        "difficulty": "Medium",
+        "question": "The system of coinage (like the 'Tanka' and 'Jital') was predominantly established by which early ruler group in Delhi?",
+        "options": {
+            "A": "Akbar",
+            "B": "Alauddin Khalji",
+            "C": "Iltutmish",
+            "D": "Raja Bhoja"
+        },
+        "answer": "C",
+        "hint": "Consider the rulers who standardized currency during the Sultanate period."
+    },
+    {
+        "id": 9,
+        "subject": "Mathematics",
+        "difficulty": "Medium",
+        "question": "If $\\frac{2}{5}$ of a number is 12, what is the number?",
+        "options": {
+            "A": "30",
+            "B": "24",
+            "C": "15",
+            "D": "40"
+        },
+        "answer": "A",
+        "hint": "Set up the equation: (2/5) * N = 12, and solve for N."
+    },
+    {
+        "id": 10,
+        "subject": "Science",
+        "difficulty": "Medium",
+        "question": "What is the primary function of xylem tissue in plants?",
+        "options": {
+            "A": "Transporting manufactured food",
+            "B": "Storing starch",
+            "C": "Conducting water and minerals from roots to leaves",
+            "D": "Providing structural support only"
+        },
+        "answer": "C",
+        "hint": "Think about the direction water moves upward in a plant."
+    },
+    {
+        "id": 11,
+        "subject": "English (Grammar)",
+        "difficulty": "Medium",
+        "question": "Change the following to Active Voice: 'The letter was written by the student.'",
+        "options": {
+            "A": "The student wrote the letter.",
+            "B": "The student has written the letter.",
+            "C": "The letter is written by the student.",
+            "D": "Was the student writing the letter?"
+        },
+        "answer": "A",
+        "hint": "In active voice, the subject performs the action."
+    },
+    {
+        "id": 12,
+        "subject": "History",
+        "difficulty": "Medium",
+        "question": "The transition from the period of 'New Kings and Kingdoms' to the establishment of the Delhi Sultanate saw a shift in regional power dynamics, often involving conflicts over control of which key resource/area?",
+        "options": {
+            "A": "Silk Production",
+            "B": "Gangetic Plains and trade routes",
+            "C": "Maritime Trade",
+            "D": "Himalayan Passes"
+        },
+        "answer": "B",
+        "hint": "Control over fertile agricultural land and established north-south trade routes was crucial."
+    },
+    {
+        "id": 13,
+        "subject": "Mathematics",
+        "difficulty": "Hard",
+        "question": "If $a = -2$ and $b = 3$, evaluate the expression: $a^3 - 3b^2$.",
+        "options": {
+            "A": "-35",
+            "B": "19",
+            "C": "-8",
+            "D": "-10"
+        },
+        "answer": "A",
+        "hint": "Remember that $(-2)^3 = -8$ and $3^2 = 9$."
+    },
+    {
+        "id": 14,
+        "subject": "Science",
+        "difficulty": "Hard",
+        "question": "Which pair correctly matches a physical change with a chemical change?",
+        "options": {
+            "A": "Melting ice (Physical); Burning wood (Physical)",
+            "B": "Rusting of iron (Chemical); Condensation of steam (Physical)",
+            "C": "Evaporation of water (Physical); Formation of curd (Chemical)",
+            "D": "Digestion of food (Physical); Melting wax (Physical)"
+        },
+        "answer": "C",
+        "hint": "A physical change alters form but not chemical composition; a chemical change creates new substances."
+    },
+    {
+        "id": 15,
+        "subject": "English (Grammar)",
+        "difficulty": "Hard",
+        "question": "Convert to Indirect Speech: He exclaimed with joy, 'What a beautiful sight this is!'",
+        "options": {
+            "A": "He exclaimed joyfully that what was a beautiful sight that.",
+            "B": "He exclaimed with joy that it was a very beautiful sight.",
+            "C": "He exclaimed that that sight was beautiful.",
+            "D": "He exclaimed joyfully that this is a beautiful sight."
+        },
+        "answer": "B",
+        "hint": "Exclamatory sentences usually change to assertive sentences using reporting verbs like 'exclaimed joyfully/sorrowfully', and 'this' changes to 'that'."
+    },
+    {
+        "id": 16,
+        "subject": "History",
+        "difficulty": "Hard",
+        "question": "The 'Devotional Paths to the Divine' movement in medieval India saw the rise of the Bhakti cults. A key characteristic often shared by many Bhakti saints, regardless of regional background, was:",
+        "options": {
+            "A": "Strict adherence to Sanskrit rituals.",
+            "B": "Rejection of the caste system and emphasis on personal devotion.",
+            "C": "Exclusive worship of a single, major Rigvedic deity.",
+            "D": "Support for the political authority of the Delhi Sultans."
+        },
+        "answer": "B",
+        "hint": "Many reformers challenged established norms by focusing on direct, personal worship accessible to all."
+    },
+    {
+        "id": 17,
+        "subject": "Mathematics",
+        "difficulty": "Easy",
+        "question": "What is $3.5 \\times 1.2$?",
+        "options": {
+            "A": "4.2",
+            "B": "3.9",
+            "C": "4.0",
+            "D": "3.52"
+        },
+        "answer": "A",
+        "hint": "Multiply 35 by 12, then place the decimal point correctly (two decimal places total)."
+    },
+    {
+        "id": 18,
+        "subject": "Science",
+        "difficulty": "Easy",
+        "question": "In the context of weather and climate, which describes the average pattern of weather over a long period?",
+        "options": {
+            "A": "Weather",
+            "B": "Climate",
+            "C": "Adaptation",
+            "D": "Wind speed"
+        },
+        "answer": "B",
+        "hint": "Climate is what you expect; weather is what you get on a specific day."
+    },
+    {
+        "id": 19,
+        "subject": "English (Grammar)",
+        "difficulty": "Easy",
+        "question": "Fill in the blank with the correct Article: I saw ______ elephant at the zoo today.",
+        "options": {
+            "A": "a",
+            "B": "an",
+            "C": "the",
+            "D": "no article"
+        },
+        "answer": "B",
+        "hint": "Use 'an' before words that start with a vowel sound."
+    },
+    {
+        "id": 20,
+        "subject": "History",
+        "difficulty": "Easy",
+        "question": "Which topic is covered in the chapter 'Forests: Our Lifeline' (Science Syllabus, though relating to historical resource use)? The corresponding History chapter concerns Tribes and Communities. Which group often relied directly on forests for livelihood?",
+        "options": {
+            "A": "Traders in large cities",
+            "B": "Settled agricultural communities",
+            "C": "Nomadic pastoralists and tribal communities",
+            "D": "Mughal nobility"
+        },
+        "answer": "C",
+        "hint": "Look at the History syllabus topic 'Tribes, Nomads and Settled Communities'."
+    },
+    {
+        "id": 21,
+        "subject": "Mathematics",
+        "difficulty": "Medium",
+        "question": "In a triangle ABC, if $\\angle A = 50^\\circ$ and $\\angle B = 60^\\circ$, what is the measure of $\\angle C$?",
+        "options": {
+            "A": "90^\\circ",
+            "B": "110^\\circ",
+            "C": "70^\\circ",
+            "D": "50^\\circ"
+        },
+        "answer": "C",
+        "hint": "The sum of interior angles in any triangle is always 180 degrees."
+    },
+    {
+        "id": 22,
+        "subject": "Science",
+        "difficulty": "Medium",
+        "question": "The Earth's atmosphere experiences a severe temperature drop at night, leading to significant wind systems. Which type of storm results from the rapid movement of air masses driven by significant temperature differences?",
+        "options": {
+            "A": "Tornadoes",
+            "B": "Cyclones",
+            "C": "Monsoons",
+            "D": "Thunderstorms"
+        },
+        "answer": "B",
+        "hint": "The syllabus specifically mentions 'Winds, Storms and Cyclones'."
+    },
+    {
+        "id": 23,
+        "subject": "English (Grammar)",
+        "difficulty": "Medium",
+        "question": "Identify the Adverb in the following sentence: 'She sang beautifully during the concert.'",
+        "options": {
+            "A": "She",
+            "B": "sang",
+            "C": "beautifully",
+            "D": "concert"
+        },
+        "answer": "C",
+        "hint": "An adverb often modifies a verb and frequently ends in '-ly'."
+    },
+    {
+        "id": 24,
+        "subject": "History",
+        "difficulty": "Medium",
+        "question": "What was the primary administrative division used during the time of the Mughal Empire, often managed by a governor?",
+        "options": {
+            "A": "Pargana",
+            "B": "Province (Suba)",
+            "C": "Village Panchayat",
+            "D": "Tanka district"
+        },
+        "answer": "B",
+        "hint": "Think about the large territorial units established by emperors like Akbar."
+    },
+    {
+        "id": 25,
+        "subject": "Mathematics",
+        "difficulty": "Hard",
+        "question": "If two triangles $\\triangle ABC$ and $\\triangle PQR$ are congruent under the rule ASA, which corresponding parts must be equal?",
+        "options": {
+            "A": "Two sides and one angle included between them.",
+            "B": "All three sides.",
+            "C": "Two angles and the non-included side.",
+            "D": "All three angles."
+        },
+        "answer": "A",
+        "hint": "ASA stands for Angle-Side-Angle. The side must be between the two angles."
+    },
+    {
+        "id": 26,
+        "subject": "Science",
+        "difficulty": "Hard",
+        "question": "Which statement correctly describes the essential function of a salt bridge in an electrochemical cell?",
+        "options": {
+            "A": "It provides the source of electrons for the reaction.",
+            "B": "It completes the external circuit allowing electron flow.",
+            "C": "It maintains electrical neutrality by allowing ion migration between half-cells.",
+            "D": "It accelerates the chemical reaction rate."
+        },
+        "answer": "C",
+        "hint": "The salt bridge is crucial for preventing charge buildup in the two separate solutions."
+    },
+    {
+        "id": 27,
+        "subject": "English (Grammar)",
+        "difficulty": "Hard",
+        "question": "Which sentence uses a Pronoun correctly as the subject of the sentence in the objective case?",
+        "options": {
+            "A": "The decision was made by her and I.",
+            "B": "Him and John went to the market.",
+            "C": "She gave the book to whomsoever needed it.",
+            "D": "Between you and me, the secret is safe."
+        },
+        "answer": "D",
+        "hint": "Pronouns used after prepositions (like 'between') must be in the objective case (me, him, her, us, them)."
+    },
+    {
+        "id": 28,
+        "subject": "History",
+        "difficulty": "Hard",
+        "question": "The construction techniques seen in Rulers and Buildings often reflected the authority of the ruler. Which structural element, heavily utilized by Mughal architects, became a symbol of imperial power and symmetry?",
+        "options": {
+            "A": "Mud and Thatch roofing",
+            "B": "The Dome and the Iwan (large gateway arch)",
+            "C": "Simple stone carvings",
+            "D": "Use of local terracotta"
+        },
+        "answer": "B",
+        "hint": "Think about iconic structures like the Taj Mahal or Humayun's Tomb."
+    },
+    {
+        "id": 29,
+        "subject": "Mathematics",
+        "difficulty": "Easy",
+        "question": "Which of the following represents the perimeter of a square with side length 's'?",
+        "options": {
+            "A": "$s^2$",
+            "B": "$4s$",
+            "C": "$2s$",
+            "D": "$s+4$"
+        },
+        "answer": "B",
+        "hint": "Perimeter is the total distance around the outside edge."
+    },
+    {
+        "id": 30,
+        "subject": "Science",
+        "difficulty": "Easy",
+        "question": "When sewage is treated, the final stage involves removing suspended solids and making the water clear. This processed water is often referred to as:",
+        "options": {
+            "A": "Sludge",
+            "B": "Effluent",
+            "C": "Activated carbon",
+            "D": "Infectious waste"
+        },
+        "answer": "B",
+        "hint": "This relates to the 'Wastewater Story' chapter, referring to the treated water that flows out."
+    }
+]

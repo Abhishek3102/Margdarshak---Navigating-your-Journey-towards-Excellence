@@ -17,7 +17,8 @@ import { courseAPI, feedbackAPI } from "@/lib/api"
 import { ProtectedRoute } from "@/components/protected-route"
 
 interface Course {
-  id: string
+  id?: string
+  _id?: string
   title: string
 }
 
