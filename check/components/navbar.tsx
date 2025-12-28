@@ -8,6 +8,7 @@ import { useMobile } from "@/hooks/use-mobile"
 import { useAuth } from "@/components/auth-provider"
 import { useWebSocket } from "@/components/websocket-provider"
 import { supabase } from "@/lib/supabase"
+import { authAPI } from "@/lib/api"
 import { useRouter } from "next/navigation"
 import {
   DropdownMenu,
@@ -25,7 +26,7 @@ export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const isMobile = useMobile()
   const { user, isLoggedIn, refreshUser } = useAuth()
-  const { notifications, sendMessage, clearNotifications } = useWebSocket()
+  const { notifications, clearNotifications, removeNotification, sendMessage } = useWebSocket()
   const router = useRouter()
 
   useEffect(() => {
@@ -47,15 +48,27 @@ export function Navbar() {
     router.push("/login")
   }
 
-  const handleAcceptRequest = (studentId: string, targetClass: string) => {
-      // Send WebSocket message back to student
-      sendMessage({
-          type: "ACCESS_GRANT",
-          studentId: studentId,
-          targetClass: targetClass
-      })
-      toast.success(`Access granted for ${targetClass}`)
-      // Optional: Clean up notification locally
+  const handleAcceptRequest = async (studentId: string, targetClass: string) => {
+      const toastId = toast.loading("Granting access...")
+      try {
+          // 1. Call Backend to update permissions
+          await authAPI.grantAccess(studentId, targetClass)
+          
+          // 2. Send WebSocket message back to student (Real-time notification)
+          sendMessage({
+              type: "ACCESS_GRANT",
+              studentId: studentId,
+              targetClass: targetClass
+          })
+          
+          toast.dismiss(toastId)
+          toast.success(`Access granted for ${targetClass}`)
+          // Optional: Remove this notification from list via local state if desired
+      } catch (error) {
+          console.error("Failed to grant access:", error)
+          toast.dismiss(toastId)
+          toast.error("Failed to grant access")
+      }
   }
 
   return (
@@ -127,10 +140,21 @@ export function Navbar() {
                                             <p className="text-sm">{notif.message}</p>
                                             {notif.type === "ACCESS_REQUEST" && user?.role === 'teacher' && (
                                                 <div className="flex gap-1">
-                                                     <Button size="icon" variant="ghost" className="h-6 w-6 text-green-400 hover:bg-green-400/20" onClick={() => handleAcceptRequest(notif.from_id!, notif.target_class!)}>
+                                                     <Button size="icon" variant="ghost" className="h-6 w-6 text-green-400 hover:bg-green-400/20" onClick={(e) => {
+                                                        e.stopPropagation()
+                                                        e.preventDefault()
+                                                        console.log("Accept clicked", notif)
+                                                        handleAcceptRequest(notif.from_id!, notif.target_class!).then(() => removeNotification(idx))
+                                                     }}>
                                                         <Check className="h-3 w-3" />
                                                      </Button>
-                                                     <Button size="icon" variant="ghost" className="h-6 w-6 text-red-400 hover:bg-red-400/20">
+                                                     <Button size="icon" variant="ghost" className="h-6 w-6 text-red-400 hover:bg-red-400/20" onClick={(e) => {
+                                                        e.stopPropagation()
+                                                        e.preventDefault()
+                                                        // For now just remove notification, can add API call to explicit deny later
+                                                        removeNotification(idx)
+                                                        toast.info("Request removed")
+                                                     }}>
                                                         <Ban className="h-3 w-3" />
                                                      </Button>
                                                 </div>

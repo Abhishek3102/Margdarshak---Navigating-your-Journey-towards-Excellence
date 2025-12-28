@@ -7,10 +7,11 @@ import { BookOpen, GraduationCap, ArrowRight, BrainCircuit, Lock, Send } from "l
 import Link from "next/link"
 import Image from "next/image"
 import { useAuth } from "@/components/auth-provider"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 import { useWebSocket } from "@/components/websocket-provider"
+import { supabase } from "@/lib/supabase"
 
 // Custom Modal for Permission Request
 const PermissionModal = ({ targetClass, onClose }: { targetClass: string, onClose: () => void }) => {
@@ -112,12 +113,23 @@ export function CoursesSection() {
       title: "Class 10 Board Prep",
       grade: "Class 10",
       description: "Comprehensive Board Exam preparation with previous year questions and mock tests.",
-      image: "https://images.unsplash.com/photo-1427504746074-ce47ab719539?w=800&q=80",
+      image: "https://images.unsplash.com/photo-1544717297-fa95b6ee9643?w=800&q=80",
       level: "Board Exam",
       subjects: ["All Subjects", "Mock Tests", "Revision Notes"],
       students: "3.8k"
     }
   ]
+
+  // Fetch real standard IDs for redirection
+  const [dbStandards, setDbStandards] = useState<any[]>([])
+
+  useEffect(() => {
+    const fetchStandards = async () => {
+        const { data } = await supabase.from('standards').select('id, name')
+        if (data) setDbStandards(data)
+    }
+    fetchStandards()
+  }, [])
 
   const handleClassClick = (cls: any) => {
       // Logic:
@@ -130,20 +142,29 @@ export function CoursesSection() {
           return
       }
 
+      // Find the real DB ID for this class
+      const standard = dbStandards.find(s => s.name === cls.grade)
+      const targetUrl = standard ? `/standards/${standard.id}` : `/courses`
+
       if (user.role === 'teacher' || user.role === 'admin') {
-          router.push(`/dashboard`) // Or specific class link
+          router.push(targetUrl) 
           return
       }
 
-      // Check Grade Match
+      // Check Grade Match or Permission
       // Normalized check: "Class 8" included in "student 1 class 8" or direct match
       // Also handle case where user.grade isn't set but name implies it
       const userGrade = user.grade || user.name || ""
       
-      const isAllowed = userGrade.toLowerCase().includes(cls.grade.toLowerCase())
+      console.log("Checking Access:", { userGrade, allowed: user.allowed_classes, target: cls.grade })
+
+      const isAllowed = 
+        userGrade.toLowerCase().includes(cls.grade.toLowerCase()) || 
+        user.allowed_classes?.includes(cls.grade)
       
       if (isAllowed) {
-          router.push(`/dashboard`) 
+          // Redirect to the "Detailed Curriculum" page (standards/[id])
+          router.push(targetUrl) 
       } else {
           setTargetClass(cls.grade)
           setModalOpen(true)

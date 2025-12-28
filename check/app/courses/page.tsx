@@ -3,152 +3,149 @@
 import { useEffect, useState } from "react"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
-import { CourseCard } from "@/components/course-card"
-import { CourseFilter, type FilterOptions } from "@/components/course-filter"
 import { Button } from "@/components/ui/button"
-import { Loader2 } from "lucide-react"
-import { courseAPI } from "@/lib/api"
-import { useAuth } from "@/components/auth-provider"
-import React from "react"
+import { Loader2, Book, ChevronDown, MonitorPlay } from "lucide-react"
+import { curriculumAPI } from "@/lib/api"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
-interface Course {
-  _id: string
-  id?: string
-  title: string
-  description: string
-  image: string
-  category: string
-  level: string
-  duration: string
-  students: number
-  rating: number
-  enrolled?: boolean
-}
+import { useSearchParams } from "next/navigation"
 
 export default function CoursesPage() {
-  const { isLoggedIn } = useAuth()
-  const [courses, setCourses] = useState<Course[]>([])
-  const [enrolledCourseIds, setEnrolledCourseIds] = useState<string[]>([])
+  const [data, setData] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-  const [filters, setFilters] = useState<FilterOptions>({})
+  const [selectedStandard, setSelectedStandard] = useState<string>("")
+  const searchParams = useSearchParams()
+  const urlClass = searchParams.get('class')
 
   useEffect(() => {
-    let isMounted = true
-
-    const fetchCourses = async () => {
+    const fetchCurriculum = async () => {
       try {
         setLoading(true)
-        const response = await courseAPI.getAll(filters)
-        const coursesData = (response as any).data || [] // Accessing data safely with casting if needed or define proper type for courseAPI responses
-
-        // If user is logged in, fetch enrolled courses to mark them
-        if (isLoggedIn && isMounted) {
-          try {
-            const enrolledResponse = await courseAPI.getEnrolled()
-            const enrolledData = (enrolledResponse as any).data || []
-            const enrolledIds = enrolledData.map((course: any) => course._id || course.id)
-
-            if (isMounted) {
-              setEnrolledCourseIds(enrolledIds)
-
-              // Mark enrolled courses
-              const coursesWithEnrollment = coursesData.map((course: Course) => ({
-                ...course,
-                enrolled: enrolledIds.includes(course._id || course.id),
-              }))
-
-              setCourses(coursesWithEnrollment)
+        const response = await curriculumAPI.getStructure()
+        // Response format: { data: [ { name: "Class 8", subjects: [...] } ] }
+        const standards = response.data || []
+        setData(standards)
+        
+        if (standards.length > 0) {
+            // If URL param exists and matches a standard, use it. Otherwise default to first.
+            if (urlClass && standards.some((s: any) => s.name === urlClass)) {
+                setSelectedStandard(urlClass)
+            } else {
+                setSelectedStandard(standards[0].name)
             }
-          } catch (error) {
-            console.error("Failed to fetch enrolled courses:", error)
-            if (isMounted) {
-              setCourses(coursesData)
-            }
-          }
-        } else if (isMounted) {
-          setCourses(coursesData)
         }
       } catch (error) {
-        console.error("Failed to fetch courses:", error)
-        if (isMounted) {
-          setCourses([])
-        }
+        console.error("Failed to fetch curriculum:", error)
       } finally {
-        if (isMounted) {
-          setLoading(false)
-        }
+        setLoading(false)
       }
     }
 
-    fetchCourses()
-
-    // Cleanup function to prevent state updates if component unmounts
-    return () => {
-      isMounted = false
-    }
-  }, [filters, isLoggedIn])
-
-  const handleFilterChange = React.useCallback((newFilters: FilterOptions) => {
-    setFilters((prevFilters) => {
-      // Only update if filters actually changed
-      if (JSON.stringify(prevFilters) !== JSON.stringify(newFilters)) {
-        return newFilters
-      }
-      return prevFilters
-    })
+    fetchCurriculum()
   }, [])
 
-  const handleEnroll = (courseId: string) => {
-    setEnrolledCourseIds((prev) => [...prev, courseId])
-    setCourses((prev) => prev.map((course) => ((course._id || course.id) === courseId ? { ...course, enrolled: true } : course)))
-  }
-
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800">
+    <main className="min-h-screen bg-slate-950">
       <Navbar />
 
-      <section className="pt-32 pb-16 hero-bg relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-900/90 to-slate-900/70 z-0"></div>
+      <section className="pt-32 pb-12 hero-bg relative">
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-900/90 to-slate-950 z-0"></div>
         <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-3xl mx-auto text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              <span className="gradient-text">Explore</span> Our Courses
+          <div className="max-w-4xl mx-auto text-center mb-10">
+            <h1 className="text-4xl md:text-6xl font-black mb-4 tracking-tight">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">
+                Academic Atlas
+              </span>
             </h1>
-            <p className="text-xl text-white/80">Discover learning paths tailored to your goals and interests</p>
-          </div>
-
-          <div className="max-w-4xl mx-auto">
-            <CourseFilter onFilterChange={handleFilterChange} />
+            <p className="text-xl text-slate-400 font-medium">Explore the complete knowledge catalog required for your excellence.</p>
           </div>
         </div>
       </section>
 
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          {loading ? (
-            <div className="flex justify-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-purple-500" />
-            </div>
-          ) : courses.length === 0 ? (
-            <div className="text-center py-12">
-              <h3 className="text-xl font-semibold mb-2">No courses found</h3>
-              <p className="text-white/70">Try adjusting your search or filters</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {courses.map((course: any) => (
-                <CourseCard key={course._id || course.id} course={course} onEnroll={handleEnroll} />
-              ))}
-            </div>
-          )}
+      <section className="pb-20 min-h-[60vh]">
+        <div className="container mx-auto px-4 max-w-6xl">
+            {loading ? (
+                <div className="flex justify-center py-20">
+                    <Loader2 className="h-10 w-10 animate-spin text-blue-500" />
+                </div>
+            ) : data.length === 0 ? (
+                <div className="text-center py-20 text-slate-500">
+                    No curriculum data available.
+                </div>
+            ) : (
+                <Tabs value={selectedStandard} onValueChange={setSelectedStandard} className="w-full space-y-8">
+                    <div className="flex justify-center">
+                        <TabsList className="bg-slate-900/50 border border-slate-800 p-1 h-auto rounded-full">
+                            {data.map((std: any) => (
+                                <TabsTrigger 
+                                    key={std.id} 
+                                    value={std.name}
+                                    className="px-6 py-2 rounded-full data-[state=active]:bg-blue-600 data-[state=active]:text-white text-slate-400 font-medium transition-all"
+                                >
+                                    {std.name}
+                                </TabsTrigger>
+                            ))}
+                        </TabsList>
+                    </div>
 
-          {courses.length > 0 && !loading && (
-            <div className="flex justify-center mt-12">
-              <Button variant="outline" className="border-purple-500 text-white hover:bg-purple-500/20">
-                Load More Courses
-              </Button>
-            </div>
-          )}
+                    {data.map((std: any) => (
+                        <TabsContent key={std.id} value={std.name} className="mt-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                                {std.subjects.map((subj: any) => (
+                                    <div key={subj.id} className="flex flex-col h-full">
+                                        <Card className="bg-slate-900 border-slate-800 hover:border-slate-700 transition-colors h-full">
+                                            <CardHeader className="pb-3 border-b border-slate-800/50">
+                                                <CardTitle className="text-xl text-white flex items-center gap-2">
+                                                    <Book className="w-5 h-5 text-blue-400" />
+                                                    {subj.name}
+                                                </CardTitle>
+                                                <CardDescription>
+                                                    {subj.chapters?.length || 0} Chapters
+                                                </CardDescription>
+                                            </CardHeader>
+                                            <CardContent className="p-0">
+                                                <Accordion type="single" collapsible className="w-full">
+                                                    {subj.chapters.map((chap: any, idx: number) => (
+                                                        <AccordionItem key={chap.id} value={chap.id} className="border-slate-800 px-4">
+                                                            <AccordionTrigger className="text-left py-3 text-slate-300 hover:text-white hover:no-underline">
+                                                                <span className="flex items-center gap-2 text-sm font-medium">
+                                                                    <span className="text-slate-500 w-5 text-xs">#{idx + 1}</span>
+                                                                    {chap.title}
+                                                                </span>
+                                                            </AccordionTrigger>
+                                                            <AccordionContent>
+                                                                <div className="pl-7 pr-2 pb-3 space-y-2">
+                                                                    {chap.videos.length > 0 ? (
+                                                                        chap.videos.map((vid: any) => (
+                                                                            <div key={vid.id} className="flex items-center gap-2 text-sm text-slate-400 py-1">
+                                                                                <MonitorPlay className="w-3 h-3 text-emerald-500/70" />
+                                                                                <span className="truncate">{vid.title}</span>
+                                                                            </div>
+                                                                        ))
+                                                                    ) : (
+                                                                        <span className="text-xs text-slate-600 italic">No topics listed yet</span>
+                                                                    )}
+                                                                </div>
+                                                            </AccordionContent>
+                                                        </AccordionItem>
+                                                    ))}
+                                                </Accordion>
+                                            </CardContent>
+                                        </Card>
+                                    </div>
+                                ))}
+                            </div>
+                        </TabsContent>
+                    ))}
+                </Tabs>
+            )}
         </div>
       </section>
 

@@ -17,6 +17,7 @@ interface WebSocketContextType {
     sendMessage: (msg: any) => void
     notifications: Notification[]
     clearNotifications: () => void
+    removeNotification: (index: number) => void
     isConnected: boolean
 }
 
@@ -24,13 +25,14 @@ const WebSocketContext = createContext<WebSocketContextType>({
     sendMessage: () => {},
     notifications: [],
     clearNotifications: () => {},
+    removeNotification: () => {},
     isConnected: false
 })
 
 export const useWebSocket = () => useContext(WebSocketContext)
 
 export const WebSocketProvider = ({ children }: { children: React.ReactNode }) => {
-    const { user, isLoggedIn } = useAuth()
+    const { user, isLoggedIn, refreshUser } = useAuth()
     const [isConnected, setIsConnected] = useState(false)
     const [notifications, setNotifications] = useState<Notification[]>([])
     const wsRef = useRef<WebSocket | null>(null)
@@ -64,19 +66,36 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
             }
 
             ws.onmessage = (event) => {
+                let data;
                 try {
-                    const data = JSON.parse(event.data)
+                    data = JSON.parse(event.data)
+                } catch (e) {
+                    console.error("[WebSocket] Failed to parse message:", event.data)
+                    return
+                }
+
+                try {
                     console.log("[WebSocket] Message received:", data)
                     
-                    setNotifications(prev => [data, ...prev])
+                    // Prevent duplicate notifications
+                    setNotifications(prev => {
+                        const exists = prev.some(n => n.message === data.message && n.type === data.type)
+                        if (exists) return prev
+                        return [data, ...prev]
+                    })
                     
                     if (data.type === "ACCESS_GRANTED") {
                         toast.success(data.message)
+                        
+                         // Force sync with server for permanent access
+                         // Pass the class name to retry mechanism so it waits until data exists
+                         refreshUser(data.class).catch(err => console.error("[WebSocket] refreshUser failed", err))
+
                     } else if (data.type === "ACCESS_REQUEST") {
                         toast.info(`Request: ${data.message}`)
                     }
-                } catch (e) {
-                    console.error("[WebSocket] Failed to parse message:", event.data)
+                } catch (processError) {
+                     console.error("[WebSocket] Error processing message:", processError)
                 }
             }
 
@@ -107,7 +126,7 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
                 clearTimeout(reconnectTimeout.current)
             }
         }
-    }, [user, isLoggedIn])
+    }, [user?.id, isLoggedIn])
 
     const sendMessage = (msg: any) => {
         if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
@@ -122,8 +141,12 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
         setNotifications([])
     }
 
+    const removeNotification = (index: number) => {
+        setNotifications(prev => prev.filter((_, i) => i !== index))
+    }
+
     return (
-        <WebSocketContext.Provider value={{ sendMessage, notifications, clearNotifications, isConnected }}>
+        <WebSocketContext.Provider value={{ sendMessage, notifications, clearNotifications, removeNotification, isConnected }}>
             {children}
         </WebSocketContext.Provider>
     )
