@@ -50,9 +50,16 @@ async def generate_ai_analysis(score: int, total: int, subject_breakdown: Dict, 
     1. Identify their strongest subject.
     2. Identify their weakest subject.
     3. Analyze their SPEED: Are they too slow on specific subjects? Did they rush? 
-    4. Write a 3-4 sentence review. Be specific mentioning subjects and their pace. Address them directly ("You...").
+    4. Write a structured review with bullet points.
+       - Use **Bold** for key terms.
+       - Use bullet points for distinct insights.
+       - structure it as:
+         * 🏆 **Strengths**: ...
+         * ⚠️ **Areas for Improvement**: ...
+         * ⏱️ **Speed Analysis**: ...
+         * 💡 **Recommendation**: ...
     
-    Output Format: plain text.
+    Output Format: Clean Markdown.
     """
     try:
         response = model.generate_content(prompt)
@@ -157,6 +164,79 @@ async def submit_quiz(submission: QuizSubmission, user: dict = Depends(get_curre
             subject_breakdown=subject_stats,
             time_analysis=submission.time_taken
         )
+
+        # --- MEM0 INTEGRATION ---
+        # Record long-term insights about the student
+        try:
+             mem0_key = os.getenv("MEM0_API_KEY")
+             google_key = os.getenv("GOOGLE_API_KEY")
+             m = None
+
+             # 1. Try Platform Client
+             if mem0_key:
+                 try:
+                     from mem0 import MemoryClient
+                     m = MemoryClient(api_key=mem0_key)
+                 except ImportError:
+                     pass
+             
+             # 2. Fallback to Local/Cloud with Gemini
+             if not m and google_key:
+                 from mem0 import Memory
+                 
+                 qdrant_url = os.getenv("QDRANT_URL")
+                 qdrant_key = os.getenv("QDRANT_API_KEY")
+                 
+                 vector_config = {}
+                 if qdrant_url and qdrant_key:
+                     print("Using Qdrant Cloud for Submit Quiz")
+                     vector_config = {"provider": "qdrant", "config": {"url": qdrant_url, "api_key": qdrant_key}}
+                 else:
+                     db_path = os.path.join(os.getcwd(), "mem0_db")
+                     vector_config = {"provider": "qdrant", "config": {"path": db_path}}
+                     
+                 config = {
+                     "vector_store": vector_config,
+                     "embedder": {"provider": "gemini", "config": {"api_key": google_key, "model": "models/embedding-001"}},
+                     "llm": {"provider": "gemini", "config": {"api_key": google_key, "model": "gemini-flash-lite-latest"}}
+                 }
+                 m = Memory.from_config(config)
+
+             if m:
+                 # Construct Memory Payload (Same logic as before)
+                 # 1. Identify Patterns
+                 strong_subjects = [s for s, stats in subject_stats.items() if (stats["total"] > 0 and (stats["correct"]/stats["total"]) >= 0.8)]
+                 weak_subjects = [s for s, stats in subject_stats.items() if (stats["total"] > 0 and (stats["correct"]/stats["total"]) <= 0.5)]
+                 
+                 # 2. Time Analysis
+                 subject_times = {}
+                 for q_rpt in detailed_report:
+                     subj = q_rpt["subject"]
+                     if subj not in subject_times: subject_times[subj] = []
+                     subject_times[subj].append(q_rpt["time_taken"])
+                 
+                 slow_subjects = []
+                 fast_subjects = []
+                 for subj, times in subject_times.items():
+                     avg_time = sum(times) / len(times) if times else 0
+                     if avg_time > 60: slow_subjects.append(subj)
+                     elif avg_time < 20: fast_subjects.append(subj)
+
+                 # 3. Create Narrative
+                 memory_text = f"Diagnostic Quiz Update: "
+                 if strong_subjects: memory_text += f" EXCELS in {', '.join(strong_subjects)}. "
+                 if weak_subjects: memory_text += f" STRUGGLES with {', '.join(weak_subjects)}. "
+                 if slow_subjects: memory_text += f" Takes TIME to process {', '.join(slow_subjects)}. "
+                 if fast_subjects: memory_text += f" Answers QUICKLY in {', '.join(fast_subjects)}. "
+                 
+                 # 4. Store
+                 print(f"Storing to Mem0 for {user['id']}: {memory_text}")
+                 m.add(memory_text, user_id=user["id"], metadata={"source": "diagnostic_quiz"})
+             else:
+                 print("Mem0 skipped: No valid configuration found.")
+        except Exception as mem_err:
+             print(f"Mem0 Error: {mem_err}")
+             # Non-blocking, continue submission
         
         # 4. Save to DB using authenticated client (to pass RLS)
         supabase_client: Client = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
@@ -192,7 +272,8 @@ async def submit_quiz(submission: QuizSubmission, user: dict = Depends(get_curre
             "total": len(answer_key_data),
             "feedback": ai_feedback,
             "breakdown": subject_stats,
-            "detailed_report": detailed_report
+            "detailed_report": detailed_report,
+            "memory_saved": memory_text if 'memory_text' in locals() else "No memory generated."
         }
 
     except Exception as e:
@@ -278,4 +359,125 @@ async def get_my_latest_result(user: dict = Depends(get_current_user)):
         }
     except Exception as e:
         print(f"Error fetching latest result: {e}")
-        raise HTTPException(status_code=500, detail="Failed to fetch result")
+
+@router.post("/sync-memories")
+async def sync_memories():
+    """
+    Backfill Mem0 memories for ALL students who have taken quizzes 
+    but might be missing memory records.
+    """
+    try:
+        sb_url = os.getenv("SUPABASE_URL")
+        sb_key = os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("SUPABASE_KEY")
+        supabase = create_client(sb_url, sb_key)
+        
+        google_key = os.getenv("GOOGLE_API_KEY")
+        if not google_key:
+             return {"status": "error", "message": "GOOGLE_API_KEY required for local embeddings."}
+
+        # Force Memory Configuration (Priority: Qdrant Cloud > Local)
+        from mem0 import Memory
+        
+        qdrant_url = os.getenv("QDRANT_URL")
+        qdrant_key = os.getenv("QDRANT_API_KEY")
+        
+        vector_config = {}
+        if qdrant_url and qdrant_key:
+            print("Using Qdrant Cloud")
+            vector_config = {
+                "provider": "qdrant",
+                "config": {
+                    "url": qdrant_url,
+                    "api_key": qdrant_key,
+                    "port": 6333 # Standard port, usually ignored by cloud URL but good to have
+                }
+            }
+        else:
+            print("Using Local Qdrant (Ephemeral on Render)")
+            db_path = os.path.join(os.getcwd(), "mem0_db")
+            vector_config = {
+                "provider": "qdrant",
+                "config": {"path": db_path}
+            }
+
+        config = {
+            "vector_store": vector_config,
+            "embedder": {
+                "provider": "gemini",
+                "config": {
+                    "api_key": google_key,
+                    "model": "models/embedding-001"
+                }
+            },
+            "llm": {
+                "provider": "gemini",
+                "config": {
+                    "api_key": google_key,
+                    "model": "gemini-flash-lite-latest"
+                }
+            }
+        }
+        m = Memory.from_config(config)
+
+        res = supabase.table("quiz_results").select("*").execute()
+        results = res.data
+        
+        debug_info = f"Found {len(results)} rows. "
+        if results:
+            debug_info += f"Sample Keys: {list(results[0].keys())} "
+            debug_info += f"Sample UserID: {results[0].get('user_id')} "
+            debug_info += f"Sample Scores: {type(results[0].get('subject_scores'))} "
+        print(debug_info)
+
+        count = 0
+        for r in results:
+            user_id = r.get("user_id")
+            subject_stats = r.get("subject_scores")
+            time_analysis = r.get("time_analysis")
+            
+            if not user_id or not subject_stats: continue
+            
+            try:
+                 # Logic duplicated from submit_quiz
+                 strong_subjects = [s for s, stats in subject_stats.items() if (stats.get("total",0) > 0 and (stats.get("correct",0)/stats.get("total",1)) >= 0.8)]
+                 weak_subjects = [s for s, stats in subject_stats.items() if (stats.get("total",0) > 0 and (stats.get("correct",0)/stats.get("total",1)) <= 0.5)]
+                 
+                 subject_times = {}
+                 if time_analysis and isinstance(time_analysis, list):
+                     for q_rpt in time_analysis:
+                         subj = q_rpt.get("subject")
+                         if subj:
+                             if subj not in subject_times: subject_times[subj] = []
+                             subject_times[subj].append(q_rpt.get("time_taken", 0))
+                 
+                 slow_subjects = []
+                 fast_subjects = []
+                 for subj, times in subject_times.items():
+                     avg_time = sum(times) / len(times) if times else 0
+                     if avg_time > 60: slow_subjects.append(subj)
+                     elif avg_time < 20: fast_subjects.append(subj)
+
+                 memory_text = f"Diagnostic Quiz Update (Backfill): "
+                 if strong_subjects: memory_text += f" EXCELS in {', '.join(strong_subjects)}. "
+                 if weak_subjects: memory_text += f" STRUGGLES with {', '.join(weak_subjects)}. "
+                 if slow_subjects: memory_text += f" Takes TIME to process {', '.join(slow_subjects)}. "
+                 if fast_subjects: memory_text += f" Answers QUICKLY in {', '.join(fast_subjects)}. "
+                 
+                 m.add(memory_text, user_id=user_id, metadata={"source": "diagnostic_quiz_backfill"})
+                 count += 1
+                 
+            except Exception as inner_e:
+                print(f"Error processing result {r.get('id')}: {inner_e}")
+                continue
+
+        return {
+        "status": "success", 
+        "message": f"Successfully synced memories for {count} quiz submissions.",
+        "debug": debug_info
+    }
+
+    except Exception as e:
+        import traceback
+        trace = traceback.format_exc()
+        print(f"Global Sync Error: {e}")
+        return {"status": "error", "message": str(e), "trace": trace}

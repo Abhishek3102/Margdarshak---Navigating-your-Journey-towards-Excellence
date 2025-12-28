@@ -25,8 +25,9 @@ interface QuizReportProps {
     total: number
     feedback: string
     breakdown: Record<string, { correct: number; total: number }>
-    detailed_report?: any[] // Support older format if necessary, but we moved to array in time_analysis
+    detailed_report?: any[]
     time_analysis?: any[]
+    memory_saved?: string
   }
   showRetake?: boolean
 }
@@ -96,158 +97,221 @@ export function QuizReport({ result, showRetake = false }: QuizReportProps) {
   }
 
   return (
-    <div className="container mx-auto py-12 px-4 max-w-5xl">
-       <div id="report-content" className="bg-slate-950 p-6 rounded-xl"> 
-          <div className="text-center mb-10">
-            <h1 className="text-4xl font-bold mb-2">Diagnostic Results</h1>
-            <p className="text-muted-foreground">Here is your personalized performance analysis.</p>
-          </div>
+    <div className="container mx-auto py-8 px-4 max-w-[95vw] lg:max-w-7xl">
+       <div id="report-content" className="bg-slate-950 p-6 md:p-8 rounded-xl border border-slate-800 shadow-2xl"> 
+         {/* Header */}
+         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 border-b border-slate-800 pb-6">
+           <div>
+             <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
+               Diagnostic Results
+             </h1>
+             <p className="text-muted-foreground mt-1">Personalized performance analysis & AI feedback.</p>
+           </div>
+           
+           <div className="flex gap-2">
+            <Button variant="outline" onClick={() => router.push('/quiz')}>
+              <RotateCcw className="w-4 h-4 mr-2" />
+              Dashboard
+            </Button>
+            {showRetake && (
+                <Button onClick={() => router.push('/quiz/test')} className="bg-purple-600 hover:bg-purple-700 text-white">
+                    <RotateCcw className="w-4 h-4 mr-2" />
+                    Retake Quiz
+                </Button>
+            )}
+           </div>
+         </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Score Card */}
-            <Card className="border-none shadow-xl bg-gradient-to-br from-primary/10 to-transparent">
-              <CardHeader>
-                <CardTitle>Overall Score</CardTitle>
-              </CardHeader>
-              <CardContent className="flex flex-col items-center justify-center py-8">
-                <div className="text-6xl font-black text-primary mb-2">
-                  {percentage}%
-                </div>
-                <p className="text-lg text-muted-foreground">
-                  {result.score} out of {result.total} Questions Correct
-                </p>
-              </CardContent>
-            </Card>
+         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            {/* Left Column: Stats & Breakdown (4 cols) */}
+            <div className="lg:col-span-4 space-y-6">
+                {/* Compact Score Card */}
+                <Card className="bg-slate-900 border-slate-800 overflow-hidden relative">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+                    <CardContent className="p-6 flex items-center justify-between">
+                        <div>
+                             <p className="text-sm text-slate-400 font-medium uppercase tracking-wider mb-1">Overall Score</p>
+                             <div className="text-5xl font-bold text-white tracking-tight">{percentage}%</div>
+                             <p className="text-xs text-slate-500 mt-1">{result.score} / {result.total} Correct</p>
+                        </div>
+                        <div className="w-20 h-20 rounded-full border-4 border-slate-800 flex items-center justify-center relative">
+                             <svg className="w-full h-full transform -rotate-90">
+                                 <circle cx="36" cy="36" r="32" stroke="currentColor" strokeWidth="6" fill="transparent" className="text-slate-800" />
+                                 <circle cx="36" cy="36" r="32" stroke="currentColor" strokeWidth="6" fill="transparent" className="text-blue-500" 
+                                         strokeDasharray={`${2 * Math.PI * 32}`} 
+                                         strokeDashoffset={`${2 * Math.PI * 32 * (1 - percentage / 100)}`} 
+                                 />
+                             </svg>
+                        </div>
+                    </CardContent>
+                </Card>
 
-            {/* AI Analysis */}
-            <Card className="border-none shadow-xl border-t-4 border-t-purple-500">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <TrendingUp className="w-6 h-6 text-purple-600" />
-                  AI Insights
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                 <p className="text-lg leading-relaxed italic text-muted-foreground">
-                   "{result.feedback}"
-                 </p>
-                 <div className="mt-6 flex flex-col gap-3">
+                {/* Key Insights Stats */}
+                <div className="grid grid-cols-1 gap-3">
                     {strongest && (
-                      <div className="flex items-center gap-2 text-green-700 bg-green-50 p-3 rounded-md">
-                        <CheckCircle2 className="w-5 h-5" />
-                        <span className="font-semibold">Strongest Area:</span>
-                        {strongest.subject} ({strongest.score}%)
+                      <div className="flex items-center justify-between bg-emerald-950/20 border border-emerald-500/20 p-4 rounded-lg">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-emerald-500/10 rounded-full text-emerald-500"><CheckCircle2 className="w-5 h-5" /></div>
+                            <div>
+                                <p className="text-xs text-emerald-500 font-medium uppercase">Strongest Subject</p>
+                                <p className="text-white font-semibold">{strongest.subject}</p>
+                            </div>
+                        </div>
+                        <span className="text-xl font-bold text-emerald-400">{strongest.score}%</span>
                       </div>
                     )}
                     {weakest && weakest.score < 100 && (
-                      <div className="flex items-center gap-2 text-yellow-700 bg-yellow-50 p-3 rounded-md">
-                        <AlertTriangle className="w-5 h-5" />
-                        <span className="font-semibold">Focus Needed:</span>
-                        {weakest.subject} ({weakest.score}%)
-                      </div>
-                    )}
-                 </div>
-              </CardContent>
-            </Card>
-
-            {/* Chart */}
-            <Card className="col-span-1 md:col-span-2 shadow-lg">
-              <CardHeader>
-                <CardTitle>Subject Mastery Breakdown</CardTitle>
-                <CardDescription>Percentage accuracy per subject</CardDescription>
-              </CardHeader>
-              <CardContent className="h-[300px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                    <XAxis dataKey="subject" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                    <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}%`} />
-                    <Tooltip 
-                      contentStyle={{ backgroundColor: "#333", border: "none", color: "#fff", borderRadius: "8px" }}
-                      cursor={{ fill: 'transparent' }}
-                    />
-                    <Bar dataKey="score" radius={[4, 4, 0, 0]}>
-                      {chartData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.score > 75 ? "#22c55e" : entry.score > 40 ? "#eab308" : "#ef4444"} />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-
-            {/* Improved Time Analysis Chart */}
-            {timeData.length > 0 && (
-                <Card className="col-span-1 md:col-span-2 shadow-lg border-t-4 border-t-blue-500">
-                    <CardHeader>
-                        <div className="flex items-center gap-2">
-                            <Clock className="w-6 h-6 text-blue-500"/>
+                      <div className="flex items-center justify-between bg-amber-950/20 border border-amber-500/20 p-4 rounded-lg">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-amber-500/10 rounded-full text-amber-500"><AlertTriangle className="w-5 h-5" /></div>
                             <div>
-                                <CardTitle>Time & Difficulty Analysis</CardTitle>
-                                <CardDescription>Time taken per question (Green = Correct, Red = Wrong)</CardDescription>
+                                <p className="text-xs text-amber-500 font-medium uppercase">Needs Improvement</p>
+                                <p className="text-white font-semibold">{weakest.subject}</p>
                             </div>
                         </div>
-                    </CardHeader>
-                    <CardContent className="h-[400px]">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
-                                <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-                                <XAxis 
-                                    type="number" 
-                                    dataKey="index" 
-                                    name="Question" 
-                                    label={{ value: 'Question Number', position: 'insideBottom', offset: -10 }} 
-                                    domain={[1, 'auto']}
-                                />
-                                <YAxis 
-                                    type="number" 
-                                    dataKey="time" 
-                                    name="Time" 
-                                    unit="s" 
-                                    label={{ value: 'Seconds', angle: -90, position: 'insideLeft' }} 
-                                />
-                                <Tooltip 
-                                    cursor={{ strokeDasharray: '3 3' }}
-                                    content={({ active, payload }) => {
-                                        if (active && payload && payload.length) {
-                                            const data = payload[0].payload;
-                                            return (
-                                                <div className="bg-slate-900 text-white p-3 rounded-lg shadow-xl border border-slate-700">
-                                                    <p className="font-bold mb-1">Q{data.index}: {data.subject}</p>
-                                                    <p className="text-sm text-slate-300">Difficulty: <span className="text-white">{data.difficulty}</span></p>
-                                                    <p className="text-sm text-slate-300">Time: <span className="text-white">{data.time} seconds</span></p>
-                                                    <p className={`text-sm font-semibold mt-1 ${data.status === 'Correct' ? 'text-green-400' : 'text-red-400'}`}>
-                                                        {data.status}
-                                                    </p>
-                                                </div>
-                                            );
-                                        }
-                                        return null;
-                                    }}
-                                />
-                                <Legend />
-                                <ReferenceLine y={60} label="1 Min" stroke="orange" strokeDasharray="3 3" />
-                                <Scatter name="Questions" data={timeData} shape="circle">
-                                    {timeData.map((entry: any, index: number) => (
-                                        <Cell key={`cell-${index}`} fill={entry.fill} r={6} /> // Larger dots
-                                    ))}
-                                </Scatter>
-                            </ScatterChart>
-                        </ResponsiveContainer>
+                        <span className="text-xl font-bold text-amber-400">{weakest.score}%</span>
+                      </div>
+                    )}
+                </div>
+
+                {/* Breakdown Histogram */}
+                <Card className="bg-slate-900 border-slate-800">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm text-slate-400 uppercase tracking-wider">Subject Mastery</CardTitle>
+                  </CardHeader>
+                  <CardContent className="h-[250px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 30, left: 40, bottom: 5 }}>
+                        <XAxis type="number" hide />
+                        <YAxis dataKey="subject" type="category" stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} width={80} />
+                        <Tooltip contentStyle={{ backgroundColor: "#1e293b", border: "1px solid #334155", color: "#fff" }} cursor={{fill: 'transparent'}} />
+                        <Bar dataKey="score" radius={[0, 4, 4, 0]} barSize={20}>
+                          {chartData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.score > 75 ? "#10b981" : entry.score > 40 ? "#eab308" : "#ef4444"} />
+                          ))}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
+            </div>
+
+            {/* Right Column: AI Analysis & Detailed Charts (8 cols) */}
+            <div className="lg:col-span-8 space-y-6">
+                {/* AI Review */}
+                <Card className="border-none bg-slate-900/50 border border-slate-800/50 shadow-inner overflow-hidden">
+                    <div className="bg-gradient-to-r from-purple-900/20 to-blue-900/20 px-6 py-4 border-b border-slate-800 flex items-center gap-3">
+                         <div className="p-2 bg-purple-500/10 rounded-lg"><TrendingUp className="w-5 h-5 text-purple-400" /></div>
+                         <h3 className="text-lg font-semibold text-white">AI Tutor Analysis</h3>
+                    </div>
+                    <CardContent className="p-6">
+                         <div className="space-y-4 text-slate-300 leading-relaxed text-sm lg:text-base">
+                           {result.feedback.split('\n').map((line, i) => {
+                               // Markdown Rendering Logic
+                               const trimmed = line.trim();
+                               if (!trimmed) return null;
+                               
+                               const isBullet = trimmed.startsWith('* ') || trimmed.startsWith('- ') || trimmed.startsWith('• ');
+                               const content = trimmed.replace(/^[\*\-•]\s+/, '');
+                               
+                               const parts = content.split(/(\*\*.*?\*\*)/g);
+                               
+                               return (
+                                   <div key={i} className={isBullet ? "flex gap-3 ml-2" : "mb-3"}>
+                                       {isBullet && <span className="text-purple-400 mt-1.5 min-w-[6px]">•</span>}
+                                       <p className={isBullet ? "flex-1" : ""}>
+                                           {parts.map((part, j) => {
+                                               if (part.startsWith('**') && part.endsWith('**')) {
+                                                   return <strong key={j} className="text-purple-200 font-semibold">{part.slice(2, -2)}</strong>
+                                               }
+                                               return part;
+                                           })}
+                                       </p>
+                                   </div>
+                               )
+                           })}
+                         </div>
                     </CardContent>
                 </Card>
-            )}
-      </div>
-      </div>
 
-      <div className="mt-10 flex justify-center gap-4">
-        <Button size="lg" onClick={() => router.push("/dashboard")}>
-          Go to Dashboard
-        </Button>
-        <Button variant="outline" size="lg" onClick={downloadPDF}>
-          <CheckCircle2 className="w-4 h-4 mr-2" />
-          Download Report
-        </Button>
-      </div>
+                {/* Time & Difficulty Chart */}
+                {timeData.length > 0 && (
+                    <Card className="bg-slate-900 border-slate-800">
+                        <CardHeader className="pb-2 border-b border-slate-800/50">
+                            <div className="flex items-center gap-2">
+                                <Clock className="w-5 h-5 text-blue-500"/>
+                                <CardTitle className="text-base text-white">Time & Accuracy Timeline</CardTitle>
+                            </div>
+                        </CardHeader>
+                        <CardContent className="h-[300px] mt-4">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <ScatterChart margin={{ top: 10, right: 10, bottom: 10, left: 0 }}>
+                                    <CartesianGrid strokeDasharray="3 3" opacity={0.1} vertical={false} />
+                                    <XAxis type="number" dataKey="index" name="Question" hide />
+                                    <YAxis type="number" dataKey="time" name="Time" unit="s" stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} />
+                                    <Tooltip 
+                                        cursor={{ strokeDasharray: '3 3' }}
+                                        content={({ active, payload }) => {
+                                            if (active && payload && payload.length) {
+                                                const data = payload[0].payload;
+                                                return (
+                                                    <div className="bg-slate-950 text-white p-3 rounded shadow-xl border border-slate-800 text-xs">
+                                                        <p className="font-bold text-blue-400">Q{data.index}: {data.subject}</p>
+                                                        <p className="text-slate-400 mt-1">Time: {data.time}s</p>
+                                                        <p className={data.status === 'Correct' ? 'text-emerald-500' : 'text-rose-500'}>{data.status}</p>
+                                                    </div>
+                                                );
+                                            }
+                                            return null;
+                                        }}
+                                    />
+                                    <ReferenceLine y={60} stroke="#f59e0b" strokeDasharray="3 3" opacity={0.5} label={{ value: "1m", fill: "#f59e0b", fontSize: 10 }} />
+                                    <Scatter name="Questions" data={timeData}>
+                                        {timeData.map((entry: any, index: number) => (
+                                            <Cell key={`cell-${index}`} fill={entry.fill} strokeWidth={2} />
+                                        ))}
+                                    </Scatter>
+                                </ScatterChart>
+                            </ResponsiveContainer>
+                        </CardContent>
+                    </Card>
+                )}
+            </div>
+         </div>
+         
+         {/* Bottom Actions & Memory */}
+         <div className="mt-8 pt-8 border-t border-slate-800">
+             <div className="flex justify-center gap-4 mb-8">
+                <Button size="lg" onClick={() => router.push("/dashboard")} className="bg-slate-800 hover:bg-slate-700 text-white">
+                  Back to Dashboard
+                </Button>
+                <Button variant="outline" size="lg" onClick={downloadPDF} className="border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800">
+                  <CheckCircle2 className="w-4 h-4 mr-2" />
+                  Download Report
+                </Button>
+             </div>
+
+             {result.memory_saved && (
+                <div className="max-w-4xl mx-auto">
+                    <Card className="bg-indigo-950/20 border border-indigo-500/30">
+                        <div className="px-6 py-4 flex items-center justify-between border-b border-indigo-500/20">
+                            <div className="flex items-center gap-2 text-indigo-400 font-semibold">
+                                <CheckCircle2 className="w-5 h-5" />
+                                Memory Updated
+                            </div>
+                            <span className="text-xs text-indigo-500/60 uppercase tracking-widest font-mono">Permamemory v1.0</span>
+                        </div>
+                        <CardContent className="p-6">
+                            <div className="font-mono text-sm text-indigo-300 leading-relaxed opacity-90">
+                                &gt; {result.memory_saved}
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
+             )}
+         </div>
+    </div>
     </div>
   )
 }

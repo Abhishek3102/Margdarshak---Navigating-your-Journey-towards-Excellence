@@ -13,6 +13,7 @@ import { Loader2 } from "lucide-react"
 import Link from "next/link"
 import { supabase } from "@/lib/supabase"
 import { GenerativeChat } from "@/components/generative-chat"
+import { AITutorDashboard } from "@/components/ai-tutor-dashboard"
 
 export default function DashboardPage() {
   const { user, isLoggedIn, loading } = useAuth()
@@ -21,6 +22,7 @@ export default function DashboardPage() {
   const [subjects, setSubjects] = useState<any[]>([])
   const [isLoadingData, setIsLoadingData] = useState(true)
   const [isUpdatingGrade, setIsUpdatingGrade] = useState(false)
+  const [activeTab, setActiveTab] = useState('Overview')
 
   // Redirect if not logged in
   useEffect(() => {
@@ -147,67 +149,86 @@ export default function DashboardPage() {
         {(user?.role === 'teacher' || user?.grade) ? (
             <div className="flex flex-col space-y-8">
                 {/* Dashboard Sub-Navigation */}
-                <div className="flex items-center space-x-1 border-b border-slate-800 pb-1">
-                    <Button variant="ghost" className="text-white hover:bg-slate-800/50 hover:text-purple-400 relative">
-                        Overview
-                        <span className="absolute bottom-0 left-0 w-full h-0.5 bg-purple-500 rounded-t-full"></span>
-                    </Button>
-                    <Button variant="ghost" className="text-slate-400 hover:text-white hover:bg-slate-800/50">My Progress</Button>
-                    <Button variant="ghost" className="text-slate-400 hover:text-white hover:bg-slate-800/50">Assignments</Button>
-                    <Button variant="ghost" className="text-slate-400 hover:text-white hover:bg-slate-800/50">Practice</Button>
+                <div className="flex items-center space-x-1 border-b border-slate-800 pb-1 overflow-x-auto">
+                    {['Overview', 'My Progress', 'Assignments', 'AI Tutor'].map((tab) => (
+                        <Button 
+                            key={tab}
+                            variant="ghost" 
+                            onClick={() => setActiveTab(tab)}
+                            className={`relative ${activeTab === tab ? "text-white hover:text-white" : "text-slate-400 hover:text-white hover:bg-slate-800/50"}`}
+                        >
+                            {tab}
+                            {activeTab === tab && (
+                                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-purple-500 rounded-t-full"></span>
+                            )}
+                        </Button>
+                    ))}
                 </div>
 
-                {/* Active Course Card */}
-                <Card className="bg-slate-900/50 border-purple-500/20 overflow-hidden relative group">
-                    <div className="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <CardHeader>
-                        <CardTitle className="flex items-center text-white">
-                            <Sparkles className="w-5 h-5 mr-2 text-purple-400" /> 
-                            Recommended For You
-                        </CardTitle>
-                        <CardDescription>Based on your recent performance in "Calculus"</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="flex justify-between items-center bg-slate-950 p-4 rounded-xl border border-slate-800">
-                            <div>
-                                <h3 className="font-semibold text-lg text-white">Limits & Derivatives</h3>
-                                <p className="text-sm text-slate-400">Class 11 • Mathematics</p>
-                            </div>
-                            <Button className="bg-white text-black hover:bg-slate-200">
-                                <Play className="w-4 h-4 mr-2" /> Resume
-                            </Button>
-                        </div>
-                    </CardContent>
-                </Card>
+                {/* Tab Content */}
+                {activeTab === 'Overview' && (
+                    <>
+                        <Card className="bg-slate-900/50 border-purple-500/20 overflow-hidden relative group">
+                            <div className="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                            <CardHeader>
+                                <CardTitle className="flex items-center text-white">
+                                    <Sparkles className="w-5 h-5 mr-2 text-purple-400" /> 
+                                    Recommended For You
+                                </CardTitle>
+                                <CardDescription>Based on your recent performance in "Calculus"</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="flex justify-between items-center bg-slate-950 p-4 rounded-xl border border-slate-800">
+                                    <div>
+                                        <h3 className="font-semibold text-lg text-white">Limits & Derivatives</h3>
+                                        <p className="text-sm text-slate-400">Class 11 • Mathematics</p>
+                                    </div>
+                                    <Button className="bg-white text-black hover:bg-slate-200">
+                                        <Play className="w-4 h-4 mr-2" /> Resume
+                                    </Button>
+                                </div>
+                            </CardContent>
+                        </Card>
 
-                {/* Standards & Subjects */}
-                <div className="space-y-4">
-                    <h2 className="text-2xl font-semibold flex items-center">
-                        <BookOpen className="w-6 h-6 mr-2 text-slate-400" /> 
-                        Academic Atlas
-                    </h2>
-                    
-                    <div className="grid grid-cols-1 gap-6">
-                        {standards.map((std) => (
-                            <div key={std.id} className="bg-slate-900 border-slate-800 hover:border-slate-600 transition-all cursor-pointer rounded-lg p-6">
-                                <h3 className="text-xl font-semibold text-slate-200 mb-4">{std.name}</h3>
-                                <div className="space-y-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-2 gap-x-8">
-                                    {subjects.filter(s => s.standard_id === std.id).map(sub => (
-                                        <div key={sub.id} className="text-sm text-slate-400 flex items-center p-2 hover:bg-slate-800/50 rounded-md transition-colors">
-                                            <div className="w-2 h-2 rounded-full bg-emerald-500 mr-3 shadow-[0_0_8px_rgba(16,185,129,0.4)]"></div>
-                                            {sub.name}
+                        <div className="space-y-4">
+                            <h2 className="text-2xl font-semibold flex items-center">
+                                <BookOpen className="w-6 h-6 mr-2 text-slate-400" /> 
+                                Academic Atlas
+                            </h2>
+                            
+                            <div className="grid grid-cols-1 gap-6">
+                                {standards.map((std) => (
+                                    <div key={std.id} className="bg-slate-900 border-slate-800 hover:border-slate-600 transition-all cursor-pointer rounded-lg p-6">
+                                        <h3 className="text-xl font-semibold text-slate-200 mb-4">{std.name}</h3>
+                                        <div className="space-y-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-2 gap-x-8">
+                                            {subjects.filter(s => s.standard_id === std.id).map(sub => (
+                                                <div key={sub.id} className="text-sm text-slate-400 flex items-center p-2 hover:bg-slate-800/50 rounded-md transition-colors">
+                                                    <div className="w-2 h-2 rounded-full bg-emerald-500 mr-3 shadow-[0_0_8px_rgba(16,185,129,0.4)]"></div>
+                                                    {sub.name}
+                                                </div>
+                                            ))}
                                         </div>
-                                    ))}
-                                </div>
-                                <div className="mt-8 pt-4 border-t border-slate-800 flex justify-end">
-                                    <Link href={`/standards/${std.id}`} className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:from-purple-700 hover:to-indigo-700 h-10 px-4 py-2">
-                                        View Detailed Curriculum <BookOpen className="ml-2 w-4 h-4"/>
-                                    </Link>
-                                </div>
+                                        <div className="mt-8 pt-4 border-t border-slate-800 flex justify-end">
+                                            <Link href={`/standards/${std.id}`} className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:from-purple-700 hover:to-indigo-700 h-10 px-4 py-2">
+                                                View Detailed Curriculum <BookOpen className="ml-2 w-4 h-4"/>
+                                            </Link>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
-                        ))}
+                        </div>
+                    </>
+                )}
+
+                {activeTab === 'AI Tutor' && (
+                    <AITutorDashboard userName={user?.name || 'Scholar'} />
+                )}
+                
+                {(activeTab === 'My Progress' || activeTab === 'Assignments') && (
+                    <div className="text-center py-20 border border-dashed border-slate-800 rounded-lg">
+                        <p className="text-slate-500">This module is coming soon.</p>
                     </div>
-                </div>
+                )}
             </div>
         ) : (
             <div className="text-center py-20 border border-dashed border-slate-800 rounded-lg">

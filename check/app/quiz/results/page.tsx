@@ -12,6 +12,7 @@ interface QuizResult {
   breakdown: Record<string, { correct: number; total: number }>
   detailed_report?: any[]
   time_analysis?: any[]
+  memory_saved?: string
 }
 
 import axiosInstance from "@/lib/axios"
@@ -24,7 +25,7 @@ export default function QuizResultsPage() {
   useEffect(() => {
     const fetchResult = async () => {
         // 1. Try to get from Local Storage first (Fastest)
-        const stored = localStorage.getItem("quizResult")
+        const stored = localStorage.getItem("latestQuizResult")
         if (stored) {
             setResult(JSON.parse(stored))
             setLoading(false)
