@@ -303,6 +303,7 @@ export default function ChapterPage() {
                     videoUrl={savedQuizzesVideo.video_url}
                     videoTitle={savedQuizzesVideo.title}
                     initialMode="history"
+                    isStudent={user?.role !== 'teacher'}
                 />
             )}
 
@@ -436,16 +437,15 @@ export default function ChapterPage() {
                                             <Users className="w-4 h-4 mr-2" /> Study Group
                                         </Button>
                                         
-                                        {/* Teacher-Only AI Button */}
+                                        <Button size="sm" variant="outline" className="border-zinc-700 hover:bg-zinc-800 text-zinc-300 ml-2" onClick={() => setSavedQuizzesVideo(vid)}>
+                                            <History className="w-4 h-4 mr-2" /> Past Quizzes
+                                        </Button>
+                                        
+                                        {/* Teacher-Only AI Generator */}
                                         {user?.role === 'teacher' && (
-                                            <>
-                                                <Button size="sm" variant="secondary" className="bg-purple-900/40 text-purple-200 hover:bg-purple-900/60 border border-purple-500/30" onClick={() => setQuizGenVideo(vid)}>
-                                                    <Sparkles className="w-4 h-4 mr-2" /> AI Quiz
-                                                </Button>
-                                                <Button size="sm" variant="outline" className="border-zinc-700 hover:bg-zinc-800 text-zinc-300 ml-2" onClick={() => setSavedQuizzesVideo(vid)}>
-                                                    <History className="w-4 h-4 mr-2" /> Past Quizzes
-                                                </Button>
-                                            </>
+                                            <Button size="sm" variant="secondary" className="bg-purple-900/40 text-purple-200 hover:bg-purple-900/60 border border-purple-500/30 ml-2" onClick={() => setQuizGenVideo(vid)}>
+                                                <Sparkles className="w-4 h-4 mr-2" /> AI Quiz
+                                            </Button>
                                         )}
                                     </div>
                                 </div>

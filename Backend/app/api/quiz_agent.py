@@ -375,7 +375,6 @@ async def get_saved_quizzes(video_url: str, user: dict = Depends(get_current_use
         # Try fetching quizzes first
         res = supabase.table("generated_quizzes")\
             .select("*, generated_questions(*)")\
-            .eq("user_id", user["id"])\
             .eq("video_url", video_url)\
             .order("created_at", desc=True)\
             .execute()

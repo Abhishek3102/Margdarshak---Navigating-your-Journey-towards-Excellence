@@ -19,6 +19,7 @@ interface QuizGeneratorModalProps {
     videoUrl: string
     videoTitle: string
     initialMode?: 'config' | 'history'
+    isStudent?: boolean
 }
 
 interface Question {
@@ -29,7 +30,7 @@ interface Question {
     hint: string
 }
 
-export function QuizGeneratorModal({ isOpen, onClose, videoUrl, videoTitle, initialMode = 'config' }: QuizGeneratorModalProps) {
+export function QuizGeneratorModal({ isOpen, onClose, videoUrl, videoTitle, initialMode = 'config', isStudent = false }: QuizGeneratorModalProps) {
     const [step, setStep] = useState<'config' | 'generating' | 'review'>(initialMode === 'history' ? 'review' : 'config')
     const [quizHistory, setQuizHistory] = useState<{ id: number, questions: Question[] }[]>([])
     const [currentQuizIndex, setCurrentQuizIndex] = useState(0)
@@ -43,6 +44,11 @@ export function QuizGeneratorModal({ isOpen, onClose, videoUrl, videoTitle, init
     const [refineInstruction, setRefineInstruction] = useState("")
     const [isRefining, setIsRefining] = useState(false)
     const [isLoadingHistory, setIsLoadingHistory] = useState(false)
+
+    // Student Interaction State
+    const [studentSelections, setStudentSelections] = useState<{[key: number]: string}>({}) // qIndex -> optionKey
+    const [completedQuestions, setCompletedQuestions] = useState<{[key: number]: boolean}>({}) // qIndex -> true if submitted
+    const [revealedHints, setRevealedHints] = useState<{[key: number]: boolean}>({})
 
     useEffect(() => {
         if (isOpen && initialMode === 'history') {
@@ -169,6 +175,24 @@ export function QuizGeneratorModal({ isOpen, onClose, videoUrl, videoTitle, init
         setQuizHistory(updatedHistory)
     }
 
+    // Student Handlers
+    const handleStudentSelect = (qIdx: number, optKey: string) => {
+        if (completedQuestions[qIdx]) return // Locked after submit
+        setStudentSelections(prev => ({...prev, [qIdx]: optKey}))
+    }
+
+    const handleStudentSubmit = (qIdx: number) => {
+        if (!studentSelections[qIdx]) return
+        setCompletedQuestions(prev => ({...prev, [qIdx]: true}))
+        
+        // Auto-check logic handled in render
+        if (studentSelections[qIdx] === questions[qIdx].answer) {
+             toast.success("Correct Answer!")
+        } else {
+             toast.error("Incorrect!")
+        }
+    }
+
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="max-w-5xl max-h-[90vh] flex flex-col bg-zinc-950 border-zinc-800 text-white">
@@ -202,14 +226,16 @@ export function QuizGeneratorModal({ isOpen, onClose, videoUrl, videoTitle, init
                                      ))}
                                 </div>
                              </ScrollArea>
-                             <Button 
-                                variant="outline" 
-                                size="sm" 
-                                className="w-full mt-2 border-dashed border-zinc-700 text-zinc-400 hover:text-white"
-                                onClick={handleGenerateMore}
-                             >
-                                <Sparkles className="w-3 h-3 mr-2" /> Generate New
-                             </Button>
+                             {!isStudent && (
+                                 <Button 
+                                    variant="outline" 
+                                    size="sm" 
+                                    className="w-full mt-2 border-dashed border-zinc-700 text-zinc-400 hover:text-white"
+                                    onClick={handleGenerateMore}
+                                 >
+                                    <Sparkles className="w-3 h-3 mr-2" /> Generate New
+                                 </Button>
+                             )}
                         </div>
                     )}
 
@@ -283,66 +309,156 @@ export function QuizGeneratorModal({ isOpen, onClose, videoUrl, videoTitle, init
 
                         {step === 'review' && (
                             <div className="flex flex-col h-full gap-4 pt-2">
-                                {/* Refine Bar */}
-                                <div className="flex gap-2 p-2 bg-zinc-900 rounded-lg shrink-0">
-                                    <Input 
-                                        className="bg-zinc-950 border-zinc-700 focus-visible:ring-purple-500"
-                                        placeholder="Refine with AI: e.g. 'Make them harder', 'Fix grammar'..."
-                                        value={refineInstruction}
-                                        onChange={(e) => setRefineInstruction(e.target.value)}
-                                    />
-                                    <Button 
-                                        size="icon" 
-                                        className="bg-purple-600 hover:bg-purple-700"
-                                        onClick={handleRefine}
-                                        disabled={isRefining}
-                                    >
-                                        {isRefining ? <Loader2 className="w-4 h-4 animate-spin" /> : <Wand2 className="w-4 h-4" />}
-                                    </Button>
-                                </div>
+                                {/* Refine Bar - Teacher Only */}
+                                {!isStudent && (
+                                    <div className="flex gap-2 p-2 bg-zinc-900 rounded-lg shrink-0">
+                                        <Input 
+                                            className="bg-zinc-950 border-zinc-700 focus-visible:ring-purple-500"
+                                            placeholder="Refine with AI: e.g. 'Make them harder', 'Fix grammar'..."
+                                            value={refineInstruction}
+                                            onChange={(e) => setRefineInstruction(e.target.value)}
+                                        />
+                                        <Button 
+                                            size="icon" 
+                                            className="bg-purple-600 hover:bg-purple-700"
+                                            onClick={handleRefine}
+                                            disabled={isRefining}
+                                        >
+                                            {isRefining ? <Loader2 className="w-4 h-4 animate-spin" /> : <Wand2 className="w-4 h-4" />}
+                                        </Button>
+                                    </div>
+                                )}
 
                                 <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
                                     <div className="space-y-6 pb-2">
-                                        {questions.map((q, idx) => (
+                                        {questions.map((q, idx) => {
+                                            const isCompleted = completedQuestions[idx];
+                                            const selected = studentSelections[idx];
+                                            const isCorrect = q.answer === selected;
+                                            
+                                            return (
                                             <Card key={idx} className="bg-zinc-900/50 border-zinc-800">
                                                 <CardContent className="p-4 space-y-4">
                                                     <div className="flex justify-between items-start gap-4">
                                                         <div className="flex-1 space-y-1">
                                                             <Label className="text-xs text-zinc-500 uppercase">Question {idx + 1}</Label>
-                                                            <Textarea 
-                                                                value={q.question}
-                                                                onChange={(e) => updateQuestion(idx, 'question', e.target.value)}
-                                                                className="bg-zinc-950 border-zinc-800 min-h-[60px] text-base"
-                                                            />
+                                                            {isStudent ? (
+                                                                <p className="text-white text-lg font-medium py-2">{q.question}</p>
+                                                            ) : (
+                                                                <Textarea 
+                                                                    value={q.question}
+                                                                    onChange={(e) => updateQuestion(idx, 'question', e.target.value)}
+                                                                    className="bg-zinc-950 border-zinc-800 min-h-[60px] text-base"
+                                                                />
+                                                            )}
                                                         </div>
                                                     </div>
 
                                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                        {Object.entries(q.options).map(([key, val]) => (
-                                                            <div key={key} className={`flex gap-2 items-center p-2 rounded border ${q.answer === key ? 'border-green-500/50 bg-green-900/10' : 'border-zinc-800 bg-zinc-950'}`}>
-                                                                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${q.answer === key ? 'bg-green-500 text-black' : 'bg-zinc-800 text-zinc-400'}`}>
+                                                        {Object.entries(q.options).map(([key, val]) => {
+                                                            // Logic for styling
+                                                            let borderColor = 'border-zinc-800 bg-zinc-950';
+                                                            let badgeColor = 'bg-zinc-800 text-zinc-400';
+                                                            
+                                                            if (isStudent) {
+                                                                const isSelected = selected === key;
+                                                                
+                                                                if (isCompleted) {
+                                                                    if (key === q.answer) {
+                                                                         // Correct Answer always green
+                                                                         borderColor = 'border-green-500/50 bg-green-900/20';
+                                                                         badgeColor = 'bg-green-500 text-black';
+                                                                    } else if (isSelected && key !== q.answer) {
+                                                                         // Wrong Selection
+                                                                         borderColor = 'border-red-500/50 bg-red-900/20';
+                                                                         badgeColor = 'bg-red-500 text-black';
+                                                                    } else {
+                                                                         // Unselected, wrong options dim out
+                                                                         borderColor = 'border-zinc-800 bg-zinc-950/50 opacity-50';
+                                                                    }
+                                                                } else {
+                                                                    // Pre-submit selection
+                                                                    if (isSelected) {
+                                                                        borderColor = 'border-purple-500 bg-purple-900/20';
+                                                                        badgeColor = 'bg-purple-500 text-white';
+                                                                    } else {
+                                                                        borderColor = 'border-zinc-800 bg-zinc-950 hover:bg-zinc-900 cursor-pointer';
+                                                                    }
+                                                                }
+                                                            } else {
+                                                                // Teacher Logic
+                                                                if (q.answer === key) {
+                                                                    borderColor = 'border-green-500/50 bg-green-900/10';
+                                                                    badgeColor = 'bg-green-500 text-black';
+                                                                }
+                                                            }
+
+                                                            return (
+                                                            <div 
+                                                                key={key} 
+                                                                onClick={() => {
+                                                                    if (isStudent && !isCompleted) handleStudentSelect(idx, key);
+                                                                }}
+                                                                className={`flex gap-3 items-center p-3 rounded-lg border transition-all ${borderColor}`}
+                                                            >
+                                                                <div className={`w-8 h-8 shrink-0 rounded-full flex items-center justify-center text-sm font-bold ${badgeColor}`}>
                                                                     {key}
                                                                 </div>
-                                                                <Input 
-                                                                    value={val}
-                                                                    onChange={(e) => updateOption(idx, key, e.target.value)}
-                                                                    className="border-none bg-transparent h-8 p-0 focus-visible:ring-0"
-                                                                />
+                                                                {isStudent ? (
+                                                                    <span className="text-zinc-200">{val}</span>
+                                                                ) : (
+                                                                    <Input 
+                                                                        value={val}
+                                                                        onChange={(e) => updateOption(idx, key, e.target.value)}
+                                                                        className="border-none bg-transparent h-8 p-0 focus-visible:ring-0"
+                                                                    />
+                                                                )}
                                                             </div>
-                                                        ))}
+                                                            )
+                                                        })}
                                                     </div>
 
-                                                    <div className="pt-2">
-                                                        <Label className="text-xs text-blue-400 uppercase">Hint (Editable)</Label>
-                                                        <Input 
-                                                            value={q.hint}
-                                                            onChange={(e) => updateQuestion(idx, 'hint', e.target.value)}
-                                                            className="bg-zinc-950 border-zinc-800 text-sm text-zinc-400"
-                                                        />
+                                                    <div className="flex justify-between items-center pt-2">
+                                                        <div className="flex-1">
+                                                            {isStudent ? (
+                                                                <div>
+                                                                    {!revealedHints[idx] ? (
+                                                                        <Button variant="ghost" size="sm" onClick={() => setRevealedHints(prev => ({...prev, [idx]: true}))} className="text-blue-400 hover:text-blue-300 pl-0">
+                                                                            <Sparkles className="w-4 h-4 mr-2" /> Show Hint
+                                                                        </Button>
+                                                                    ) : (
+                                                                        <div className="bg-blue-900/20 border border-blue-500/30 p-2 rounded text-sm text-blue-200 animate-in fade-in">
+                                                                            <span className="font-bold text-xs uppercase mr-2">Hint:</span>
+                                                                            {q.hint}
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            ) : (
+                                                                <>
+                                                                    <Label className="text-xs text-blue-400 uppercase">Hint (Editable)</Label>
+                                                                    <Input 
+                                                                        value={q.hint}
+                                                                        onChange={(e) => updateQuestion(idx, 'hint', e.target.value)}
+                                                                        className="bg-zinc-950 border-zinc-800 text-sm text-zinc-400 mt-1"
+                                                                    />
+                                                                </>
+                                                            )}
+                                                        </div>
+                                                        
+                                                        {isStudent && !isCompleted && (
+                                                            <Button 
+                                                                onClick={() => handleStudentSubmit(idx)}
+                                                                disabled={!selected}
+                                                                size="sm"
+                                                                className={selected ? "bg-purple-600 hover:bg-purple-500" : "bg-zinc-800 text-zinc-500"}
+                                                            >
+                                                                Submit Answer
+                                                            </Button>
+                                                        )}
                                                     </div>
                                                 </CardContent>
                                             </Card>
-                                        ))}
+                                        )})}
                                     </div>
                                 </div>
                             </div>
@@ -359,12 +475,19 @@ export function QuizGeneratorModal({ isOpen, onClose, videoUrl, videoTitle, init
                     {step === 'review' && (
                         <div className="flex gap-2 w-full sm:w-auto justify-end">
                              {/* Restart/Clear All */}
-                             <Button variant="outline" onClick={() => { setQuizHistory([]); setStep('config'); }} className="bg-transparent border-zinc-700 text-zinc-300">
-                                <RefreshCw className="w-4 h-4 mr-2" /> Start Over
-                            </Button>
-                            <Button onClick={handleSave} className="bg-green-600 hover:bg-green-700 text-white flex-1 sm:flex-initial">
-                                <CheckCircle2 className="w-4 h-4 mr-2" /> Approve & Save
-                            </Button>
+                             {!isStudent && (
+                                <>
+                                    <Button variant="outline" onClick={() => { setQuizHistory([]); setStep('config'); }} className="bg-transparent border-zinc-700 text-zinc-300">
+                                        <RefreshCw className="w-4 h-4 mr-2" /> Start Over
+                                    </Button>
+                                    <Button onClick={handleSave} className="bg-green-600 hover:bg-green-700 text-white flex-1 sm:flex-initial">
+                                        <CheckCircle2 className="w-4 h-4 mr-2" /> Approve & Save
+                                    </Button>
+                                </>
+                             )}
+                             {isStudent && (
+                                 <Button variant="outline" onClick={onClose} className="border-zinc-700">Close</Button>
+                             )}
                         </div>
                     )}
                 </DialogFooter>
