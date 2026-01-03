@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import auth, content, monitoring, upload, notifications, watch_party, quiz, chat
+from app.api import auth, content, monitoring, upload, notifications, watch_party, quiz, chat, quiz_agent
 
 app = FastAPI(title="MARGDARSHAK - NAVIGATING YOUR JOURNEY TOWARDS EXCELLENCE", version="0.1.0")
 
@@ -34,6 +34,7 @@ app.include_router(notifications.router, prefix="/api/notifications", tags=["not
 app.include_router(watch_party.router, prefix="/api/watch-party", tags=["watch-party"])
 app.include_router(quiz.router, prefix="/api/quiz", tags=["quiz"])
 app.include_router(chat.router, prefix="/api/chat", tags=["chat"])
+app.include_router(quiz_agent.router, prefix="/api/quiz-agent", tags=["quiz-agent"])
 from app.api import curriculum
 app.include_router(curriculum.router, prefix="/api/curriculum", tags=["curriculum"])
 from app.api import feedback

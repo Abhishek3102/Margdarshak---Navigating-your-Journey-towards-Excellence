@@ -11,10 +11,11 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import Link from "next/link"
-import { ArrowLeft, Play, Clock, ChevronRight, Loader2, Plus, Upload, CheckCircle2, Film, Image as ImageIcon, X,  Maximize2, Users } from "lucide-react"
+import { ArrowLeft, Play, Clock, ChevronRight, Loader2, Plus, Upload, CheckCircle2, Film, Image as ImageIcon, X,  Maximize2, Users, Sparkles, History } from "lucide-react"
 import { useAuth } from "@/components/auth-provider"
 import { toast } from "sonner"
 import { WatchPartyModal } from "@/components/watch-party-modal"
+import { QuizGeneratorModal } from "@/components/quiz-generator-modal"
 import axiosInstance from "@/lib/axios"
 
 // Simple Modal Component
@@ -72,6 +73,10 @@ export default function ChapterPage() {
     const [playingVideo, setPlayingVideo] = useState<any>(null)
     const [watchPartyRoomId, setWatchPartyRoomId] = useState<string | null>(null)
     const [watchPartyVideo, setWatchPartyVideo] = useState<any>(null)
+    
+    // AI Quiz Gen State
+    const [quizGenVideo, setQuizGenVideo] = useState<any>(null)
+    const [savedQuizzesVideo, setSavedQuizzesVideo] = useState<any>(null)
 
     const videoInputRef = useRef<HTMLInputElement>(null)
     const thumbInputRef = useRef<HTMLInputElement>(null)
@@ -281,6 +286,26 @@ export default function ChapterPage() {
                 />
             )}
 
+            {/* AI Quiz Generator Modal */}
+            {quizGenVideo && (
+                <QuizGeneratorModal
+                    isOpen={!!quizGenVideo}
+                    onClose={() => setQuizGenVideo(null)}
+                    videoUrl={quizGenVideo.video_url}
+                    videoTitle={quizGenVideo.title}
+                />
+            )}
+            
+            {savedQuizzesVideo && (
+                <QuizGeneratorModal
+                    isOpen={!!savedQuizzesVideo}
+                    onClose={() => setSavedQuizzesVideo(null)}
+                    videoUrl={savedQuizzesVideo.video_url}
+                    videoTitle={savedQuizzesVideo.title}
+                    initialMode="history"
+                />
+            )}
+
             <div className="container mx-auto px-4 pt-24 pb-12">
                  {/* Breadcrumb ... */}
                 <div className="flex items-center text-sm text-slate-400 mb-6 flex-wrap">
@@ -410,6 +435,18 @@ export default function ChapterPage() {
                                         <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-white" onClick={() => startWatchParty(vid)}>
                                             <Users className="w-4 h-4 mr-2" /> Study Group
                                         </Button>
+                                        
+                                        {/* Teacher-Only AI Button */}
+                                        {user?.role === 'teacher' && (
+                                            <>
+                                                <Button size="sm" variant="secondary" className="bg-purple-900/40 text-purple-200 hover:bg-purple-900/60 border border-purple-500/30" onClick={() => setQuizGenVideo(vid)}>
+                                                    <Sparkles className="w-4 h-4 mr-2" /> AI Quiz
+                                                </Button>
+                                                <Button size="sm" variant="outline" className="border-zinc-700 hover:bg-zinc-800 text-zinc-300 ml-2" onClick={() => setSavedQuizzesVideo(vid)}>
+                                                    <History className="w-4 h-4 mr-2" /> Past Quizzes
+                                                </Button>
+                                            </>
+                                        )}
                                     </div>
                                 </div>
                             </CardContent>
