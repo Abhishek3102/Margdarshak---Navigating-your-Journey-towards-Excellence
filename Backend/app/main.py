@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import auth, content, monitoring, upload, notifications, watch_party, quiz, chat, quiz_agent
+from app.api import auth, content, monitoring, upload, notifications, watch_party, quiz, chat, quiz_agent, jira_agent
 
 app = FastAPI(title="MARGDARSHAK - NAVIGATING YOUR JOURNEY TOWARDS EXCELLENCE", version="0.1.0")
 
@@ -39,6 +39,7 @@ from app.api import curriculum
 app.include_router(curriculum.router, prefix="/api/curriculum", tags=["curriculum"])
 from app.api import feedback
 app.include_router(feedback.router, prefix="/api/feedback", tags=["feedback"])
+app.include_router(jira_agent.router, prefix="/api/jira", tags=["jira-agent"])
 
 @app.get("/")
 async def root():

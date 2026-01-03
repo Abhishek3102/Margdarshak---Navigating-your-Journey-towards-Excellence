@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, BackgroundTasks, Depends
 from app.api.auth import get_current_user
 from pydantic import BaseModel
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Any
 import os
 import google.generativeai as genai
 from supabase import create_client, Client # Added Supabase import
@@ -58,6 +58,13 @@ class QuestionItem(BaseModel):
 
 class QuizResponse(BaseModel):
     questions: List[QuestionItem]
+
+# --- RESULT MODELS ---
+class ResultSubmission(BaseModel):
+    quiz_id: str
+    video_title: str
+    responses: Dict[str, Any] # { qIdx: { selectedOption: "A", timeTaken: 10, hintRevealed: false } }
+    questions: List[Dict[str, Any]] # Pass context for analysis
 
 # --- AGENT PIPELINE ---
 
@@ -414,3 +421,175 @@ async def get_saved_quizzes(video_url: str, user: dict = Depends(get_current_use
     except Exception as e:
         print(f"Error fetching saved quizzes: {e}")
         return []
+
+# --- RESULT ENDPOINTS ---
+
+@router.post("/submit-result")
+async def analyze_and_submit_result(submission: ResultSubmission, user: dict = Depends(get_current_user)):
+    """
+    1. Calculates absolute score.
+    2. Sends data to Gemini for Qualitative Analysis.
+    3. Saves strict "One Attempt" record to DB.
+    """
+    supabase = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
+    if "token" in user:
+        supabase.postgrest.auth(user["token"])
+
+    # 1. Check if already attempted (Backend Enforcement)
+    existing = supabase.table("quiz_results").select("id").eq("user_id", user["id"]).eq("quiz_id", submission.quiz_id).execute()
+    if existing.data:
+        raise HTTPException(status_code=400, detail="You have already attempted this quiz. Multiple attempts are not allowed.")
+
+    print(f"Submitting Result for Quiz {submission.quiz_id}")
+    
+    # 2. Calculate Score
+    try:
+        total_q = len(submission.questions)
+        print(f"Processing {total_q} questions")
+        correct_count = 0
+        detailed_log = []
+
+        for idx, q in enumerate(submission.questions):
+            idx_str = str(idx)
+            user_resp = submission.responses.get(idx_str, {})
+            # print(f"DEBUG Q{idx}: {user_resp}") 
+            
+            selected = user_resp.get("selectedOption")
+            correct = q.get("correct_answer") or q.get("answer") 
+            
+            is_correct = (selected == correct)
+            if is_correct:
+                correct_count += 1
+                
+            detailed_log.append({
+                "question": q.get("question") or q.get("question_text") or "Question text missing",
+                "selected": selected,
+                "correct": correct,
+                "was_correct": is_correct,
+                "time_taken": user_resp.get("timeTaken", 0),
+                "hint_used": user_resp.get("hintRevealed", False)
+            })
+
+        print("Score Calculation Done")
+        score_percent = int((correct_count / total_q) * 100) if total_q > 0 else 0
+        print(f"Calculated Score: {score_percent}")
+
+    except Exception as e:
+        print(f"Error checking answers: {e}")
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Scoring Error: {str(e)}")
+
+    # 3. AI Qualitative Analysis
+    ai_feedback = "Analysis unavailable."
+    try:
+        print("Starting AI Analysis...")
+        model = genai.GenerativeModel(MODEL_NAME)
+        prompt = (
+            f"Analyze this student's quiz performance for '{submission.video_title}'.\n"
+            f"Score: {score_percent}%\n"
+            f"Detailed Log: {json.dumps(detailed_log)}\n\n"
+            "Provide a brief, 3-sentence qualitative analysis addressing:\n"
+            "1. Time management (did they rush or dwell?)\n"
+            "2. Hint reliance (did hints help?)\n"
+            "3. Specific weak concepts based on wrong answers.\n"
+            "Address the student directly as 'You'. Keep it encouraging but factual."
+        )
+        response = model.generate_content(prompt)
+        ai_feedback = response.text
+        print("AI Analysis Complete")
+    except Exception as e:
+        print(f"AI Analysis Failed: {e}")
+        # traceback.print_exc()
+        ai_feedback = "Great effort! Review the detailed answers to understand your mistakes."
+
+    # 4. Save to DB
+    try:
+        row = {
+            "user_id": user["id"],
+            "quiz_id": submission.quiz_id,
+            "score": score_percent,
+            "ai_analysis": ai_feedback,
+            "responses": submission.responses
+        }
+        res = supabase.table("quiz_results").insert(row).execute()
+        return {
+            "status": "success", 
+            "score": score_percent, 
+            "analysis": ai_feedback,
+            "result_id": res.data[0]["id"]
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to save result: {str(e)}")
+
+@router.get("/result/{quiz_id}")
+async def get_student_result(quiz_id: str, user: dict = Depends(get_current_user)):
+    """
+    Fetches the result for a specific quiz if it exists.
+    """
+    supabase = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
+    if "token" in user:
+        supabase.postgrest.auth(user["token"])
+        
+    try:
+        # Check if quiz exists
+        res = supabase.table("quiz_results")\
+            .select("*")\
+            .eq("user_id", user["id"])\
+            .eq("quiz_id", quiz_id)\
+            .execute()
+            
+        if res.data:
+            return {"attempted": True, "data": res.data[0]}
+        else:
+            return {"attempted": False}
+    except Exception as e:
+        # Table might not exist yet
+        return {"attempted": False, "error": str(e)}
+
+@router.get("/status")
+async def get_quiz_status_for_video(video_url: str, user: dict = Depends(get_current_user)):
+    """
+    Checks if the current user has attempted ANY quiz associated with the given video URL.
+    Returns the latest result and associated Jira ticket info.
+    """
+    supabase = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
+    if "token" in user:
+        supabase.postgrest.auth(user["token"])
+    
+    log_debug(f"[STATUS CHECK] Video URL: {video_url} | User: {user['id']}")
+    
+    # 1. Find all quiz IDs for this video
+    # Note: generated_quizzes matches strict video_url string.
+    quizzes = supabase.table("generated_quizzes").select("id").eq("video_url", video_url).execute()
+    log_debug(f"[STATUS CHECK] Found Quizzes: {quizzes.data}")
+    
+    if not quizzes.data:
+        return {"attempted": False, "reason": "no_quizzes_found"}
+        
+    quiz_ids = [q['id'] for q in quizzes.data]
+    
+    # 2. Check for results in these quizzes for ANY valid quiz_id
+    try:
+        # We rely on RLS (via auth token) AND explicit user_id filter for safety
+        results = supabase.table("quiz_results")\
+            .select("*")\
+            .in_("quiz_id", quiz_ids)\
+            .eq("user_id", user["id"])\
+            .order("created_at", desc=True)\
+            .execute()
+            
+        log_debug(f"[STATUS CHECK] User Results: {len(results.data)} found")
+        
+        if results.data and len(results.data) > 0:
+            latest_result = results.data[0]
+            return {
+                "attempted": True, 
+                "data": latest_result,
+                "quiz_id": latest_result['quiz_id'] # Useful for opening the correct modal
+            }
+        else:
+            return {"attempted": False}
+            
+    except Exception as e:
+        print(f"Error checking status: {e}")
+        return {"attempted": False, "error": str(e)}

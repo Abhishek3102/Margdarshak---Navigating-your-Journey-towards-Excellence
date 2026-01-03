@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import Link from "next/link"
-import { ArrowLeft, Play, Clock, ChevronRight, Loader2, Plus, Upload, CheckCircle2, Film, Image as ImageIcon, X,  Maximize2, Users, Sparkles, History } from "lucide-react"
+import { ArrowLeft, Play, Clock, ChevronRight, Loader2, Plus, Upload, CheckCircle2, Film, Image as ImageIcon, X,  Maximize2, Users, Sparkles, History, ExternalLink } from "lucide-react"
 import { useAuth } from "@/components/auth-provider"
 import { toast } from "sonner"
 import { WatchPartyModal } from "@/components/watch-party-modal"
@@ -52,6 +52,87 @@ const VideoModal = ({ video, onClose }: { video: any, onClose: () => void }) => 
     )
 }
 
+// Smart Button for Quiz Status
+const QuizStatusButton = ({ video, user, onOpen, refreshTrigger }: { video: any, user: any, onOpen: (mode: 'history'|'result') => void, refreshTrigger?: number }) => {
+    const [status, setStatus] = useState<'loading' | 'no-quiz' | 'start' | 'results'>('loading')
+    const [quizId, setQuizId] = useState<string | null>(null)
+    const [jiraLink, setJiraLink] = useState<{key: string, url: string} | null>(null)
+
+    useEffect(() => {
+        checkStatus()
+    }, [video, refreshTrigger])
+
+    const checkStatus = async () => {
+        try {
+            if (user?.role === 'teacher') {
+                // Teachers: Check if ANY saved quiz exists (old logic usually sufficient, but let's be consistent)
+                // Actually teachers just need to know if they can "Start/Manage" quizzes. 
+                // Let's stick to old logic for teachers OR just "Start Quiz"
+                 const res = await axiosInstance.get(`/quiz-agent/saved?video_url=${encodeURIComponent(video.video_url)}`)
+                 if (res.data && res.data.length > 0) {
+                     setQuizId(res.data[0].id)
+                     setStatus('start')
+                 } else {
+                     setStatus('no-quiz')
+                 }
+                 return
+            }
+
+            // Students: Use Robust Status Check
+            const res = await axiosInstance.get(`/quiz-agent/status?video_url=${encodeURIComponent(video.video_url)}`)
+            
+            if (res.data.attempted) {
+                setStatus('results')
+                setQuizId(res.data.quiz_id) // Set the executed quiz ID
+                const data = res.data.data
+                if (data.jira_ticket_key) {
+                     setJiraLink({ key: data.jira_ticket_key, url: data.jira_ticket_url })
+                }
+            } else {
+                 // Not attempted, but quiz might exist?
+                 // Wait, status endpoint returns "attempted: false" if NO result found. 
+                 // We still need to know if a quiz EXISTS to show "Start Quiz" vs "No Quiz".
+                 // Let's fallback to checking saved quizzes if not attempted.
+                 const savedRes = await axiosInstance.get(`/quiz-agent/saved?video_url=${encodeURIComponent(video.video_url)}`)
+                 if (savedRes.data && savedRes.data.length > 0) {
+                     setQuizId(savedRes.data[0].id) // Latest version
+                     setStatus('start')
+                 } else {
+                     setStatus('no-quiz')
+                 }
+            }
+
+        } catch (e) {
+            console.error(e)
+            setStatus('no-quiz')
+        }
+    }
+
+    if (status === 'loading') return <Loader2 className="w-4 h-4 text-zinc-600 animate-spin ml-2" />
+    if (status === 'no-quiz') return null
+
+    if (status === 'results') {
+        return (
+            <>
+                <Button size="sm" variant="outline" className="border-purple-500/50 text-purple-300 hover:bg-purple-900/20 ml-2" onClick={() => onOpen('result')}>
+                    <Sparkles className="w-4 h-4 mr-2" /> View Results
+                </Button>
+                {jiraLink && (
+                    <Button size="sm" variant="outline" className="border-blue-500/50 text-blue-400 hover:bg-blue-900/30 ml-2" onClick={() => window.open(jiraLink?.url, '_blank')}>
+                        <ExternalLink className="w-4 h-4 mr-2" /> Track Progress ({jiraLink?.key})
+                    </Button>
+                )}
+            </>
+        )
+    }
+
+    return (
+        <Button size="sm" variant="outline" className="border-zinc-700 hover:bg-zinc-800 text-zinc-300 ml-2" onClick={() => onOpen('history')}>
+            <History className="w-4 h-4 mr-2" /> {user?.role === 'teacher' ? 'Past Quizzes' : 'Start Quiz'}
+        </Button>
+    )
+}
+
 export default function ChapterPage() {
     const params = useParams()
     const id = params.id as string
@@ -77,6 +158,8 @@ export default function ChapterPage() {
     // AI Quiz Gen State
     const [quizGenVideo, setQuizGenVideo] = useState<any>(null)
     const [savedQuizzesVideo, setSavedQuizzesVideo] = useState<any>(null)
+    const [quizMode, setQuizMode] = useState<'history' | 'result'>('history')
+    const [refreshKey, setRefreshKey] = useState(0) // Trigger api re-fetch on close
 
     const videoInputRef = useRef<HTMLInputElement>(null)
     const thumbInputRef = useRef<HTMLInputElement>(null)
@@ -299,11 +382,15 @@ export default function ChapterPage() {
             {savedQuizzesVideo && (
                 <QuizGeneratorModal
                     isOpen={!!savedQuizzesVideo}
-                    onClose={() => setSavedQuizzesVideo(null)}
+                    onClose={() => {
+                        setSavedQuizzesVideo(null)
+                        setRefreshKey(prev => prev + 1) // Refresh buttons
+                    }}
                     videoUrl={savedQuizzesVideo.video_url}
                     videoTitle={savedQuizzesVideo.title}
-                    initialMode="history"
+                    initialMode={quizMode}
                     isStudent={user?.role !== 'teacher'}
+                    studentName={user?.name || "Student"}
                 />
             )}
 
@@ -437,9 +524,15 @@ export default function ChapterPage() {
                                             <Users className="w-4 h-4 mr-2" /> Study Group
                                         </Button>
                                         
-                                        <Button size="sm" variant="outline" className="border-zinc-700 hover:bg-zinc-800 text-zinc-300 ml-2" onClick={() => setSavedQuizzesVideo(vid)}>
-                                            <History className="w-4 h-4 mr-2" /> Past Quizzes
-                                        </Button>
+                                        <QuizStatusButton 
+                                            video={vid} 
+                                            user={user} 
+                                            onOpen={(mode) => {
+                                                setQuizMode(mode)
+                                                setSavedQuizzesVideo(vid)
+                                            }}
+                                            refreshTrigger={refreshKey} 
+                                        />
                                         
                                         {/* Teacher-Only AI Generator */}
                                         {user?.role === 'teacher' && (

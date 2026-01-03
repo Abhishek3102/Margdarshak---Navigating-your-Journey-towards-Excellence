@@ -18,8 +18,9 @@ interface QuizGeneratorModalProps {
     onClose: () => void
     videoUrl: string
     videoTitle: string
-    initialMode?: 'config' | 'history'
+    initialMode?: 'config' | 'history' | 'result'
     isStudent?: boolean
+    studentName?: string
 }
 
 interface Question {
@@ -30,8 +31,8 @@ interface Question {
     hint: string
 }
 
-export function QuizGeneratorModal({ isOpen, onClose, videoUrl, videoTitle, initialMode = 'config', isStudent = false }: QuizGeneratorModalProps) {
-    const [step, setStep] = useState<'config' | 'generating' | 'review'>(initialMode === 'history' ? 'review' : 'config')
+export function QuizGeneratorModal({ isOpen, onClose, videoUrl, videoTitle, initialMode = 'config', isStudent = false, studentName = "Student" }: QuizGeneratorModalProps) {
+    const [step, setStep] = useState<'config' | 'generating' | 'review'>(initialMode === 'config' ? 'config' : 'review')
     const [quizHistory, setQuizHistory] = useState<{ id: number, questions: Question[] }[]>([])
     const [currentQuizIndex, setCurrentQuizIndex] = useState(0)
     
@@ -49,23 +50,57 @@ export function QuizGeneratorModal({ isOpen, onClose, videoUrl, videoTitle, init
     const [studentSelections, setStudentSelections] = useState<{[key: number]: string}>({}) // qIndex -> optionKey
     const [completedQuestions, setCompletedQuestions] = useState<{[key: number]: boolean}>({}) // qIndex -> true if submitted
     const [revealedHints, setRevealedHints] = useState<{[key: number]: boolean}>({})
+    const [isCreatingTask, setIsCreatingTask] = useState(false) // New State for Jira loader
+    const [isAnalyzing, setIsAnalyzing] = useState(false)
+    const [analysisResult, setAnalysisResult] = useState<{score: number, analysis: string, resultId?: string} | null>(null)
 
     useEffect(() => {
-        if (isOpen && initialMode === 'history') {
+        if (isOpen && (initialMode === 'history' || initialMode === 'result')) {
             setIsLoadingHistory(true)
             axiosInstance.get(`/quiz-agent/saved?video_url=${encodeURIComponent(videoUrl)}`)
-                .then(res => {
+                .then(async res => {
                     if (res.data && res.data.length > 0) {
-                        setQuizHistory(res.data)
+                        const history = res.data;
+                        setQuizHistory(history)
                         setStep('review')
+                        
+                        // If Result Mode, fetch the attempt data
+                        if (initialMode === 'result' && isStudent) {
+                             const latestQuiz = history[0] // Assume latest
+                             try {
+                                 const resultRes = await axiosInstance.get(`/quiz-agent/result/${latestQuiz.id}`)
+                                 if (resultRes.data.attempted) {
+                                     const data = resultRes.data.data;
+                                     // Hydrate State
+                                     setAnalysisResult({
+                                         score: data.score,
+                                         analysis: data.ai_analysis,
+                                         resultId: latestQuiz.id // Use existing ID for history
+                                     })
+                                     // Restore selections
+                                     const responses = data.responses || {}
+                                     const loadedSelections: any = {}
+                                     const loadedCompleted: any = {}
+                                     
+                                     Object.keys(responses).forEach(key => {
+                                         loadedSelections[key] = responses[key].selectedOption
+                                         loadedCompleted[key] = true
+                                     })
+                                     setStudentSelections(loadedSelections)
+                                     setCompletedQuestions(loadedCompleted)
+                                 }
+                             } catch (e) {
+                                 console.error("Failed to load result details")
+                             }
+                        }
                     } else {
-                        toast.info("No saved quizzes found for this video.")
+                        if (initialMode === 'history') toast.info("No saved quizzes found.")
                     }
                 })
                 .catch(e => toast.error("Failed to load history"))
                 .finally(() => setIsLoadingHistory(false))
         }
-    }, [isOpen, initialMode, videoUrl])
+    }, [isOpen, initialMode, videoUrl, isStudent])
 
     // Current Questions (derived)
     const questions = quizHistory[currentQuizIndex]?.questions || []
@@ -193,6 +228,91 @@ export function QuizGeneratorModal({ isOpen, onClose, videoUrl, videoTitle, init
         }
     }
 
+    // Jira Integration
+    const handleCreateRemedialTask = async () => {
+        setIsCreatingTask(true)
+        try {
+            // Calculate Score
+            let correctCount = 0
+            questions.forEach((q, idx) => {
+                if (studentSelections[idx] === q.answer) correctCount++
+            })
+            const score = Math.round((correctCount / questions.length) * 100)
+            
+            // Find weak areas (questions incorrect)
+            const weakAreas = questions
+                .filter((q, idx) => studentSelections[idx] !== q.answer)
+                .map(q => q.question.substring(0, 50) + "...")
+
+            await axiosInstance.post("/jira/create-remedial-task", {
+                student_name: studentName,
+                topic: videoTitle,
+                score: score,
+                weak_areas: weakAreas,
+                result_id: analysisResult?.resultId
+            })
+            
+            toast.success("Study Plan created in Jira! Check your tasks.")
+            onClose()
+        } catch (e: any) {
+             toast.error("Failed to create task: " + (e.response?.data?.detail || e.message))
+        } finally {
+            setIsCreatingTask(false)
+        }
+    }
+
+
+
+    // New: Final Submission Handler
+    const submitQuizResult = async () => {
+        setIsAnalyzing(true)
+        try {
+            // Prepare Data
+            const currentQuiz = quizHistory[currentQuizIndex]
+            if (!currentQuiz) return
+
+            // Gather extra metrics (mocking time for now as we didn't track it per Q yet)
+            const responsesPayload: any = {}
+            questions.forEach((q, idx) => {
+                responsesPayload[idx] = {
+                    selectedOption: studentSelections[idx],
+                    timeTaken: 30, // Mock: 30s per Q default
+                    hintRevealed: revealedHints[idx] || false
+                }
+            })
+
+            const res = await axiosInstance.post("/quiz-agent/submit-result", {
+                quiz_id: currentQuiz.id,
+                video_title: videoTitle,
+                responses: responsesPayload,
+                questions: questions
+            })
+
+            setAnalysisResult({
+                score: res.data.score,
+                analysis: res.data.analysis,
+                resultId: res.data.result_id
+            })
+            toast.success("Quiz Submitted & Analyzed!")
+        } catch (e: any) {
+            console.error(e)
+            toast.warning("Submission Issue: " + (e.response?.data?.detail || e.message))
+            // If already submitted, maybe just show the previous result?
+            // For now, we rely on the toast.
+        } finally {
+            setIsAnalyzing(false)
+        }
+    }
+    
+    // Auto-submit when all questions done (if not already submitted)
+    const isQuizComplete = questions.length > 0 && Object.keys(completedQuestions).length === questions.length
+
+    useEffect(() => {
+        if (isStudent && isQuizComplete && !analysisResult && !isAnalyzing) {
+             submitQuizResult()
+        }
+    }, [isQuizComplete, isStudent])
+
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="max-w-5xl max-h-[90vh] flex flex-col bg-zinc-950 border-zinc-800 text-white">
@@ -307,7 +427,7 @@ export function QuizGeneratorModal({ isOpen, onClose, videoUrl, videoTitle, init
                             </div>
                         )}
 
-                        {step === 'review' && (
+                        {step === 'review' && (!isStudent || !isQuizComplete) && (
                             <div className="flex flex-col h-full gap-4 pt-2">
                                 {/* Refine Bar - Teacher Only */}
                                 {!isStudent && (
@@ -328,6 +448,7 @@ export function QuizGeneratorModal({ isOpen, onClose, videoUrl, videoTitle, init
                                         </Button>
                                     </div>
                                 )}
+
 
                                 <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
                                     <div className="space-y-6 pb-2">
@@ -463,6 +584,70 @@ export function QuizGeneratorModal({ isOpen, onClose, videoUrl, videoTitle, init
                                 </div>
                             </div>
                         )}
+                        
+                        {/* Student Quiz Result Section */}
+                        {isStudent && isQuizComplete && step === 'review' && (
+                            <div className="flex-1 overflow-y-auto p-6 space-y-6 animate-in slide-in-from-bottom-5 custom-scrollbar w-full">
+                                <div className="flex flex-col items-center justify-center space-y-2">
+                                    <h2 className="text-2xl font-bold text-white">Assessment Complete!</h2>
+                                    <p className="text-zinc-400">AI is analyzing your performance...</p>
+                                </div>
+                                
+                                <Card className="w-full max-w-2xl bg-zinc-900 border-zinc-800">
+                                    <CardContent className="p-6 flex flex-col items-center gap-6">
+                                        {isAnalyzing ? (
+                                            <div className="flex flex-col items-center py-8">
+                                                <Loader2 className="w-12 h-12 text-purple-500 animate-spin mb-4" />
+                                                <p className="text-zinc-400 animate-pulse">Consulting Gemini for personalized feedback...</p>
+                                            </div>
+                                        ) : analysisResult ? (
+                                            <>
+                                                {/* Score */}
+                                                <div className="flex flex-col items-center">
+                                                    <div className="text-5xl font-black text-purple-400">
+                                                        {analysisResult.score}%
+                                                    </div>
+                                                    <p className="text-sm text-zinc-500">Mastery Score</p>
+                                                </div>
+                                                
+                                                <div className="w-full h-px bg-zinc-800" />
+                                                
+                                                {/* AI Feedback Text */}
+                                                <div className="w-full space-y-2">
+                                                    <div className="flex items-center gap-2 text-purple-300">
+                                                        <Sparkles className="w-4 h-4" />
+                                                        <h3 className="font-semibold">AI Performance Scribe</h3>
+                                                    </div>
+                                                    <div className="bg-zinc-950/50 p-4 rounded-lg border border-zinc-800 text-zinc-300 text-sm leading-relaxed whitespace-pre-wrap">
+                                                        {analysisResult.analysis}
+                                                    </div>
+                                                </div>
+
+                                                <div className="w-full h-px bg-zinc-800" />
+
+                                                {/* Actions */}
+                                                <div className="w-full flex gap-3">
+                                                    <Button 
+                                                        className="flex-1 bg-blue-600 hover:bg-blue-500 text-white" 
+                                                        onClick={handleCreateRemedialTask}
+                                                        disabled={isCreatingTask}
+                                                    >
+                                                        {isCreatingTask ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2" />}
+                                                        Generate Jira Study Plan
+                                                    </Button>
+                                                </div>
+                                                <p className="text-[10px] text-zinc-600 text-center">
+                                                    Results saved to history.
+                                                </p>
+                                            </>
+                                        ) : (
+                                            <Button onClick={submitQuizResult}>Retry Analysis</Button>
+                                        )}
+                                    </CardContent>
+                                </Card>
+                            </div>
+                        )}
+                        
                     </div>
                 </div>
 
@@ -486,7 +671,12 @@ export function QuizGeneratorModal({ isOpen, onClose, videoUrl, videoTitle, init
                                 </>
                              )}
                              {isStudent && (
-                                 <Button variant="outline" onClick={onClose} className="border-zinc-700">Close</Button>
+                                 <div className="flex gap-2 w-full justify-end">
+                                     {!isQuizComplete && (
+                                        <p className="text-xs text-zinc-500 self-center mr-auto">Answer all questions to see results.</p>
+                                     )}
+                                     <Button variant="outline" onClick={onClose} className="border-zinc-700">Close</Button>
+                                 </div>
                              )}
                         </div>
                     )}
