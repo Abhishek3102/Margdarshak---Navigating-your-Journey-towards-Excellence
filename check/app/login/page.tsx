@@ -63,7 +63,7 @@ export default function LoginPage() {
       // Artificial delay to ensure state propagates
       setTimeout(() => {
         router.refresh() // Force refresh to update server components/middleware awareness
-        const target = searchParams.get("callbackUrl") || "/dashboard"
+        const target = searchParams.get("callbackUrl") || "/"
         router.push(target)
       }, 500)
     } catch (error: any) {
