@@ -44,6 +44,7 @@ export async function middleware(request: NextRequest) {
         request.nextUrl.pathname.startsWith("/auth") ||
         request.nextUrl.pathname.startsWith("/_next") ||
         request.nextUrl.pathname.startsWith("/api") || // API routes might handle their own auth or be public
+        request.nextUrl.pathname.startsWith("/api/blog-agent") || // Explicitly public
         request.nextUrl.pathname.includes(".") // Static files like images, favicon
         ;
 

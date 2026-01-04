@@ -40,6 +40,8 @@ app.include_router(curriculum.router, prefix="/api/curriculum", tags=["curriculu
 from app.api import feedback
 app.include_router(feedback.router, prefix="/api/feedback", tags=["feedback"])
 app.include_router(jira_agent.router, prefix="/api/jira", tags=["jira-agent"])
+from app.api import blog_agent
+app.include_router(blog_agent.router, prefix="/api/blog-agent", tags=["blog-agent"])
 
 @app.get("/")
 async def root():

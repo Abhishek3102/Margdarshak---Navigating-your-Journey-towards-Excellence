@@ -20,7 +20,9 @@ if not url or not key:
 
 def get_supabase() -> Client:
     if not url or not key:
+        print("DEBUG: Missing credentials in get_supabase")
         raise HTTPException(status_code=500, detail="Supabase credentials not configured.")
+    # print(f"DEBUG: Backend init Supabase with URL: {url}") # excessive
     return create_client(url, key)
 
 class UserRole(str, Enum):
@@ -39,7 +41,7 @@ class UserLogin(BaseModel):
     password: str
 
 @router.post("/register")
-async def register(user: UserRegister):
+def register(user: UserRegister):
     supabase = get_supabase()
     
     # 1. Register with Supabase Auth
@@ -67,7 +69,7 @@ async def register(user: UserRegister):
          raise HTTPException(status_code=400, detail=str(e))
 
 @router.post("/login")
-async def login(user: UserLogin):
+def login(user: UserLogin):
     supabase = get_supabase()
     
     try:
@@ -89,13 +91,15 @@ from fastapi.security import OAuth2PasswordBearer
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/auth/login")
 
-async def get_current_user(token: str = Depends(oauth2_scheme)):
+def get_current_user(token: str = Depends(oauth2_scheme)):
+    # print(f"DEBUG: Token received: {token[:10]}...") # excessive logging
     supabase = get_supabase()
     try:
         # Verify the token with Supabase
         user_response = supabase.auth.get_user(token)
         if not user_response.user:
-             raise HTTPException(status_code=401, detail="Invalid authentication credentials")
+                print("DEBUG: No user found in response")
+                raise HTTPException(status_code=401, detail="Invalid authentication credentials")
         
         # Enrich with metadata if needed, but usually user_metadata has 'grade'
         # Return a dict-like object or the user object directly.
@@ -113,11 +117,11 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         return user_data
         
     except Exception as e:
-        print(f"Auth Error: {e}")
-        raise HTTPException(status_code=401, detail="Could not validate credentials")
+        print(f"DEBUG: Auth Error detailed: {str(e)}")
+        raise HTTPException(status_code=401, detail=f"Could not validate credentials: {str(e)}")
 
 @router.get("/me")
-async def get_me(user: dict = Depends(get_current_user)):
+def get_me(user: dict = Depends(get_current_user)):
     return {"user": user}
 
 # --- Admin/Teacher Actions ---
@@ -127,7 +131,7 @@ class AccessRequest(BaseModel):
     target_class: str
 
 @router.post("/grant-access")
-async def grant_access(request: AccessRequest, current_user: dict = Depends(get_current_user)):
+def grant_access(request: AccessRequest, current_user: dict = Depends(get_current_user)):
     # 1. Check Permissions
     if current_user["role"] not in ["teacher", "admin"]:
         raise HTTPException(status_code=403, detail="Only teachers can grant access")
