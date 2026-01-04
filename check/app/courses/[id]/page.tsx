@@ -60,7 +60,7 @@ export default function CoursePage() {
         if (isLoggedIn) {
           try {
             const enrolledResponse = await courseAPI.getEnrolled()
-            const enrolledCourses: EnrolledCourse[] = enrolledResponse.data || []
+            const enrolledCourses: EnrolledCourse[] = enrolledResponse || []
             setEnrolled(enrolledCourses.some((c) => (c._id || c.id) === id))
           } catch (error) {
             console.error("Failed to check enrollment status:", error)

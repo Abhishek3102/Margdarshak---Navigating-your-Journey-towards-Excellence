@@ -79,7 +79,7 @@ export function QuizReport({ result, showRetake = false }: QuizReportProps) {
   }
 
   // Process Breakdown Data for Chart
-  const breakdownData = Object.entries(result.breakdown).map(([subject, stats]) => ({
+  const breakdownData = Object.entries(result.breakdown || {}).map(([subject, stats]) => ({
     subject,
     score: Math.round((stats.correct / stats.total) * 100),
   }))
@@ -199,7 +199,7 @@ export function QuizReport({ result, showRetake = false }: QuizReportProps) {
                 <div className="grid grid-cols-1 gap-4">
                     {/* Calculation logic for strongest/weakest... */}
                     {(() => {
-                        const entries = Object.entries(result.breakdown);
+                        const entries = Object.entries(result.breakdown || {});
                         if (entries.length === 0) return null;
                         const sorted = entries.sort((a, b) => (b[1].correct/b[1].total) - (a[1].correct/a[1].total));
                         const strongest = sorted[0];
@@ -328,7 +328,7 @@ export function QuizReport({ result, showRetake = false }: QuizReportProps) {
                     </div>
                     <CardContent className="p-6">
                          <div className="space-y-4 text-slate-300 leading-relaxed text-sm lg:text-base">
-                           {result.feedback.split('\n').map((line, i) => {
+                           {(result.feedback || "AI Analysis unavailable for this result.").split('\n').map((line, i) => {
                                // Markdown Rendering Logic
                                const trimmed = line.trim();
                                if (!trimmed) return null;

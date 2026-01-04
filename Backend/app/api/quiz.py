@@ -8,6 +8,7 @@ import os
 import random
 from supabase import create_client, Client
 import google.generativeai as genai
+import uuid
 
 router = APIRouter()
 
@@ -40,26 +41,38 @@ async def generate_ai_analysis(score: int, total: int, subject_breakdown: Dict, 
         return "Great job completing the quiz! (AI Analysis unavailable)"
     
     prompt = f"""
-    Analyze this student's diagnostic quiz performance with a focus on SPEED and ACCURACY.
+    You are an expert academic counselor analyzing a student's Diagnostic Test.
     
-    Overall Score: {score}/{total}
-    Subject Breakdown (Correct/Total): {json.dumps(subject_breakdown)}
-    Time Taken per Question (Seconds map): {json.dumps(time_analysis)}
+    PERFORMANCE DATA:
+    - Overall Score: {score}/{total}
+    - Subject Breakdown: {json.dumps(subject_breakdown)}
+    - Time per Question (seconds): {json.dumps(time_analysis)}
     
-    Task:
-    1. Identify their strongest subject.
-    2. Identify their weakest subject.
-    3. Analyze their SPEED: Are they too slow on specific subjects? Did they rush? 
-    4. Write a structured review with bullet points.
-       - Use **Bold** for key terms.
-       - Use bullet points for distinct insights.
-       - structure it as:
-         * 🏆 **Strengths**: ...
-         * ⚠️ **Areas for Improvement**: ...
-         * ⏱️ **Speed Analysis**: ...
-         * 💡 **Recommendation**: ...
+    TASK:
+    Write a detailed, personalized performance review.
     
-    Output Format: Clean Markdown.
+    STRICT GUIDELINES:
+    1. **NO LATEX**: Do not use $ symbols or complex math formatting. Use plain text (e.g., "x squared").
+    2. **Detailed Insights**: Don't just list scores. Explain *why* they might be struggling (e.g., "Time taken on Math suggests conceptual hesitation").
+    3. **Speed Analysis**: specifically check if they answered too fast (guessing?) or too slow (struggling?).
+    4. **Tone**: Encouraging but analytical and professional.
+    
+    OUTPUT FORMAT (Use this exact Markdown structure):
+    
+    ### 📊 Performance Summary
+    [One paragraph summary of their overall standing]
+    
+    ### 🏆 Strengths
+    - **[Subject Name]**: [Why it is a strength? Mention accuracy and speed insights.]
+    
+    ### ⚠️ Focus Areas
+    - **[Subject Name]**: [Why it needs work? Mention if it was accuracy or timing issues.]
+    
+    ### ⏱️ Speed & Strategy
+    [Analysis of their time management. Did they rush? Did they get stuck?]
+    
+    ### 💡 Actionable Advice
+    [1-2 specific study tips based on their weak areas]
     """
     try:
         response = model.generate_content(prompt)
@@ -245,8 +258,14 @@ async def submit_quiz(submission: QuizSubmission, user: dict = Depends(get_curre
         # Ideally user['token'] is used.
         supabase_client.postgrest.auth(user["token"])
 
+        # --- DIAGNOSTIC QUIZ ID ---
+        # Since we decoupled the schema (Diagnostic doesn't need Generated Quiz),
+        # we just generate a unique tracking ID here.
+        diagnostic_quiz_id = str(uuid.uuid4())
+
         result_data = {
             "user_id": user["id"],
+            "quiz_id": diagnostic_quiz_id, 
             "score": correct_count,
             "total_questions": len(answer_key_data),
             "subject_scores": subject_stats,
@@ -262,10 +281,15 @@ async def submit_quiz(submission: QuizSubmission, user: dict = Depends(get_curre
              response = supabase_client.table("quiz_results").insert(result_data).execute()
         except Exception as insert_error:
              print(f"Insert Error (Schema mismatch?): {insert_error}")
-             # Fallback: Remove new columns and try again
-             del result_data["student_name"]
-             del result_data["student_grade"]
-             response = supabase_client.table("quiz_results").insert(result_data).execute()
+             
+             # Fallback logic REVERTED: We do NOT strip columns. 
+             # We rely on the user to run the SQL migration.
+             # If this fails, IT FAILS. This ensures the user knows they must update the DB.
+             # The only fallback here is re-trying in case it was a transient network error.
+             # But if the schema is wrong, we let it throw 500 so the data isn't saved incompletely.
+             
+             # Re-raise the error so the user sees the 500 and fixes their DB.
+             raise insert_error
         
         return {
             "score": correct_count,
