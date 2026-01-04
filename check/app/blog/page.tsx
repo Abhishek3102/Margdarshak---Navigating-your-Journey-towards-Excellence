@@ -92,11 +92,24 @@ export default function BlogPage() {
   const [newContent, setNewContent] = useState("")
   const [newCategory, setNewCategory] = useState("General")
 
+  // Helper for API URL
+  let baseApiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+  // Remove trailing /api if present to avoid double slash (e.g. localhost:8000/api/api/...)
+  if (baseApiUrl.endsWith('/api')) {
+      baseApiUrl = baseApiUrl.slice(0, -4);
+  }
+  // Remove trailing slash if present
+  if (baseApiUrl.endsWith('/')) {
+      baseApiUrl = baseApiUrl.slice(0, -1);
+  }
+  
+  const API_URL = baseApiUrl;
+
   // Fetch API Blogs
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const res = await fetch("/api/blog-agent")
+        const res = await fetch(`${API_URL}/api/blog-agent`)
         if (res.ok) {
             const data = await res.json()
             // Map DB format to UI format
@@ -153,7 +166,7 @@ export default function BlogPage() {
             return
         }
 
-        const res = await fetch("/api/blog-agent", {
+        const res = await fetch(`${API_URL}/api/blog-agent`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
