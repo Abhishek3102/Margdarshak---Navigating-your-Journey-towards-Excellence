@@ -14,6 +14,7 @@ import Link from "next/link"
 import { supabase } from "@/lib/supabase"
 import { GenerativeChat } from "@/components/generative-chat"
 import { AITutorDashboard } from "@/components/ai-tutor-dashboard"
+import { TeacherDashboard } from "@/components/teacher-dashboard"
 
 export default function DashboardPage() {
   const { user, isLoggedIn, loading } = useAuth()
@@ -91,6 +92,11 @@ export default function DashboardPage() {
         <Loader2 className="h-8 w-8 animate-spin text-purple-500" />
       </div>
     )
+  }
+
+  // Teacher View (Distinct)
+  if (user?.role === 'teacher') {
+      return <TeacherDashboard user={user} standards={standards} subjects={subjects} />
   }
 
   return (
