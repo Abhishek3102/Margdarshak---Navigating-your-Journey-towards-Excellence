@@ -273,12 +273,12 @@ export function AITutorDashboard({ userName }: { userName: string }) {
                                {msg.image_url && (
                                    <img src={msg.image_url} alt="Uploaded" className="max-w-[300px] rounded-lg border border-slate-700 mb-2" />
                                )}
-                               <div className={cn(
-                                   "p-4 rounded-2xl text-sm leading-relaxed shadow-lg backdrop-blur-md",
+                                <div className={cn(
+                                   "p-4 rounded-2xl text-sm leading-relaxed shadow-lg backdrop-blur-md whitespace-pre-wrap",
                                    msg.role === 'user' 
                                     ? "bg-indigo-600/90 text-white rounded-tr-none" 
                                     : "bg-slate-900/80 text-slate-200 border border-slate-800 rounded-tl-none"
-                               )}>
+                                )}>
                                     {msg.content}
                                </div>
                            </div>

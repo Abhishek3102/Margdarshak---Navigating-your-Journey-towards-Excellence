@@ -9,6 +9,7 @@ from supabase import create_client, Client
 import cloudinary
 import cloudinary.uploader
 from datetime import datetime, timezone
+import re
 
 router = APIRouter()
 
@@ -184,17 +185,39 @@ async def send_message(
             
             memories = m.get_all(user_id=user["id"])
             if memories:
-                 context_str = "\n".join([mem.get('memory', '') for mem in memories])
+                 # Fix: Handle both dict (mem['memory']) and string formats
+                 context_str = "\n".join([m['memory'] if isinstance(m, dict) else str(m) for m in memories])
     except Exception as mem_err:
         print(f"Mem0 Handling Error: {mem_err}")
         # Continue without memory
 
-    # 4. Generate AI Response
+    # 4. Retrieve Chat History (Short-Term Memory)
+    history_str = ""
+    try:
+        # Fetch last 10 messages
+        hist_res = supabase.table("ai_chat_messages")\
+            .select("role, content")\
+            .eq("session_id", session_id)\
+            .order("created_at", desc=True)\
+            .limit(10)\
+            .execute()
+        
+        # Reverse to chronological order and format
+        if hist_res.data:
+            msgs = reversed(hist_res.data)
+            history_str = "\n".join([f"{msg['role'].capitalize()}: {msg['content']}" for msg in msgs])
+    except Exception as hist_err:
+        print(f"History Fetch Error: {hist_err}")
+
+    # 5. Generate AI Response
     system_prompt = f"""
     You are 'Margdarshak AI'.
     
-    Student Context (Academic Profile):
+    Student Context (Long-Term Memory):
     {context_str}
+
+    Recent Conversation History (Short-Term Context):
+    {history_str}
     
     CRITICAL INSTRUCTIONS:
     1. **Study Queries**: If the user asks about a Subject/Topic (Math, Science, History, etc.), you MUST use the 'Student Context' above.
@@ -206,6 +229,13 @@ async def send_message(
        - Do NOT force academic context into casual conversation.
        
     3. **Images**: If an image is provided, analyze it first.
+
+    4. **Formatting**: 
+       - Provide answers in CLEAN, PLAIN TEXT. 
+       - Do NOT use Markdown styling (no **bold**, no *italics*, no ## headers). 
+       - Use numbered lists (1., 2., 3.) for main points.
+       - Ensure each point starts on a NEW LINE.
+       - Keep it concise and easy to read.
     """
     
     try:
@@ -232,6 +262,17 @@ async def send_message(
         
         response = model.generate_content(content_parts)
         ai_text = response.text
+        
+        # --- REGEX CLEANUP ---
+        # User requested strict plain text with no stars/markdown.
+        ai_text = re.sub(r'\*\*(.*?)\*\*', r'\1', ai_text) # Remove bold
+        ai_text = re.sub(r'\*(.*?)\*', r'\1', ai_text)     # Remove italic
+        ai_text = re.sub(r'_(.*?)_', r'\1', ai_text)       # Remove underscore italic
+        ai_text = re.sub(r'#{1,6}\s*', '', ai_text)        # Remove headers
+        ai_text = ai_text.replace("```", "")               # Remove code blocks
+        ai_text = ai_text.replace("`", "")                 # Remove inline code
+        ai_text = re.sub(r'\n{3,}', '\n\n', ai_text)       # Normalize newlines
+        # ---------------------
         
         # 5. Save AI Response
         ai_msg_data = {
