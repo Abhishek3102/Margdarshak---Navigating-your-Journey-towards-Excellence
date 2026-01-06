@@ -90,20 +90,24 @@ export function Navbar() {
                 <Link href="/courses" className="text-white/80 hover:text-white transition-colors text-sm font-medium">
                   Curriculum
                 </Link>
-                <Link href="/recommendations" className="text-white/80 hover:text-white transition-colors text-sm font-medium">
-                  Mastery Paths
-                </Link>
+                {user?.role !== 'teacher' && (
+                  <Link href="/recommendations" className="text-white/80 hover:text-white transition-colors text-sm font-medium">
+                    Mastery Paths
+                  </Link>
+                )}
                 <Link href="/study-group" className="text-white/80 hover:text-white transition-colors text-sm font-medium">
                   Study Groups
                 </Link>
-                <Link href="/feedback" className="text-white/80 hover:text-white transition-colors text-sm font-medium">
-                  Feedback
-                </Link>
+                {user?.role !== 'teacher' && (
+                  <Link href="/feedback" className="text-white/80 hover:text-white transition-colors text-sm font-medium">
+                    Feedback
+                  </Link>
+                )}
                 <Link 
                   href={user?.role === 'teacher' ? "/quiz/teacher" : "/quiz"} 
                   className="text-white/80 hover:text-white transition-colors text-sm font-medium"
                 >
-                  Diagnostic Test
+                  {user?.role === 'teacher' ? "Student Mastery" : "Diagnostic Test"}
                 </Link>
               </>
             ) : null}
@@ -213,20 +217,24 @@ export function Navbar() {
                 <Link href="/courses" className="text-white/80 hover:text-white transition-colors px-4">
                   Curriculum
                 </Link>
-                <Link href="/recommendations" className="text-white/80 hover:text-white transition-colors px-4">
-                  Mastery Paths
-                </Link>
+                {user?.role !== 'teacher' && (
+                  <Link href="/recommendations" className="text-white/80 hover:text-white transition-colors px-4">
+                    Mastery Paths
+                  </Link>
+                )}
                 <Link href="/study-group" className="text-white/80 hover:text-white transition-colors px-4">
                   Study Groups
                 </Link>
-                <Link href="/feedback" className="text-white/80 hover:text-white transition-colors px-4">
-                  Feedback
-                </Link>
+                {user?.role !== 'teacher' && (
+                  <Link href="/feedback" className="text-white/80 hover:text-white transition-colors px-4">
+                    Feedback
+                  </Link>
+                )}
                 <Link 
                   href={user?.role === 'teacher' ? "/quiz/teacher" : "/quiz"}
                   className="text-white/80 hover:text-white transition-colors px-4"
                 >
-                  Diagnostic Test
+                  {user?.role === 'teacher' ? "Student Mastery" : "Diagnostic Test"}
                 </Link>
               </>
             )}
