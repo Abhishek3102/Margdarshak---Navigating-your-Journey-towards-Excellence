@@ -28,17 +28,38 @@ export function TeacherHome({ user }: { user: any }) {
     <div className="min-h-screen bg-black text-white selection:bg-purple-500/30">
         <Navbar />
         
-        <div className="pt-24 pb-12 container mx-auto px-4">
-            {/* Morning Briefing Header */}
-            <div className="mb-12">
-                <h1 className="text-4xl font-bold mb-2">
-                    Good Morning, <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">{user?.name || 'Professor'}</span>
-                </h1>
-                <p className="text-slate-400 text-lg">Here is your daily classroom intelligence briefing.</p>
-            </div>
+        {/* Hero Section with Video */}
+        <div className="relative w-full">
+            <video 
+                autoPlay 
+                loop 
+                muted 
+                playsInline
+                className="w-full h-auto block"
+                style={{ maxHeight: '80vh', objectFit: 'contain', background: 'black' }} 
+            >
+                <source src="/images/Video_Ready_After_User_Comment.mp4" type="video/mp4" />
+            </video>
+            
+            {/* Overlay Gradient for Text Readability */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent z-10" />
 
+            {/* Morning Briefing Text (Overlaid on Video) */}
+            <div className="absolute bottom-0 left-0 w-full z-20 pb-12 pt-24 bg-gradient-to-t from-black to-transparent">
+                <div className="container mx-auto px-4">
+                    <h1 className="text-5xl font-bold mb-2 text-white drop-shadow-lg">
+                        Good Morning, <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">{user?.name || 'Professor'}</span>
+                    </h1>
+                    <p className="text-slate-200 text-xl drop-shadow-md">Here is your daily classroom intelligence briefing.</p>
+                </div>
+            </div>
+        </div>
+
+        {/* Main Dashboard Content (Below Video) */}
+        <div className="container mx-auto px-4 py-8 space-y-12">
+            
             {/* Insight Banner */}
-            <div className="mb-8 p-4 bg-gradient-to-r from-indigo-900/40 to-purple-900/40 border border-indigo-500/30 rounded-lg flex items-center gap-4 transition-all hover:border-indigo-500/50">
+            <div className="p-4 bg-indigo-950/40 backdrop-blur-md border border-indigo-500/30 rounded-lg flex items-center gap-4 transition-all hover:border-indigo-500/50 hover:bg-indigo-900/40 shadow-lg">
                 <div className="p-2 bg-indigo-500/20 rounded-full shrink-0">
                     <Lightbulb className="w-5 h-5 text-indigo-400" />
                 </div>
@@ -52,7 +73,7 @@ export function TeacherHome({ user }: { user: any }) {
             </div>
 
             {/* Top Performers */}
-            <section className="mb-12">
+            <section>
                 <div className="flex items-center justify-between mb-6">
                     <h2 className="text-2xl font-bold flex items-center text-yellow-400">
                         <Trophy className="w-6 h-6 mr-2" /> Top Performing Students
@@ -62,7 +83,7 @@ export function TeacherHome({ user }: { user: any }) {
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {topStudents.map((student, i) => (
-                        <Card key={i} className="bg-slate-900/50 border-slate-800 hover:border-yellow-500/50 transition-all group relative overflow-hidden">
+                        <Card key={i} className="bg-slate-900/50 backdrop-blur-md border-slate-800 hover:border-yellow-500/50 hover:bg-slate-900/80 transition-all group relative overflow-hidden shadow-xl">
                             {/* Subtle Rank Number */}
                             <div className="absolute top-2 right-4 text-7xl font-black text-slate-800/50 group-hover:text-yellow-500/10 transition-colors pointer-events-none select-none">
                                 #{i+1}
@@ -100,10 +121,10 @@ export function TeacherHome({ user }: { user: any }) {
             </section>
 
             {/* Quick Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-                 <Card className="bg-slate-900/50 border-slate-800">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                 <Card className="bg-slate-900/50 backdrop-blur-md border-slate-800 shadow-lg hover:bg-slate-800/50 transition-colors">
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-slate-400 flex items-center">
+                        <CardTitle className="text-sm font-medium text-slate-300 flex items-center">
                             <Users className="w-4 h-4 mr-2" /> Total Students
                         </CardTitle>
                     </CardHeader>
@@ -111,9 +132,9 @@ export function TeacherHome({ user }: { user: any }) {
                         <div className="text-2xl font-bold text-white">1,248</div>
                     </CardContent>
                  </Card>
-                 <Card className="bg-slate-900/50 border-slate-800">
+                 <Card className="bg-slate-900/50 backdrop-blur-md border-slate-800 shadow-lg hover:bg-slate-800/50 transition-colors">
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-slate-400 flex items-center">
+                        <CardTitle className="text-sm font-medium text-slate-300 flex items-center">
                             <Clock className="w-4 h-4 mr-2" /> Attendance (Avg)
                         </CardTitle>
                     </CardHeader>
@@ -121,7 +142,7 @@ export function TeacherHome({ user }: { user: any }) {
                         <div className="text-2xl font-bold text-emerald-400">92%</div>
                     </CardContent>
                  </Card>
-                 <Card className="bg-slate-900/50 border-slate-800 border-l-4 border-l-amber-500 bg-amber-500/5">
+                 <Card className="bg-slate-900/50 backdrop-blur-md border-l-4 border-l-amber-500 bg-amber-900/10 shadow-lg hover:bg-amber-900/20 transition-colors border-y-slate-800 border-r-slate-800">
                     <CardHeader className="pb-2">
                         <CardTitle className="text-sm font-medium text-amber-500 flex items-center">
                             <AlertCircle className="w-4 h-4 mr-2" /> Pending Issues
@@ -132,7 +153,7 @@ export function TeacherHome({ user }: { user: any }) {
                     </CardContent>
                  </Card>
                  {/* Upcoming Mini Card */}
-                 <Card className="bg-slate-900/50 border-slate-800 border-l-4 border-l-blue-500">
+                 <Card className="bg-slate-900/50 backdrop-blur-md border-l-4 border-l-blue-500 shadow-lg border-y-slate-800 border-r-slate-800">
                     <CardHeader className="pb-2">
                         <CardTitle className="text-sm font-medium text-blue-400 flex items-center">
                             <Calendar className="w-4 h-4 mr-2" /> Up Next
@@ -147,7 +168,7 @@ export function TeacherHome({ user }: { user: any }) {
             
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Recent Alerts */}
-                <Card className="bg-slate-900/50 border-slate-800">
+                <Card className="bg-slate-900/50 backdrop-blur-md border-slate-800 shadow-lg">
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <AlertCircle className="w-5 h-5 text-purple-400" /> Recent Alerts
@@ -155,7 +176,7 @@ export function TeacherHome({ user }: { user: any }) {
                     </CardHeader>
                     <CardContent className="space-y-4">
                         {recentAlerts.map((alert) => (
-                            <div key={alert.id} className="flex items-start gap-4 p-3 rounded-lg bg-slate-950/50 border border-slate-800">
+                            <div key={alert.id} className="flex items-start gap-4 p-3 rounded-lg bg-black/20 border border-slate-800 hover:bg-black/30 transition-colors">
                                 <div className={`w-2 h-2 mt-2 rounded-full ${alert.type === 'warning' ? 'bg-red-500 animate-pulse' : alert.type === 'info' ? 'bg-yellow-500' : 'bg-emerald-500'}`} />
                                 <p className="text-sm text-slate-300">{alert.message}</p>
                             </div>
@@ -164,15 +185,15 @@ export function TeacherHome({ user }: { user: any }) {
                 </Card>
 
                 {/* Class of the Day */}
-                 <Card className="bg-slate-900/50 border-slate-800">
+                 <Card className="bg-slate-900/50 backdrop-blur-md border-slate-800 shadow-lg">
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <Zap className="w-5 h-5 text-yellow-400" /> Class of the Day
                         </CardTitle>
-                        <CardDescription>Focus Area: Class 10</CardDescription>
+                        <CardDescription className="text-slate-300">Focus Area: Class 10</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                         <div className="p-3 rounded-lg bg-slate-950/50 border border-slate-800">
+                         <div className="p-3 rounded-lg bg-black/20 border border-slate-800">
                             <div className="text-xs text-slate-500 uppercase font-semibold mb-1">Observation</div>
                             <p className="text-sm text-slate-300">Participation in History discussion was unusually low.</p>
                          </div>
@@ -188,7 +209,7 @@ export function TeacherHome({ user }: { user: any }) {
                 </Card>
 
                 {/* Quick Actions */}
-                <Card className="bg-gradient-to-br from-indigo-900/20 to-purple-900/20 border-slate-800">
+                <Card className="bg-indigo-900/20 backdrop-blur-md border-slate-800 shadow-lg">
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                              <TrendingUp className="w-5 h-5 text-purple-400" /> Quick Actions
@@ -196,14 +217,14 @@ export function TeacherHome({ user }: { user: any }) {
                     </CardHeader>
                     <CardContent className="grid gap-4">
                         <Link href="/dashboard" className="w-full">
-                            <Button className="w-full justify-between bg-slate-800 hover:bg-slate-700 text-white" variant="outline">
+                            <Button className="w-full justify-between bg-slate-800 hover:bg-slate-700 text-white border border-slate-700" variant="outline">
                                 Go to Dashboard <ArrowRight className="w-4 h-4" />
                             </Button>
                         </Link>
                         <Link href="/dashboard" className="w-full">
-                            <Button className="w-full justify-start text-left bg-purple-600 hover:bg-purple-700 text-white">Create New Quiz</Button>
+                            <Button className="w-full justify-start text-left bg-purple-600 hover:bg-purple-500 text-white shadow-md">Create New Quiz</Button>
                         </Link>
-                        <Button className="w-full justify-start text-left bg-slate-800 hover:bg-slate-700 text-white">Post Announcement</Button>
+                        <Button className="w-full justify-start text-left bg-slate-800 hover:bg-slate-700 text-white border border-slate-700">Post Announcement</Button>
                     </CardContent>
                 </Card>
             </div>
