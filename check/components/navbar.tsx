@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import { BrandLogo } from "@/components/brand-logo";
 import { Button } from "@/components/ui/button"
 import { Menu, X, User, LogOut, Bell, Check, Ban } from "lucide-react"
 import { useMobile } from "@/hooks/use-mobile"
@@ -79,9 +80,7 @@ export function Navbar() {
     >
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          <Link href="/" className="flex items-center space-x-2">
-            <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-emerald-400">Margdarshak</span>
-          </Link>
+          <BrandLogo />
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">

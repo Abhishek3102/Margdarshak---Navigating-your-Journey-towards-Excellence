@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { BrandLogo } from "@/components/brand-logo"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Facebook, Twitter, Instagram, Linkedin, Mail } from "lucide-react"
@@ -8,11 +9,9 @@ export function Footer() {
     <footer className="bg-slate-900 border-t border-slate-800">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="md:col-span-1">
-            <Link href="/" className="inline-block mb-4">
-              <span className="text-2xl font-bold gradient-text">Margdarshak</span>
-            </Link>
-            <p className="text-white/70 mb-4">
+          <div className="space-y-4">
+            <BrandLogo variant="footer" />
+            <p className="text-slate-400 text-sm leading-relaxed">
               Empowering learners to achieve their goals through personalized education and community support.
             </p>
             <div className="flex space-x-4">
