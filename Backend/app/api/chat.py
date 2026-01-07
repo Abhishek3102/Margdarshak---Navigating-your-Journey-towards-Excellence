@@ -183,6 +183,14 @@ async def send_message(
             }
             m = Memory.from_config(config)
             
+            # 3a. Store New Memory (The "Learning" Step)
+            # We add the current message so Mem0 can extract facts (e.g., "Student is in Class 10")
+            try:
+                m.add(message, user_id=user["id"])
+            except Exception as e:
+                print(f"Mem0 Add Error: {e}")
+
+            # 3b. Retrieve Context
             memories = m.get_all(user_id=user["id"])
             if memories:
                  # Fix: Handle both dict (mem['memory']) and string formats

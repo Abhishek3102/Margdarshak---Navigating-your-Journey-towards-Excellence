@@ -242,6 +242,12 @@ async def submit_quiz(submission: QuizSubmission, user: dict = Depends(get_curre
                  if slow_subjects: memory_text += f" Takes TIME to process {', '.join(slow_subjects)}. "
                  if fast_subjects: memory_text += f" Answers QUICKLY in {', '.join(fast_subjects)}. "
                  
+                 # Append AI Qualitative Analysis (The "Why")
+                 if ai_feedback:
+                     # Clean up AI feedback to be single line for memory efficiency
+                     clean_feedback = ai_feedback.replace("\n", " ").replace("  ", " ")[:500] # Limit to 500 chars to avoid token bloat
+                     memory_text += f" AI Advisor Note: {clean_feedback}"
+
                  # 4. Store
                  print(f"Storing to Mem0 for {user['id']}: {memory_text}")
                  m.add(memory_text, user_id=user["id"], metadata={"source": "diagnostic_quiz"})
