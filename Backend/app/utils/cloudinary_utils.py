@@ -33,7 +33,7 @@ def upload_file_to_cloudinary(local_file_path, public_id=None, resource_type="au
         # CRITICAL FIX: Use Eager Async for large videos to prevent Timeouts
         # "transformation" (Incoming) blocks the upload. "eager" happens in background.
         options["eager"] = [
-            { "quality": "auto:good", "fetch_format": "auto", "bit_rate": "500k", "audio_codec": "none" }
+            { "quality": "auto:good", "fetch_format": "auto", "bit_rate": "500k" }
         ]
         options["eager_async"] = True 
         options["folder"] = "margdarshak_videos"

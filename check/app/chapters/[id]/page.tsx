@@ -21,6 +21,7 @@ import axiosInstance from "@/lib/axios"
 // Simple Modal Component
 const VideoModal = ({ video, onClose }: { video: any, onClose: () => void }) => {
     if (!video) return null;
+    console.log(video)
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 backdrop-blur-sm animate-in fade-in duration-200">
@@ -36,6 +37,7 @@ const VideoModal = ({ video, onClose }: { video: any, onClose: () => void }) => 
                         src={video.video_url} 
                         controls 
                         autoPlay 
+                        muted={false}
                         className="w-full h-full"
                         poster={video.thumbnail_url}
                     >
