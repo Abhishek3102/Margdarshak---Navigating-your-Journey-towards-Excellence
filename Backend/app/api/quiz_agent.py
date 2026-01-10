@@ -3,7 +3,7 @@ from app.api.auth import get_current_user
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 import os
-import google.generativeai as genai
+from google import genai
 from supabase import create_client, Client # Added Supabase import
 import json
 import re
@@ -29,9 +29,9 @@ router = APIRouter()
 # User requested "gemini-2.5-flash-lite".
 # As of now, the closest equivalent (Fast, Cost-effective, Multimodal) is 1.5-Flash.
 # We map the requested name to the real model name here.
-MODEL_NAME = "gemini-flash-latest" 
+MODEL_NAME = "gemini-flash-lite-latest" 
 
-genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+# genai.configure moved to Client init
 
 # --- DATA MODELS ---
 
@@ -70,7 +70,12 @@ class ResultSubmission(BaseModel):
 
 class VideoQuizAgent:
     def __init__(self):
-        self.model = genai.GenerativeModel(MODEL_NAME)
+        self.api_key = os.getenv("GOOGLE_API_KEY")
+        if self.api_key:
+            self.client = genai.Client(api_key=self.api_key)
+        else:
+            self.client = None
+            print("WARNING: GOOGLE_API_KEY missing for QuizAgent")
 
     async def run_pipeline(self, request: GenerateQuizRequest) -> List[Dict]:
         """
@@ -140,7 +145,10 @@ class VideoQuizAgent:
         print(f"Video downloaded to {tmp_path}. Uploading to Gemini File API...")
         
         # 2. Upload to Gemini
-        video_file = genai.upload_file(path=tmp_path)
+        # New SDK: client.files.upload(path=...)
+        if not self.client: raise ValueError("Gemini Client not initialized")
+        
+        video_file = self.client.files.upload(path=tmp_path)
         
         # 3. Wait for processing
         import time
@@ -148,7 +156,7 @@ class VideoQuizAgent:
             print('.', end='', flush=True)
             log_debug("Video processing...")
             time.sleep(2)
-            video_file = genai.get_file(video_file.name)
+            video_file = self.client.files.get(name=video_file.name)
             
         if video_file.state.name == "FAILED":
             raise ValueError("Gemini Video Processing Failed")
@@ -160,7 +168,7 @@ class VideoQuizAgent:
         time.sleep(5)
         
         # Refetch to ensure we have the latest metadata
-        video_file = genai.get_file(video_file.name)
+        video_file = self.client.files.get(name=video_file.name)
         
         # Clean up local file
         os.unlink(tmp_path)
@@ -205,9 +213,12 @@ class VideoQuizAgent:
         ]
         """
         
-        response = self.model.generate_content(
-            [video_file, prompt],
-            generation_config={"response_mime_type": "application/json"}
+        response = self.client.models.generate_content(
+            model=MODEL_NAME,
+            contents=[video_file, prompt],
+            config={
+                "response_mime_type": "application/json"
+            }
         )
         
         # Check for empty response (blocked content) or failures
@@ -290,7 +301,8 @@ async def generate_quiz(request: GenerateQuizRequest):
 async def refine_quiz(instruction: str, current_questions: List[Dict]):
     # Allow user to tweak the quiz (Not full video re-process, just text refinement)
     # This is "Agent 4": Refinement
-    model = genai.GenerativeModel(MODEL_NAME)
+    # Updated Client Logic
+    client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
     prompt = f"""
     Refine the following quiz questions based on this instruction: "{instruction}"
     
@@ -301,7 +313,11 @@ async def refine_quiz(instruction: str, current_questions: List[Dict]):
     Ensure plain text formatting.
     """
     
-    res = model.generate_content(prompt, generation_config={"response_mime_type": "application/json"})
+    res = client.models.generate_content(
+        model=MODEL_NAME,
+        contents=prompt,
+        config={"response_mime_type": "application/json"}
+    )
     try:
         return {"questions": json.loads(res.text)}
     except:
@@ -481,9 +497,11 @@ async def analyze_and_submit_result(submission: ResultSubmission, user: dict = D
 
     # 3. AI Qualitative Analysis
     ai_feedback = "Analysis unavailable."
+
     try:
         print("Starting AI Analysis...")
-        model = genai.GenerativeModel(MODEL_NAME)
+        # Use a fresh client or agent's client if imported
+        local_client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
         prompt = (
             f"Analyze this student's quiz performance for '{submission.video_title}'.\n"
             f"Score: {score_percent}%\n"
@@ -494,7 +512,10 @@ async def analyze_and_submit_result(submission: ResultSubmission, user: dict = D
             "3. Specific weak concepts based on wrong answers.\n"
             "Address the student directly as 'You'. Keep it encouraging but factual."
         )
-        response = model.generate_content(prompt)
+        response = local_client.models.generate_content(
+            model=MODEL_NAME,
+            contents=prompt
+        )
         ai_feedback = response.text
         print("AI Analysis Complete")
     except Exception as e:

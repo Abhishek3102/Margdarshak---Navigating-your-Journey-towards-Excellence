@@ -4,7 +4,7 @@ from pydantic import BaseModel
 import os
 import io
 from typing import Optional, List
-import google.generativeai as genai
+from google import genai
 from supabase import create_client, Client
 import cloudinary
 import cloudinary.uploader
@@ -30,9 +30,9 @@ if CLOUDINARY_CLOUD_NAME and CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET:
     )
 
 if GOOGLE_API_KEY:
-    genai.configure(api_key=GOOGLE_API_KEY)
-    # Reverting to gemini-1.5-flash for reliable Vision and Instruction following
-    model = genai.GenerativeModel('gemini-flash-lite-latest')
+    client = genai.Client(api_key=GOOGLE_API_KEY)
+else:
+    client = None
 
 # --- Endpoints ---
 
@@ -268,7 +268,10 @@ async def send_message(
         # 3. User Message
         content_parts.append(f"Student Question: {message}")
         
-        response = model.generate_content(content_parts)
+        response = client.models.generate_content(
+            model='gemini-1.5-flash',
+            contents=content_parts
+        )
         ai_text = response.text
         
         # --- REGEX CLEANUP ---

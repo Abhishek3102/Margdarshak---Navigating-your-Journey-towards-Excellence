@@ -7,7 +7,7 @@ import json
 import os
 import random
 from supabase import create_client, Client
-import google.generativeai as genai
+from google import genai
 import uuid
 
 router = APIRouter()
@@ -19,9 +19,9 @@ BASE_QUIZ_PATH = os.path.join(os.path.dirname(__file__), "../../quiz_generator")
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
 if GOOGLE_API_KEY:
-    genai.configure(api_key=GOOGLE_API_KEY)
-    # Using the same model as the generator script to ensure compatibility
-    model = genai.GenerativeModel('gemini-flash-lite-latest')
+    client = genai.Client(api_key=GOOGLE_API_KEY)
+else:
+    client = None
 
 # --- Schemas ---
 class QuizSubmission(BaseModel):
@@ -75,7 +75,11 @@ async def generate_ai_analysis(score: int, total: int, subject_breakdown: Dict, 
     [1-2 specific study tips based on their weak areas]
     """
     try:
-        response = model.generate_content(prompt)
+        if not client: return "AI Analysis configuration error."
+        response = client.models.generate_content(
+            model='gemini-flash-lite-latest',
+            contents=prompt
+        )
         return response.text.strip()
     except Exception as e:
         print(f"Gemini Analysis Failed: {e}")
