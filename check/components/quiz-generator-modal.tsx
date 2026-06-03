@@ -315,8 +315,8 @@ export function QuizGeneratorModal({ isOpen, onClose, videoUrl, videoTitle, init
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="max-w-5xl max-h-[90vh] flex flex-col bg-zinc-950 border-zinc-800 text-white">
-                <DialogHeader className="border-b border-zinc-800 pb-4">
+            <DialogContent className="max-w-5xl max-h-[85vh] md:max-h-[90vh] flex flex-col bg-zinc-950 border-zinc-800 text-white">
+                <DialogHeader className="border-b border-zinc-800 pb-4 shrink-0">
                     <DialogTitle className="flex items-center gap-2 text-xl">
                         <Sparkles className="w-5 h-5 text-purple-500" />
                         AI Quiz Generator
@@ -326,7 +326,7 @@ export function QuizGeneratorModal({ isOpen, onClose, videoUrl, videoTitle, init
                     </DialogDescription>
                 </DialogHeader>
 
-                <div className="flex-1 overflow-hidden p-1 flex gap-4">
+                <div className="flex-1 overflow-hidden p-1 flex gap-4 min-h-0">
                     {/* Left Sidebar for History (only in review mode or if history exists) */}
                     {(quizHistory.length > 0 && step === 'review') && (
                         <div className="w-48 shrink-0 border-r border-zinc-800 pr-2 flex flex-col gap-2 pt-2">
@@ -359,10 +359,10 @@ export function QuizGeneratorModal({ isOpen, onClose, videoUrl, videoTitle, init
                         </div>
                     )}
 
-                    <div className="flex-1 flex flex-col overflow-hidden">
+                    <div className="flex-1 flex flex-col overflow-hidden min-h-0">
                         {step === 'config' && (
-                            <div className="space-y-6 pt-4 px-2 max-w-2xl mx-auto w-full">
-                                 <div className="bg-purple-900/20 border border-purple-500/30 p-4 rounded-lg flex gap-3 text-sm text-purple-200">
+                            <div className="flex-1 h-full space-y-4 md:space-y-6 pt-4 pb-8 px-2 max-w-2xl mx-auto w-full overflow-y-auto custom-scrollbar">
+                                 <div className="bg-purple-900/20 border border-purple-500/30 p-4 rounded-lg flex gap-3 text-sm text-purple-200 shrink-0">
                                     <AlertCircle className="w-5 h-5 shrink-0" />
                                     <div>
                                         The AI (Gemini 2.5 Flash Lite) will analyze the video visual and audio content to create relevant questions. This may take 10-20 seconds.

@@ -145,10 +145,10 @@ class VideoQuizAgent:
         print(f"Video downloaded to {tmp_path}. Uploading to Gemini File API...")
         
         # 2. Upload to Gemini
-        # New SDK: client.files.upload(path=...)
+        # New SDK: client.files.upload(file=...)
         if not self.client: raise ValueError("Gemini Client not initialized")
         
-        video_file = self.client.files.upload(path=tmp_path)
+        video_file = self.client.files.upload(file=tmp_path)
         
         # 3. Wait for processing
         import time

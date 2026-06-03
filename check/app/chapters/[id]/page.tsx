@@ -18,36 +18,35 @@ import { WatchPartyModal } from "@/components/watch-party-modal"
 import { QuizGeneratorModal } from "@/components/quiz-generator-modal"
 import axiosInstance from "@/lib/axios"
 
-// Simple Modal Component
 const VideoModal = ({ video, onClose }: { video: any, onClose: () => void }) => {
     if (!video) return null;
     console.log(video)
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="relative w-full max-w-6xl bg-black rounded-2xl overflow-hidden shadow-2xl border border-white/10">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-2 md:p-4 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="relative w-full max-w-6xl max-h-[95vh] flex flex-col bg-black rounded-2xl overflow-hidden shadow-2xl border border-white/10">
                 <div className="absolute top-4 right-4 z-10 flex gap-2">
                      <Button variant="ghost" size="icon" className="text-white hover:bg-white/20 rounded-full" onClick={onClose}>
                         <X className="w-6 h-6" />
                     </Button>
                 </div>
                 
-                <div className="aspect-video w-full bg-black flex items-center justify-center">
+                <div className="w-full bg-black flex-1 flex items-center justify-center min-h-0 overflow-hidden relative">
                     <video 
                         src={video.video_url} 
                         controls 
                         autoPlay 
                         muted={false}
-                        className="w-full h-full"
+                        className="w-full h-full max-h-[75vh] object-contain"
                         poster={video.thumbnail_url}
                     >
                         Your browser does not support the video tag.
                     </video>
                 </div>
                 
-                <div className="p-6 bg-slate-900">
-                    <h2 className="text-2xl font-bold text-white mb-2">{video.title}</h2>
-                    <p className="text-slate-400">{video.description || "No description available."}</p>
+                <div className="p-4 md:p-6 bg-slate-900 shrink-0 overflow-y-auto max-h-[30vh]">
+                    <h2 className="text-xl md:text-2xl font-bold text-white mb-2">{video.title}</h2>
+                    <p className="text-sm md:text-base text-slate-400">{video.description || "No description available."}</p>
                 </div>
             </div>
         </div>
