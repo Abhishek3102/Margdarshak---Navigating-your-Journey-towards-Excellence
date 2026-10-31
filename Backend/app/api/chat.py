@@ -179,7 +179,7 @@ async def send_message(
             config = {
                 "vector_store": vector_config,
                 "embedder": {"provider": "gemini", "config": {"api_key": google_key, "model": "models/embedding-001"}},
-                "llm": {"provider": "gemini", "config": {"api_key": google_key, "model": "gemini-flash-lite-latest"}}
+                "llm": {"provider": "gemini", "config": {"api_key": google_key, "model": "gemini-3.1-flash-lite"}}
             }
             m = Memory.from_config(config)
             
@@ -269,7 +269,7 @@ async def send_message(
         content_parts.append(f"Student Question: {message}")
         
         response = client.models.generate_content(
-            model='gemini-1.5-flash',
+            model='gemini-3.1-flash-lite',
             contents=content_parts
         )
         ai_text = response.text

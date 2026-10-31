@@ -215,7 +215,7 @@ async def submit_quiz(submission: QuizSubmission, user: dict = Depends(get_curre
                  config = {
                      "vector_store": vector_config,
                      "embedder": {"provider": "gemini", "config": {"api_key": google_key, "model": "models/embedding-001"}},
-                     "llm": {"provider": "gemini", "config": {"api_key": google_key, "model": "gemini-flash-lite-latest"}}
+                     "llm": {"provider": "gemini", "config": {"api_key": google_key, "model": "gemini-3.1-flash-lite"}}
                  }
                  m = Memory.from_config(config)
 
@@ -470,7 +470,7 @@ async def sync_memories():
                 "provider": "gemini",
                 "config": {
                     "api_key": google_key,
-                    "model": "gemini-flash-lite-latest"
+                    "model": "gemini-3.1-flash-lite"
                 }
             }
         }

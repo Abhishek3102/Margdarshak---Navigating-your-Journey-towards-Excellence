@@ -25,7 +25,7 @@ generation_config = {
 }
 
 # Try to use the requested model
-model_name = "gemini-2.5-flash" 
+model_name = "gemini-3.1-flash-lite" 
 
 model = genai.GenerativeModel(
   model_name=model_name,

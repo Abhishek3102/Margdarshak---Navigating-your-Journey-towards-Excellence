@@ -10,7 +10,7 @@ load_dotenv()
 if not os.getenv("GOOGLE_API_KEY"):
     print("Warning: GOOGLE_API_KEY not found. Agent will fail.")
 
-llm = ChatGoogleGenerativeAI(model="gemini-flash-lite-latest", temperature=0.7)
+llm = ChatGoogleGenerativeAI(model="gemini-3.1-flash-lite", temperature=0.7)
 
 # --- Socratic Hint Generator ---
 hint_prompt = ChatPromptTemplate.from_template(

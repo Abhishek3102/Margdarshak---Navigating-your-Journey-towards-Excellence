@@ -29,7 +29,7 @@ router = APIRouter()
 # User requested "gemini-2.5-flash-lite".
 # As of now, the closest equivalent (Fast, Cost-effective, Multimodal) is 1.5-Flash.
 # We map the requested name to the real model name here.
-MODEL_NAME = "gemini-flash-lite-latest" 
+MODEL_NAME = "gemini-3.1-flash-lite" 
 
 # genai.configure moved to Client init
 
